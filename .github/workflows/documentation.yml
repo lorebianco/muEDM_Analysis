@@ -1,0 +1,32 @@
+name: Deploy CHeT Library Docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "CHeTLibrary/**"
+      - ".github/workflows/documentation.yml" # Utile per debuggare la action stessa
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
+
+      - name: Generate Documentation
+        working-directory: ./CHeTLibrary
+        run: doxygen Doxyfile
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: CHeTLibrary/docs/html
+          branch: gh-pages
