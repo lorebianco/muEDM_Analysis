@@ -10,7 +10,7 @@
 
 /**
  * @namespace CHeT
- * @brief Root namespace for the Compact Helical Tracker (CHeT) project.
+ * @brief Root namespace for the Cylindrical Helix Tracker (CHeT) project.
  */
 namespace CHeT
 {
