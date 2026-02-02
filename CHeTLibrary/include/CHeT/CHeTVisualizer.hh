@@ -26,14 +26,15 @@
 // --- Project Dependencies ---
 #include "CHeT/CHeTGlobalSettings.hh"
 
+namespace CHeT
+{
+
 /**
  * @namespace CHeT::Vis
  * @brief CHeT Visualization namespace.
  * Contains tools for 2D and 3D visualization of the detector, tracks, and hits
  * using ROOT.
  */
-namespace CHeT
-{
 namespace Vis
 {
 

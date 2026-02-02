@@ -8,6 +8,10 @@
 #include <string>
 #include <vector>
 
+/**
+ * @namespace CHeT
+ * @brief Root namespace for the Compact Helical Tracker (CHeT) project.
+ */
 namespace CHeT
 {
 

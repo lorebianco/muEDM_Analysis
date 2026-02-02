@@ -21,6 +21,17 @@ namespace CHeT
 namespace Data
 {
 
+/**
+ * @class Reader
+ * @brief Reads CHeT data from ROOT files and processes it into high-level
+ * objects.
+ *
+ * The Reader class wraps RDataFrame to provide a convenient interface for:
+ * - Loading raw TTree data.
+ * - Applying time and energy cuts.
+ * - Filtering specific events.
+ * - Generating "Estimators" (calibrated and mapped hits).
+ */
 class Reader
 {
   public:
