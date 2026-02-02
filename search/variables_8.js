@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['phi0_0',['phi0',['../structCHeT_1_1Config_1_1FiberProp.html#afa00e6e01dd69010ce00d257bb559fb0',1,'CHeT::Config::FiberProp']]],
-  ['phioffset_1',['phiOffset',['../structCHeT_1_1Config_1_1LayerConfig.html#a5ef49ccaf18b856479e45a1be93faf10',1,'CHeT::Config::LayerConfig']]]
+  ['offset_5fexp_0',['OFFSET_EXP',['../namespaceCHeT_1_1Config.html#a1261ea9b5c600c628fed7ebb343cb7f3',1,'CHeT::Config']]],
+  ['outer_1',['outer',['../structCHeT_1_1Config_1_1CylinderConfig.html#a16b30c0ba43a7cbed1d45f7c2ee40823',1,'CHeT::Config::CylinderConfig']]]
 ];

@@ -1,0 +1,17 @@
+<map id="src/CHeTGlobalSettings.cc" name="src/CHeTGlobalSettings.cc">
+<area shape="rect" id="Node000001" title=" " alt="" coords="190,5,383,31"/>
+<area shape="rect" id="Node000002" href="$CHeTGlobalSettings_8hh.html" title=" " alt="" coords="181,79,392,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="289,31,289,65,284,65,284,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,91,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="249,107,101,151,99,145,248,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="115,152,178,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="265,106,183,148,180,143,263,102"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="203,152,283,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="282,106,259,142,255,139,277,103"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="307,152,357,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="296,103,320,139,315,142,292,106"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="381,152,440,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="308,102,380,143,377,147,305,106"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="465,152,527,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="321,101,452,146,451,151,319,107"/>
+</map>

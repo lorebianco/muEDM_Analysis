@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['vislinetrack_0',['VisLineTrack',['../structCHeT_1_1Vis_1_1VisLineTrack.html#ad4278e1d9bce2ebee299dc886c720cd2',1,'CHeT::Vis::VisLineTrack']]]
+  ['setcuts_0',['SetCuts',['../classCHeT_1_1Data_1_1Reader.html#ae481cb0121a10c46fee38835fb161ff2',1,'CHeT::Data::Reader']]],
+  ['setsingleevent_1',['SetSingleEvent',['../classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2',1,'CHeT::Data::Reader']]]
 ];
