@@ -13,6 +13,11 @@
 
 namespace CHeT
 {
+/**
+ * @namespace CHeT::Data
+ * @brief Data processing namespace.
+ * Contains the Reader class and data structures for analyzing CHeT data.
+ */
 namespace Data
 {
 
