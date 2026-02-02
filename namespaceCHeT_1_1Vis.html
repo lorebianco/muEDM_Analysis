@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CHeT Library: CV Namespace Reference</title>
+<title>CHeT Library: CHeT::Vis Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,50 +74,54 @@ $(function() {
 </div>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>CHeT</b></li><li class="navelem"><a class="el" href="namespaceCHeT_1_1Vis.html">Vis</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">CV Namespace Reference</div></div>
+  <div class="headertitle"><div class="title">CHeT::Vis Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>ChetVisualizer namespace. Contains tools for 2D and 3D visualization of the detector, tracks, and hits using ROOT.  
-<a href="namespaceCV.html#details">More...</a></p>
+<p>CHeT Visualization namespace. Contains tools for 2D and 3D visualization of the detector, tracks, and hits using ROOT.  
+<a href="namespaceCHeT_1_1Vis.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCV_1_1VisLineTrack.html">VisLineTrack</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D track for visualization.  <a href="structCV_1_1VisLineTrack.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D track for visualization.  <a href="structCHeT_1_1Vis_1_1VisLineTrack.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCV_1_1VisPoint2D.html">VisPoint2D</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a 2D point (e.g., for Hough space or transverse projection).  <a href="structCV_1_1VisPoint2D.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a 2D point (e.g., for Hough space or transverse projection).  <a href="structCHeT_1_1Vis_1_1VisPoint2D.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCV_1_1VisPoint3D.html">VisPoint3D</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a 3D point (e.g., space points, clusters).  <a href="structCV_1_1VisPoint3D.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a 3D point (e.g., space points, clusters).  <a href="structCHeT_1_1Vis_1_1VisPoint3D.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a80eff3d8a8651f932ca69d69880120fa" id="r_a80eff3d8a8651f932ca69d69880120fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCV.html#a80eff3d8a8651f932ca69d69880120fa">Draw2D</a> (const std::vector&lt; int &gt; &amp;bundle_ids, const std::vector&lt; <a class="el" href="structGS_1_1BundlesIntersection.html">GS::BundlesIntersection</a> &gt; &amp;inters, const std::vector&lt; <a class="el" href="structCV_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCV_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;extraPoints={})</td></tr>
-<tr class="memdesc:a80eff3d8a8651f932ca69d69880120fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws 2D projections: Phi-Z Unrolled Map, ZX/ZY Side views, and XY Transverse view.  <br /></td></tr>
-<tr class="separator:a80eff3d8a8651f932ca69d69880120fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fc94979cc0baed772c33fc2ede47431" id="r_a7fc94979cc0baed772c33fc2ede47431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCV.html#a7fc94979cc0baed772c33fc2ede47431">Draw3D</a> (const std::vector&lt; int &gt; &amp;hit_ids, const std::vector&lt; <a class="el" href="structCV_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCV_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;points={}, bool drawSkeleton=true)</td></tr>
-<tr class="memdesc:a7fc94979cc0baed772c33fc2ede47431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the full 3D detector view.  <br /></td></tr>
-<tr class="separator:a7fc94979cc0baed772c33fc2ede47431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af97edfaa6d04224238f78bead2ad10b7" id="r_af97edfaa6d04224238f78bead2ad10b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#af97edfaa6d04224238f78bead2ad10b7">Draw2D</a> (const std::vector&lt; int &gt; &amp;bundle_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Config_1_1BundlesIntersection.html">CHeT::Config::BundlesIntersection</a> &gt; &amp;inters, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;extraPoints={})</td></tr>
+<tr class="memdesc:af97edfaa6d04224238f78bead2ad10b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws 2D projections: Phi-Z Unrolled Map, ZX/ZY Side views, and XY Transverse view.  <br /></td></tr>
+<tr class="separator:af97edfaa6d04224238f78bead2ad10b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a534d4ffb8316a00bc9b1855a792d30" id="r_a3a534d4ffb8316a00bc9b1855a792d30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a3a534d4ffb8316a00bc9b1855a792d30">Draw3D</a> (const std::vector&lt; int &gt; &amp;hit_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;points={}, bool drawSkeleton=true)</td></tr>
+<tr class="memdesc:a3a534d4ffb8316a00bc9b1855a792d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the full 3D detector view.  <br /></td></tr>
+<tr class="separator:a3a534d4ffb8316a00bc9b1855a792d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>ChetVisualizer namespace. Contains tools for 2D and 3D visualization of the detector, tracks, and hits using ROOT. </p>
+<div class="textblock"><p>CHeT Visualization namespace. Contains tools for 2D and 3D visualization of the detector, tracks, and hits using ROOT. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a80eff3d8a8651f932ca69d69880120fa" name="a80eff3d8a8651f932ca69d69880120fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80eff3d8a8651f932ca69d69880120fa">&#9670;&#160;</a></span>Draw2D()</h2>
+<a id="af97edfaa6d04224238f78bead2ad10b7" name="af97edfaa6d04224238f78bead2ad10b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af97edfaa6d04224238f78bead2ad10b7">&#9670;&#160;</a></span>Draw2D()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CV::Draw2D </td>
+          <td class="memname">void CHeT::Vis::Draw2D </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
           <td class="paramname"><em>bundle_ids</em>, </td>
@@ -125,19 +129,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structGS_1_1BundlesIntersection.html">GS::BundlesIntersection</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Config_1_1BundlesIntersection.html">CHeT::Config::BundlesIntersection</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>inters</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCV_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>tracks</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCV_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>extraPoints</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -152,25 +156,25 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bundle_ids</td><td>Vector of global bundle IDs that fired. </td></tr>
-    <tr><td class="paramname">inters</td><td>Vector of intersections (usually from <a class="el" href="namespaceGS.html#a13035038ab64eb0f6451785caaee739c" title="Finds 3D intersections between a list of hit bundles.">GS::FindIntersections</a>). </td></tr>
+    <tr><td class="paramname">inters</td><td>Vector of intersections (usually from <a class="el" href="namespaceCHeT_1_1Config.html#a4c1c72a1efea202187c7759e7b137914" title="Finds 3D intersections between a list of hit bundles.">CHeT::Config::FindIntersections</a>). </td></tr>
     <tr><td class="paramname">tracks</td><td>Optional list of tracks to overlay. </td></tr>
     <tr><td class="paramname">extraPoints</td><td>Optional list of extra 2D points to draw on the XY plane. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00045">45</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00047">47</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
 
 </div>
 </div>
-<a id="a7fc94979cc0baed772c33fc2ede47431" name="a7fc94979cc0baed772c33fc2ede47431"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fc94979cc0baed772c33fc2ede47431">&#9670;&#160;</a></span>Draw3D()</h2>
+<a id="a3a534d4ffb8316a00bc9b1855a792d30" name="a3a534d4ffb8316a00bc9b1855a792d30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a534d4ffb8316a00bc9b1855a792d30">&#9670;&#160;</a></span>Draw3D()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CV::Draw3D </td>
+          <td class="memname">void CHeT::Vis::Draw3D </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
           <td class="paramname"><em>hit_ids</em>, </td>
@@ -178,13 +182,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCV_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>tracks</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCV_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>points</em> = <code>{}</code>, </td>
         </tr>
         <tr>
@@ -212,7 +216,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00300">300</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00307">307</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
 
 </div>
 </div>

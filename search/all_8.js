@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nbundles_0',['nBundles',['../structGS_1_1LayerConfig.html#ad496e77b2b753c8612f50a50b09330c3',1,'GS::LayerConfig']]]
+  ['nbundles_0',['nBundles',['../structCHeT_1_1Config_1_1LayerConfig.html#a4d2621de6262af7bf14d0bc32100861d',1,'CHeT::Config::LayerConfig']]]
 ];

@@ -95,411 +95,413 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define M_PI 3.14159265358979323846</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceGS.html">GS</a></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span>CHeT</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>{</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// --- Internal Data Structures (Hidden from Header) ---</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span>Config</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>{</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">// Static map for board offsets</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;int, int&gt; BOARD_OFFSETS = {</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    { 0, 0 }, <span class="comment">// Board 0: Cylinder 0 (Inner)</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    { 1, 0 }, <span class="comment">// Board 1: Cylinder 0 (Outer)</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    { 2, 94 }, <span class="comment">// Board 2: After Cylinder 0 (45+49)</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    { 3, 94 } <span class="comment">// Board 3: After Cylinder 0</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="comment">//{4, 213}, // Board 4: Hypothetical Cyl 2 (94+119)</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>};</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// Huge map for channel mapping. Defined here to keep header clean.</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;int, std::map&lt;int, int&gt;&gt; BOARD_MAPS = {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    { 0,</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 32, 32 },</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            { 36, 33 }, { 40, 34 }, { 44, 35 }, { 48, 36 }, { 52, 37 },</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            { 56, 38 }, { 60, 39 }, { 34, 40 }, { 38, 41 }, { 42, 42 },</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            { 46, 43 }, { 50, 44 }, { 54, 45 }, { 58, 46 }, { 62, 47 } } },</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    { 1,</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        { { 31, 48 }, { 27, 49 }, { 23, 50 }, { 19, 51 }, { 15, 52 },</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            { 11, 53 }, { 7, 54 }, { 3, 55 }, { 29, 56 }, { 25, 57 },</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            { 21, 58 }, { 17, 59 }, { 13, 60 }, { 9, 61 }, { 5, 62 }, { 1, 63 },</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            { 0, 64 }, { 4, 65 }, { 8, 66 }, { 12, 67 }, { 16, 68 }, { 20, 69 },</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            { 24, 70 }, { 28, 71 }, { 2, 72 }, { 6, 73 }, { 10, 74 },</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            { 14, 75 }, { 18, 76 }, { 22, 77 }, { 26, 78 }, { 30, 79 },</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            { 32, 80 }, { 36, 81 }, { 40, 82 }, { 44, 83 }, { 48, 84 },</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            { 52, 85 }, { 56, 86 }, { 60, 87 }, { 34, 88 }, { 38, 89 },</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            { 42, 90 }, { 46, 91 }, { 50, 92 }, { 54, 93 } } },</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    { 2,</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 63, 32 },</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            { 59, 33 }, { 55, 34 }, { 51, 35 }, { 47, 36 }, { 43, 37 },</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            { 39, 38 }, { 35, 39 }, { 61, 40 }, { 57, 41 }, { 53, 42 },</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            { 49, 43 }, { 45, 44 }, { 41, 45 }, { 37, 46 }, { 33, 47 },</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            { 32, 48 }, { 36, 49 }, { 40, 50 }, { 44, 51 }, { 48, 52 },</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            { 52, 53 }, { 56, 54 }, { 60, 55 }, { 34, 56 }, { 38, 57 },</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            { 42, 58 }, { 46, 59 }, { 50, 60 }, { 54, 61 }, { 58, 62 },</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            { 62, 63 } } },</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    { 3,</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        { { 31, 64 }, { 27, 65 }, { 23, 66 }, { 19, 67 }, { 15, 68 },</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            { 11, 69 }, { 7, 70 }, { 3, 71 }, { 29, 72 }, { 25, 73 },</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            { 21, 74 }, { 17, 75 }, { 13, 76 }, { 9, 77 }, { 5, 78 }, { 1, 79 },</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            { 0, 80 }, { 4, 81 }, { 8, 82 }, { 12, 83 }, { 16, 84 }, { 20, 85 },</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            { 24, 86 }, { 28, 87 }, { 2, 88 }, { 6, 89 }, { 10, 90 },</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            { 14, 91 }, { 18, 92 }, { 22, 93 }, { 26, 94 }, { 30, 95 },</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            { 63, 96 }, { 59, 97 }, { 55, 98 }, { 51, 99 }, { 47, 100 },</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            { 43, 101 }, { 39, 102 }, { 35, 103 }, { 61, 104 }, { 57, 105 },</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            { 53, 106 }, { 49, 107 }, { 45, 108 }, { 41, 109 }, { 37, 110 },</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            { 33, 111 }, { 32, 112 }, { 36, 113 }, { 40, 114 }, { 44, 115 },</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            { 48, 116 }, { 52, 117 }, { 56, 118 } } }</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>};</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment">// --- Implementation ---</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">// --- Internal Data Structures (Hidden from Header) ---</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment">// Static map for board offsets</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;int, int&gt; BOARD_OFFSETS = {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    { 0, 0 }, <span class="comment">// Board 0: Cylinder 0 (Inner)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    { 1, 0 }, <span class="comment">// Board 1: Cylinder 0 (Outer)</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    { 2, 94 }, <span class="comment">// Board 2: After Cylinder 0 (45+49)</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    { 3, 94 } <span class="comment">// Board 3: After Cylinder 0</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="comment">//{4, 213}, // Board 4: Hypothetical Cyl 2 (94+119)</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>};</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">// Huge map for channel mapping. Defined here to keep header clean.</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;int, std::map&lt;int, int&gt;&gt; BOARD_MAPS = {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    { 0,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 32, 32 },</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            { 36, 33 }, { 40, 34 }, { 44, 35 }, { 48, 36 }, { 52, 37 },</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            { 56, 38 }, { 60, 39 }, { 34, 40 }, { 38, 41 }, { 42, 42 },</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            { 46, 43 }, { 50, 44 }, { 54, 45 }, { 58, 46 }, { 62, 47 } } },</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    { 1,</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        { { 31, 48 }, { 27, 49 }, { 23, 50 }, { 19, 51 }, { 15, 52 },</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            { 11, 53 }, { 7, 54 }, { 3, 55 }, { 29, 56 }, { 25, 57 },</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            { 21, 58 }, { 17, 59 }, { 13, 60 }, { 9, 61 }, { 5, 62 }, { 1, 63 },</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            { 0, 64 }, { 4, 65 }, { 8, 66 }, { 12, 67 }, { 16, 68 }, { 20, 69 },</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            { 24, 70 }, { 28, 71 }, { 2, 72 }, { 6, 73 }, { 10, 74 },</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            { 14, 75 }, { 18, 76 }, { 22, 77 }, { 26, 78 }, { 30, 79 },</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>            { 32, 80 }, { 36, 81 }, { 40, 82 }, { 44, 83 }, { 48, 84 },</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            { 52, 85 }, { 56, 86 }, { 60, 87 }, { 34, 88 }, { 38, 89 },</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            { 42, 90 }, { 46, 91 }, { 50, 92 }, { 54, 93 } } },</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    { 2,</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 63, 32 },</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            { 59, 33 }, { 55, 34 }, { 51, 35 }, { 47, 36 }, { 43, 37 },</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            { 39, 38 }, { 35, 39 }, { 61, 40 }, { 57, 41 }, { 53, 42 },</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            { 49, 43 }, { 45, 44 }, { 41, 45 }, { 37, 46 }, { 33, 47 },</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            { 32, 48 }, { 36, 49 }, { 40, 50 }, { 44, 51 }, { 48, 52 },</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            { 52, 53 }, { 56, 54 }, { 60, 55 }, { 34, 56 }, { 38, 57 },</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            { 42, 58 }, { 46, 59 }, { 50, 60 }, { 54, 61 }, { 58, 62 },</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            { 62, 63 } } },</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    { 3,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        { { 31, 64 }, { 27, 65 }, { 23, 66 }, { 19, 67 }, { 15, 68 },</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            { 11, 69 }, { 7, 70 }, { 3, 71 }, { 29, 72 }, { 25, 73 },</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            { 21, 74 }, { 17, 75 }, { 13, 76 }, { 9, 77 }, { 5, 78 }, { 1, 79 },</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            { 0, 80 }, { 4, 81 }, { 8, 82 }, { 12, 83 }, { 16, 84 }, { 20, 85 },</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            { 24, 86 }, { 28, 87 }, { 2, 88 }, { 6, 89 }, { 10, 90 },</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>            { 14, 91 }, { 18, 92 }, { 22, 93 }, { 26, 94 }, { 30, 95 },</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>            { 63, 96 }, { 59, 97 }, { 55, 98 }, { 51, 99 }, { 47, 100 },</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            { 43, 101 }, { 39, 102 }, { 35, 103 }, { 61, 104 }, { 57, 105 },</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            { 53, 106 }, { 49, 107 }, { 45, 108 }, { 41, 109 }, { 37, 110 },</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            { 33, 111 }, { 32, 112 }, { 36, 113 }, { 40, 114 }, { 44, 115 },</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            { 48, 116 }, { 52, 117 }, { 56, 118 } } }</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>};</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="namespaceGS.html#a22df113f553dbbd60ac0f860d4188a4a">   74</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceGS.html#a22df113f553dbbd60ac0f860d4188a4a">GetBoardGlobalOffset</a>(<span class="keywordtype">int</span> board_id)</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>{</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keyword">auto</span> it = BOARD_OFFSETS.find(board_id);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordflow">return</span> (it != BOARD_OFFSETS.end()) ? it-&gt;second : -1;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="comment">// --- Implementation ---</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="foldopen" id="foldopen00076" data-start="{" data-end="}">
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">   76</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">GetBoardGlobalOffset</a>(<span class="keywordtype">int</span> board_id)</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>{</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="keyword">auto</span> it = BOARD_OFFSETS.find(board_id);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordflow">return</span> (it != BOARD_OFFSETS.end()) ? it-&gt;second : -1;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>}</div>
 </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="foldopen" id="foldopen00080" data-start="{" data-end="}">
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">   80</a></span><span class="keyword">const</span> std::vector&lt;CylinderConfig&gt; &amp;<a class="code hl_function" href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">GetCylinders</a>()</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>{</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">// IMPROVEMENT: Static initialization. The vector is created only once.</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keyword">static</span> <span class="keyword">const</span> std::vector&lt;CylinderConfig&gt; cylinders = {</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        {</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            0, <span class="comment">// Cylinder 1</span></div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            { 45, 17.0, 4.294 + DELTA1 + OFFSET_EXP, -1, 632 }, <span class="comment">// Inner (Red)</span></div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            { 49, 17.0, 3.829 + DELTA1 + OFFSET_EXP, 1, 807 } <span class="comment">// Outer (Orange)</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        },</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            1, <span class="comment">// Cylinder 2</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            { 59, 21.0, 2.609 + DELTA2 + OFFSET_EXP, -1, 600 }, <span class="comment">// Inner (Blue)</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            { 60, 21.0, 3.351 + DELTA2 + OFFSET_EXP, 1, 432 } <span class="comment">// Outer (Cyan)</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        }</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    };</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">return</span> cylinders;</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>}</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="foldopen" id="foldopen00082" data-start="{" data-end="}">
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">   82</a></span><span class="keyword">const</span> std::vector&lt;CylinderConfig&gt; &amp;<a class="code hl_function" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">GetCylinders</a>()</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>{</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="comment">// IMPROVEMENT: Static initialization. The vector is created only once.</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keyword">static</span> <span class="keyword">const</span> std::vector&lt;CylinderConfig&gt; cylinders = {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            0, <span class="comment">// Cylinder 1</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            { 45, 17.0, 4.294 + DELTA1 + OFFSET_EXP, -1, 632 }, <span class="comment">// Inner (Red)</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            { 49, 17.0, 3.829 + DELTA1 + OFFSET_EXP, 1, 807 } <span class="comment">// Outer (Orange)</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        },</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            1, <span class="comment">// Cylinder 2</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>            { 59, 21.0, 2.609 + DELTA2 + OFFSET_EXP, -1, 600 }, <span class="comment">// Inner (Blue)</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            { 60, 21.0, 3.351 + DELTA2 + OFFSET_EXP, 1, 432 } <span class="comment">// Outer (Cyan)</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        }</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    };</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keywordflow">return</span> cylinders;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>}</div>
 </div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="foldopen" id="foldopen00098" data-start="{" data-end="}">
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b">   98</a></span><span class="keywordtype">double</span> <a class="code hl_function" href="namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b">wrap0_2pi</a>(<span class="keywordtype">double</span> angle)</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>{</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keywordtype">double</span> wrapped = std::fmod(angle, 2.0 * M_PI);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordflow">if</span>(wrapped &lt; 0)</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        wrapped += 2.0 * M_PI;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">return</span> wrapped;</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="foldopen" id="foldopen00100" data-start="{" data-end="}">
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">  100</a></span><span class="keywordtype">double</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">wrap0_2pi</a>(<span class="keywordtype">double</span> angle)</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>{</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keywordtype">double</span> wrapped = std::fmod(angle, 2.0 * M_PI);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">if</span>(wrapped &lt; 0)</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        wrapped += 2.0 * M_PI;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keywordflow">return</span> wrapped;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>}</div>
 </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="foldopen" id="foldopen00106" data-start="{" data-end="}">
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="namespaceGS.html#a0655291fb41703a2cf3b9fc8de4cfc16">  106</a></span><a class="code hl_struct" href="structGS_1_1FiberProp.html">FiberProp</a> <a class="code hl_function" href="namespaceGS.html#a0655291fb41703a2cf3b9fc8de4cfc16">GetFiberProp</a>(<span class="keywordtype">int</span> b_id)</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>{</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">GetCylinders</a>();</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordtype">int</span> offset = 0;</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    {</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="comment">// Check Inner</span></div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="keywordflow">if</span>(b_id &lt; offset + cyl.inner.nBundles)</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        {</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            <span class="keywordtype">int</span> b_loc = b_id - offset;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            <span class="keywordflow">return</span> { cyl.id, 0, cyl.inner.radius,</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>                <a class="code hl_function" href="namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b">wrap0_2pi</a>(2.0 * M_PI * (-b_loc) / cyl.inner.nBundles</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                    + cyl.inner.phiOffset),</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>                cyl.inner.direction, cyl.inner.color };</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        }</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        offset += cyl.inner.nBundles;</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="comment">// Check Outer</span></div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordflow">if</span>(b_id &lt; offset + cyl.outer.nBundles)</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        {</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            <span class="keywordtype">int</span> b_loc = b_id - offset;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">return</span> { cyl.id, 1, cyl.outer.radius,</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>                <a class="code hl_function" href="namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b">wrap0_2pi</a>(2.0 * M_PI * (b_loc) / cyl.outer.nBundles</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>                    + cyl.outer.phiOffset),</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                cyl.outer.direction, cyl.outer.color };</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        }</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        offset += cyl.outer.nBundles;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    }</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="comment">// Return invalid prop</span></div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordflow">return</span> { -1, -1, 0, 0, 0, 0 };</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>}</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#a11d377869a06d5306624acef3ac691b7">  108</a></span><a class="code hl_struct" href="structCHeT_1_1Config_1_1FiberProp.html">FiberProp</a> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a11d377869a06d5306624acef3ac691b7">GetFiberProp</a>(<span class="keywordtype">int</span> b_id)</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>{</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">GetCylinders</a>();</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keywordtype">int</span> offset = 0;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <span class="comment">// Check Inner</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="keywordflow">if</span>(b_id &lt; offset + cyl.inner.nBundles)</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        {</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordtype">int</span> b_loc = b_id - offset;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">return</span> { cyl.id, 0, cyl.inner.radius,</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>                <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">wrap0_2pi</a>(2.0 * M_PI * (-b_loc) / cyl.inner.nBundles</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>                    + cyl.inner.phiOffset),</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>                cyl.inner.direction, cyl.inner.color };</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        }</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        offset += cyl.inner.nBundles;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="comment">// Check Outer</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        <span class="keywordflow">if</span>(b_id &lt; offset + cyl.outer.nBundles)</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        {</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            <span class="keywordtype">int</span> b_loc = b_id - offset;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            <span class="keywordflow">return</span> { cyl.id, 1, cyl.outer.radius,</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">wrap0_2pi</a>(2.0 * M_PI * (b_loc) / cyl.outer.nBundles</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>                    + cyl.outer.phiOffset),</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                cyl.outer.direction, cyl.outer.color };</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        }</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        offset += cyl.outer.nBundles;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <span class="comment">// Return invalid prop</span></div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="keywordflow">return</span> { -1, -1, 0, 0, 0, 0 };</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>}</div>
 </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="foldopen" id="foldopen00139" data-start="{" data-end="}">
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="namespaceGS.html#a10c74ba1fc8dbd88cdc7d6e69df5b6a5">  139</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceGS.html#a10c74ba1fc8dbd88cdc7d6e69df5b6a5">GetGlobalBundleId</a>(<span class="keywordtype">int</span> board_id, <span class="keywordtype">int</span> channel_id)</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>{</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    <span class="keyword">auto</span> boardMapIt = BOARD_MAPS.find(board_id);</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">if</span>(boardMapIt == BOARD_MAPS.end())</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    <span class="keyword">auto</span> chanIt = boardMapIt-&gt;second.find(channel_id);</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">if</span>(chanIt == boardMapIt-&gt;second.end())</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keywordtype">int</span> local_val = chanIt-&gt;second;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
+<div class="foldopen" id="foldopen00141" data-start="{" data-end="}">
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#aa9666537ba61550cc6d8d4200d5229f8">  141</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#aa9666537ba61550cc6d8d4200d5229f8">GetGlobalBundleId</a>(<span class="keywordtype">int</span> board_id, <span class="keywordtype">int</span> channel_id)</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>{</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keyword">auto</span> boardMapIt = BOARD_MAPS.find(board_id);</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keywordflow">if</span>(boardMapIt == BOARD_MAPS.end())</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keyword">auto</span> chanIt = boardMapIt-&gt;second.find(channel_id);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordflow">if</span>(chanIt == boardMapIt-&gt;second.end())</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="comment">// Apply offset</span></div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordtype">int</span> boardOffset = <a class="code hl_function" href="namespaceGS.html#a22df113f553dbbd60ac0f860d4188a4a">GetBoardGlobalOffset</a>(board_id);</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="keywordflow">if</span>(boardOffset == -1)</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="keywordflow">return</span> local_val + boardOffset;</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>}</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordtype">int</span> local_val = chanIt-&gt;second;</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="comment">// Apply offset</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keywordtype">int</span> boardOffset = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">GetBoardGlobalOffset</a>(board_id);</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    <span class="keywordflow">if</span>(boardOffset == -1)</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordflow">return</span> local_val + boardOffset;</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>}</div>
 </div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
-<div class="foldopen" id="foldopen00159" data-start="{" data-end="}">
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="namespaceGS.html#a13035038ab64eb0f6451785caaee739c">  159</a></span>std::vector&lt;BundlesIntersection&gt; <a class="code hl_function" href="namespaceGS.html#a13035038ab64eb0f6451785caaee739c">FindIntersections</a>(</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    <span class="keyword">const</span> std::vector&lt;int&gt; &amp;hit_ids)</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>{</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    std::vector&lt;BundlesIntersection&gt; out;</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="comment">// Optimization: reserve memory if hits are many, though tricky to guess how</span></div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="comment">// many intersections</span></div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; hit_ids.size(); ++i)</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    {</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> j = i + 1; j &lt; hit_ids.size(); ++j)</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        {</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            <a class="code hl_struct" href="structGS_1_1FiberProp.html">FiberProp</a> p1 = <a class="code hl_function" href="namespaceGS.html#a0655291fb41703a2cf3b9fc8de4cfc16">GetFiberProp</a>(hit_ids[i]);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <a class="code hl_struct" href="structGS_1_1FiberProp.html">FiberProp</a> p2 = <a class="code hl_function" href="namespaceGS.html#a0655291fb41703a2cf3b9fc8de4cfc16">GetFiberProp</a>(hit_ids[j]);</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <span class="comment">// Intersection logic: Same cylinder, different layers</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keywordflow">if</span>(p1.cylinderId == p2.cylinderId &amp;&amp; p1.cylinderId != -1</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                &amp;&amp; p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a845f71933b0f65c5f9169d05c35901be">layerId</a> != p2.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a845f71933b0f65c5f9169d05c35901be">layerId</a>)</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            {</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                <span class="keywordtype">double</span> dphi0 = p2.<a class="code hl_variable" href="structGS_1_1FiberProp.html#aca9038b39066997a03ed2339dc5cb4f4">phi0</a> - p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#aca9038b39066997a03ed2339dc5cb4f4">phi0</a>;</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>                <span class="keywordtype">double</span> ddir = p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a3518464a4273c11af4d2612e8d0df64c">dir</a> - p2.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a3518464a4273c11af4d2612e8d0df64c">dir</a>;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                <span class="comment">// Typical case: +1 vs -1 -&gt; diff is 2 or -2.</span></div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>                <span class="comment">// Loop over possible periodic intersections</span></div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> k = -2; k &lt;= 2; ++k)</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                {</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                    <span class="comment">// Avoid division by zero</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                    <span class="keywordflow">if</span>(std::abs(ddir) &lt; 1e-9)</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                        <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                    <span class="keywordtype">double</span> alpha = (dphi0 + 2.0 * k * M_PI) / (ddir * M_PI);</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="foldopen" id="foldopen00161" data-start="{" data-end="}">
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#a4c1c72a1efea202187c7759e7b137914">  161</a></span>std::vector&lt;BundlesIntersection&gt; <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a4c1c72a1efea202187c7759e7b137914">FindIntersections</a>(</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keyword">const</span> std::vector&lt;int&gt; &amp;hit_ids)</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>{</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    std::vector&lt;BundlesIntersection&gt; out;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="comment">// Optimization: reserve memory if hits are many, though tricky to guess how</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="comment">// many intersections</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; hit_ids.size(); ++i)</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    {</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> j = i + 1; j &lt; hit_ids.size(); ++j)</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        {</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            <a class="code hl_struct" href="structCHeT_1_1Config_1_1FiberProp.html">FiberProp</a> p1 = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a11d377869a06d5306624acef3ac691b7">GetFiberProp</a>(hit_ids[i]);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <a class="code hl_struct" href="structCHeT_1_1Config_1_1FiberProp.html">FiberProp</a> p2 = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a11d377869a06d5306624acef3ac691b7">GetFiberProp</a>(hit_ids[j]);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            <span class="comment">// Intersection logic: Same cylinder, different layers</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span>(p1.cylinderId == p2.cylinderId &amp;&amp; p1.cylinderId != -1</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                &amp;&amp; p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#a47de4693d5966ab0063027789d040375">layerId</a> != p2.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#a47de4693d5966ab0063027789d040375">layerId</a>)</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            {</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                <span class="keywordtype">double</span> dphi0 = p2.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#afa00e6e01dd69010ce00d257bb559fb0">phi0</a> - p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#afa00e6e01dd69010ce00d257bb559fb0">phi0</a>;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                <span class="keywordtype">double</span> ddir = p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#a87d35df8606e365f973ba63b0e387fa9">dir</a> - p2.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#a87d35df8606e365f973ba63b0e387fa9">dir</a>;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                <span class="comment">// Typical case: +1 vs -1 -&gt; diff is 2 or -2.</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                <span class="comment">// Loop over possible periodic intersections</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> k = -2; k &lt;= 2; ++k)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                {</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                    <span class="comment">// Avoid division by zero</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                    <span class="keywordflow">if</span>(std::abs(ddir) &lt; 1e-9)</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                        <span class="keywordflow">continue</span>;</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                    <span class="keywordflow">if</span>(alpha &gt;= 0.0 &amp;&amp; alpha &lt;= 1.0)</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                    {</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                        <span class="keywordtype">double</span> zi = alpha * (2.0 * <a class="code hl_variable" href="namespaceGS.html#ab022c408929c784364ab471d7dc3293b">L_HALF</a>) - <a class="code hl_variable" href="namespaceGS.html#ab022c408929c784364ab471d7dc3293b">L_HALF</a>;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                        <span class="keywordtype">double</span> ph = p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#aca9038b39066997a03ed2339dc5cb4f4">phi0</a> + p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a3518464a4273c11af4d2612e8d0df64c">dir</a> * alpha * M_PI;</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                        <span class="comment">// Z Thickness Calculation</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                        <span class="comment">// DeltaZ depends on Bundle Width and Helix slope.</span></div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                        <span class="keywordtype">double</span> deltaZ = (<a class="code hl_variable" href="namespaceGS.html#a9048f2ada034f9bc98cdda67297a59e9">BUNDLE_WIDTH</a> / p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a24b7f71a33f528f16db9ee2cfee92b58">r</a>) * (<a class="code hl_variable" href="namespaceGS.html#ab022c408929c784364ab471d7dc3293b">L_HALF</a> / M_PI);</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                        out.push_back({ zi, p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a24b7f71a33f528f16db9ee2cfee92b58">r</a> * std::cos(ph),</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                            p1.<a class="code hl_variable" href="structGS_1_1FiberProp.html#a24b7f71a33f528f16db9ee2cfee92b58">r</a> * std::sin(ph), p1.cylinderId, deltaZ });</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>                    }</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                }</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>            }</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        }</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    }</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keywordflow">return</span> out;</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>}</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                    <span class="keywordtype">double</span> alpha = (dphi0 + 2.0 * k * M_PI) / (ddir * M_PI);</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                    <span class="keywordflow">if</span>(alpha &gt;= 0.0 &amp;&amp; alpha &lt;= 1.0)</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                    {</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                        <span class="keywordtype">double</span> zi = alpha * (2.0 * <a class="code hl_variable" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a>) - <a class="code hl_variable" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a>;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                        <span class="keywordtype">double</span> ph = p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#afa00e6e01dd69010ce00d257bb559fb0">phi0</a> + p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#a87d35df8606e365f973ba63b0e387fa9">dir</a> * alpha * M_PI;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                        <span class="comment">// Z Thickness Calculation</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                        <span class="comment">// DeltaZ depends on Bundle Width and Helix slope.</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                        <span class="keywordtype">double</span> deltaZ = (<a class="code hl_variable" href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">BUNDLE_WIDTH</a> / p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#adf785c847c6a6593f81de3382c4333d5">r</a>) * (<a class="code hl_variable" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a> / M_PI);</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>                        out.push_back({ zi, p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#adf785c847c6a6593f81de3382c4333d5">r</a> * std::cos(ph),</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                            p1.<a class="code hl_variable" href="structCHeT_1_1Config_1_1FiberProp.html#adf785c847c6a6593f81de3382c4333d5">r</a> * std::sin(ph), p1.cylinderId, deltaZ });</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                    }</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                }</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            }</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>        }</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    }</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="keywordflow">return</span> out;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>}</div>
 </div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="comment">// --- Debug / Helper Functions Implementation ---</span></div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
-<div class="foldopen" id="foldopen00211" data-start="{" data-end="}">
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno"><a class="line" href="namespaceGS.html#a14c329d37bf8bdfafe31f470261b8651">  211</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceGS.html#a14c329d37bf8bdfafe31f470261b8651">GetGlobalIdFromGeometry</a>(<span class="keywordtype">int</span> cyl_id, <span class="keywordtype">int</span> layer_id, <span class="keywordtype">int</span> layer_idx)</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>{</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">GetCylinders</a>();</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="keywordtype">int</span> global_offset = 0;</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    {</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        <span class="keywordflow">if</span>(cyl.id == cyl_id)</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        {</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            <span class="comment">// Check limits</span></div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            <span class="keywordtype">int</span> limit</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                = (layer_id == 0) ? cyl.inner.nBundles : cyl.outer.nBundles;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>            <span class="keywordflow">if</span>(layer_idx &lt; 0 || layer_idx &gt;= limit)</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>            {</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                std::cerr &lt;&lt; <span class="stringliteral">&quot; [ERROR] Index &quot;</span> &lt;&lt; layer_idx</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                          &lt;&lt; <span class="stringliteral">&quot; out of range for Cylinder &quot;</span> &lt;&lt; cyl_id</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                          &lt;&lt; <span class="stringliteral">&quot; Layer &quot;</span> &lt;&lt; layer_id &lt;&lt; <span class="stringliteral">&quot;!\n&quot;</span>;</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>            }</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            <span class="comment">// Calculate ID: Offset + Local Base + Index</span></div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            <span class="keywordtype">int</span> local_base = (layer_id == 0) ? 0 : cyl.inner.nBundles;</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            <span class="keywordflow">return</span> global_offset + local_base + layer_idx;</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        }</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        <span class="comment">// Accumulate offset if not current cylinder</span></div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        global_offset += (cyl.inner.nBundles + cyl.outer.nBundles);</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    }</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <span class="keywordflow">return</span> -1; <span class="comment">// Cylinder not found</span></div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>}</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="comment">// --- Debug / Helper Functions Implementation ---</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
+<div class="foldopen" id="foldopen00213" data-start="{" data-end="}">
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#abb31c82fe22c2e8933b164fa63c6f76f">  213</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#abb31c82fe22c2e8933b164fa63c6f76f">GetGlobalIdFromGeometry</a>(<span class="keywordtype">int</span> cyl_id, <span class="keywordtype">int</span> layer_id, <span class="keywordtype">int</span> layer_idx)</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>{</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">GetCylinders</a>();</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <span class="keywordtype">int</span> global_offset = 0;</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    {</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        <span class="keywordflow">if</span>(cyl.id == cyl_id)</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        {</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            <span class="comment">// Check limits</span></div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>            <span class="keywordtype">int</span> limit</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                = (layer_id == 0) ? cyl.inner.nBundles : cyl.outer.nBundles;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>            <span class="keywordflow">if</span>(layer_idx &lt; 0 || layer_idx &gt;= limit)</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                std::cerr &lt;&lt; <span class="stringliteral">&quot; [ERROR] Index &quot;</span> &lt;&lt; layer_idx</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                          &lt;&lt; <span class="stringliteral">&quot; out of range for Cylinder &quot;</span> &lt;&lt; cyl_id</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                          &lt;&lt; <span class="stringliteral">&quot; Layer &quot;</span> &lt;&lt; layer_id &lt;&lt; <span class="stringliteral">&quot;!\n&quot;</span>;</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            }</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            <span class="comment">// Calculate ID: Offset + Local Base + Index</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            <span class="keywordtype">int</span> local_base = (layer_id == 0) ? 0 : cyl.inner.nBundles;</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            <span class="keywordflow">return</span> global_offset + local_base + layer_idx;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        }</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="comment">// Accumulate offset if not current cylinder</span></div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        global_offset += (cyl.inner.nBundles + cyl.outer.nBundles);</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    }</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <span class="keywordflow">return</span> -1; <span class="comment">// Cylinder not found</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>}</div>
 </div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="foldopen" id="foldopen00242" data-start="{" data-end="}">
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno"><a class="line" href="namespaceGS.html#a54b2f6609ea9324340d7870e391c7db1">  242</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespaceGS.html#a54b2f6609ea9324340d7870e391c7db1">PrintBundleMapping</a>(<span class="keywordtype">int</span> global_id)</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>{</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    <span class="keywordflow">if</span>(global_id &lt; 0)</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    std::cout &lt;&lt; <span class="stringliteral">&quot;\n &gt;&gt;&gt; INFO BUNDLE ID: &quot;</span> &lt;&lt; global_id &lt;&lt; <span class="stringliteral">&quot; &lt;&lt;&lt;\n&quot;</span>;</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
+<div class="foldopen" id="foldopen00244" data-start="{" data-end="}">
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#abf1c6757d6831a9dd2e43d304bf417bb">  244</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#abf1c6757d6831a9dd2e43d304bf417bb">PrintBundleMapping</a>(<span class="keywordtype">int</span> global_id)</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>{</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="keywordflow">if</span>(global_id &lt; 0)</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="comment">// A. Check Hardware Mapping</span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    <span class="keywordtype">bool</span> found_hw = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keyword">const</span> &amp;[board, map] : BOARD_MAPS)</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    {</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <span class="keywordtype">int</span> off = <a class="code hl_function" href="namespaceGS.html#a22df113f553dbbd60ac0f860d4188a4a">GetBoardGlobalOffset</a>(board);</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>        <span class="keywordflow">if</span>(off &lt; 0)</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>            <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        <span class="comment">// Reverse lookup: value == global_id - offset</span></div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        <span class="keywordtype">int</span> target_local = global_id - off;</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keyword">const</span> &amp;[chan, val] : map)</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        {</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>            <span class="keywordflow">if</span>(val == target_local)</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            {</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                std::cout &lt;&lt; <span class="stringliteral">&quot; [HARDWARE] Board: &quot;</span> &lt;&lt; board</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                          &lt;&lt; <span class="stringliteral">&quot; | Channel: &quot;</span> &lt;&lt; chan &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                found_hw = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>            }</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        }</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        <span class="keywordflow">if</span>(found_hw)</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    }</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keywordflow">if</span>(!found_hw)</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; [HARDWARE] Not mapped on any board.\n&quot;</span>;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="comment">// B. Check Geometry Mapping</span></div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">GetCylinders</a>();</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keywordtype">int</span> current_offset = 0;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keywordtype">bool</span> found_geo = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    {</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        <span class="keywordtype">int</span> tot = cyl.inner.nBundles + cyl.outer.nBundles;</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <span class="keywordflow">if</span>(global_id &gt;= current_offset &amp;&amp; global_id &lt; current_offset + tot)</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        {</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>            <span class="keywordtype">int</span> local = global_id - current_offset;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>            <span class="keywordtype">bool</span> isInner = (local &lt; cyl.inner.nBundles);</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>            <span class="keywordtype">int</span> layerIdx = isInner ? local : (local - cyl.inner.nBundles);</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>            std::cout &lt;&lt; <span class="stringliteral">&quot; [GEOMETRY] Cylinder: &quot;</span> &lt;&lt; cyl.id</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>                      &lt;&lt; <span class="stringliteral">&quot; | Layer: &quot;</span> &lt;&lt; (isInner ? <span class="stringliteral">&quot;INNER&quot;</span> : <span class="stringliteral">&quot;OUTER&quot;</span>)</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                      &lt;&lt; <span class="stringliteral">&quot; | Index: &quot;</span> &lt;&lt; layerIdx &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>            found_geo = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        }</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        current_offset += tot;</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    }</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <span class="keywordflow">if</span>(!found_geo)</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; [GEOMETRY] ID out of geometric range.\n&quot;</span>;</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>}</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    std::cout &lt;&lt; <span class="stringliteral">&quot;\n &gt;&gt;&gt; INFO BUNDLE ID: &quot;</span> &lt;&lt; global_id &lt;&lt; <span class="stringliteral">&quot; &lt;&lt;&lt;\n&quot;</span>;</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="comment">// A. Check Hardware Mapping</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    <span class="keywordtype">bool</span> found_hw = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keyword">const</span> &amp;[board, map] : BOARD_MAPS)</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    {</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordtype">int</span> off = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">GetBoardGlobalOffset</a>(board);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keywordflow">if</span>(off &lt; 0)</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="comment">// Reverse lookup: value == global_id - offset</span></div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keywordtype">int</span> target_local = global_id - off;</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keyword">const</span> &amp;[chan, val] : map)</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        {</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            <span class="keywordflow">if</span>(val == target_local)</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            {</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                std::cout &lt;&lt; <span class="stringliteral">&quot; [HARDWARE] Board: &quot;</span> &lt;&lt; board</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                          &lt;&lt; <span class="stringliteral">&quot; | Channel: &quot;</span> &lt;&lt; chan &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                found_hw = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            }</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        }</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="keywordflow">if</span>(found_hw)</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    }</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keywordflow">if</span>(!found_hw)</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; [HARDWARE] Not mapped on any board.\n&quot;</span>;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="comment">// B. Check Geometry Mapping</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keyword">const</span> <span class="keyword">auto</span> &amp;cylinders = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">GetCylinders</a>();</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keywordtype">int</span> current_offset = 0;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordtype">bool</span> found_geo = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span> </div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    <span class="keywordflow">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;cyl : cylinders)</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    {</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        <span class="keywordtype">int</span> tot = cyl.inner.nBundles + cyl.outer.nBundles;</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        <span class="keywordflow">if</span>(global_id &gt;= current_offset &amp;&amp; global_id &lt; current_offset + tot)</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        {</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>            <span class="keywordtype">int</span> local = global_id - current_offset;</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>            <span class="keywordtype">bool</span> isInner = (local &lt; cyl.inner.nBundles);</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>            <span class="keywordtype">int</span> layerIdx = isInner ? local : (local - cyl.inner.nBundles);</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>            std::cout &lt;&lt; <span class="stringliteral">&quot; [GEOMETRY] Cylinder: &quot;</span> &lt;&lt; cyl.id</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                      &lt;&lt; <span class="stringliteral">&quot; | Layer: &quot;</span> &lt;&lt; (isInner ? <span class="stringliteral">&quot;INNER&quot;</span> : <span class="stringliteral">&quot;OUTER&quot;</span>)</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                      &lt;&lt; <span class="stringliteral">&quot; | Index: &quot;</span> &lt;&lt; layerIdx &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>            found_geo = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        }</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        current_offset += tot;</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    }</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    <span class="keywordflow">if</span>(!found_geo)</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; [GEOMETRY] ID out of geometric range.\n&quot;</span>;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>}</div>
 </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
-<div class="foldopen" id="foldopen00303" data-start="{" data-end="}">
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno"><a class="line" href="namespaceGS.html#ab547718e4ad4dd7526343cd069a03701">  303</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespaceGS.html#ab547718e4ad4dd7526343cd069a03701">MapExplorer</a>()</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>{</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    <span class="keywordtype">int</span> mode;</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    <span class="keywordflow">while</span>(<span class="keyword">true</span>)</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    {</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>        std::cout &lt;&lt; <span class="stringliteral">&quot;\n-----------------------------------\n&quot;</span>;</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 1. Info from Global ID\n&quot;</span>;</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 2. Info from Board/Channel\n&quot;</span>;</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 3. Info from Geometry (Cyl, Lay, Idx)\n&quot;</span>;</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        std::cout</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>            &lt;&lt; <span class="stringliteral">&quot; 4. First bundle of Cylinder (N/A in this version)\n&quot;</span>; <span class="comment">// Placeholder</span></div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                                                                       <span class="comment">// based</span></div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                                                                       <span class="comment">// on</span></div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                                                                       <span class="comment">// original</span></div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                                                                       <span class="comment">// menu</span></div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                                                                       <span class="comment">// logic</span></div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 5. First bundle of Layer\n&quot;</span>;</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 0. Quit\n&quot;</span>;</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        std::cout &lt;&lt; <span class="stringliteral">&quot;Choice: &quot;</span>;</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        std::cin &gt;&gt; mode;</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        <span class="keywordflow">if</span>(!std::cin)</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>        { <span class="comment">// Handle non-integer input to avoid infinite loop</span></div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>            std::cin.clear();</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>            std::cin.ignore(10000, <span class="charliteral">&#39;\n&#39;</span>);</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>            <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        }</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        <span class="keywordflow">if</span>(mode == 0)</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keywordtype">int</span> target_id = -1;</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span> </div>
+<div class="foldopen" id="foldopen00305" data-start="{" data-end="}">
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno"><a class="line" href="namespaceCHeT_1_1Config.html#aada991d4dc6bfdd143a4f047656441fa">  305</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespaceCHeT_1_1Config.html#aada991d4dc6bfdd143a4f047656441fa">MapExplorer</a>()</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>{</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    <span class="keywordtype">int</span> mode;</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <span class="keywordflow">while</span>(<span class="keyword">true</span>)</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    {</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        std::cout &lt;&lt; <span class="stringliteral">&quot;\n-----------------------------------\n&quot;</span>;</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 1. Info from Global ID\n&quot;</span>;</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 2. Info from Board/Channel\n&quot;</span>;</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 3. Info from Geometry (Cyl, Lay, Idx)\n&quot;</span>;</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        std::cout</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>            &lt;&lt; <span class="stringliteral">&quot; 4. First bundle of Cylinder (N/A in this version)\n&quot;</span>; <span class="comment">// Placeholder</span></div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                                                                       <span class="comment">// based</span></div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                                                                       <span class="comment">// on</span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                                                                       <span class="comment">// original</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                                                                       <span class="comment">// menu</span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>                                                                       <span class="comment">// logic</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 5. First bundle of Layer\n&quot;</span>;</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        std::cout &lt;&lt; <span class="stringliteral">&quot; 0. Quit\n&quot;</span>;</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        std::cout &lt;&lt; <span class="stringliteral">&quot;Choice: &quot;</span>;</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        std::cin &gt;&gt; mode;</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span> </div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="keywordflow">if</span>(!std::cin)</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>        { <span class="comment">// Handle non-integer input to avoid infinite loop</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>            std::cin.clear();</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>            std::cin.ignore(10000, <span class="charliteral">&#39;\n&#39;</span>);</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        }</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        <span class="keywordflow">if</span>(mode == 0)</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>            <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keywordflow">if</span>(mode == 1)</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        {</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Global ID: &quot;</span>;</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>            std::cin &gt;&gt; target_id;</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        }</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(mode == 2)</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        {</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>            <span class="keywordtype">int</span> b, c;</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Board: &quot;</span>;</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            std::cin &gt;&gt; b;</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Chan: &quot;</span>;</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            std::cin &gt;&gt; c;</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>            target_id = <a class="code hl_function" href="namespaceGS.html#a10c74ba1fc8dbd88cdc7d6e69df5b6a5">GetGlobalBundleId</a>(b, c);</div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        }</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(mode &gt;= 3 &amp;&amp; mode &lt;= 5)</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>        {</div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>            <span class="keywordtype">int</span> c, l = 0, i = 0;</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Cylinder ID: &quot;</span>;</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>            std::cin &gt;&gt; c;</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>            <span class="keywordflow">if</span>(mode == 3 || mode == 5)</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>            {</div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>                std::cout &lt;&lt; <span class="stringliteral">&quot;Layer (0=In, 1=Out): &quot;</span>;</div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>                std::cin &gt;&gt; l;</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>            }</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>            <span class="keywordflow">if</span>(mode == 3)</div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>            {</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>                std::cout &lt;&lt; <span class="stringliteral">&quot;Index: &quot;</span>;</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                std::cin &gt;&gt; i;</div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>            }</div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>            <span class="comment">// Use the geometry helper</span></div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>            target_id = <a class="code hl_function" href="namespaceGS.html#a14c329d37bf8bdfafe31f470261b8651">GetGlobalIdFromGeometry</a>(c, l, i);</div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        }</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        <span class="comment">// Print result</span></div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>        <span class="keywordflow">if</span>(target_id != -1)</div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>            <a class="code hl_function" href="namespaceGS.html#a54b2f6609ea9324340d7870e391c7db1">PrintBundleMapping</a>(target_id);</div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>            std::cout &lt;&lt; <span class="stringliteral">&quot; -&gt; Mapping not found or wrong parameters.\n&quot;</span>;</div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>    }</div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>}</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keywordtype">int</span> target_id = -1;</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>        <span class="keywordflow">if</span>(mode == 1)</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        {</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Global ID: &quot;</span>;</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>            std::cin &gt;&gt; target_id;</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        }</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(mode == 2)</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        {</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            <span class="keywordtype">int</span> b, c;</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Board: &quot;</span>;</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            std::cin &gt;&gt; b;</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Chan: &quot;</span>;</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>            std::cin &gt;&gt; c;</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>            target_id = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#aa9666537ba61550cc6d8d4200d5229f8">GetGlobalBundleId</a>(b, c);</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>        }</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(mode &gt;= 3 &amp;&amp; mode &lt;= 5)</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>        {</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>            <span class="keywordtype">int</span> c, l = 0, i = 0;</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Cylinder ID: &quot;</span>;</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>            std::cin &gt;&gt; c;</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>            <span class="keywordflow">if</span>(mode == 3 || mode == 5)</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>            {</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>                std::cout &lt;&lt; <span class="stringliteral">&quot;Layer (0=In, 1=Out): &quot;</span>;</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>                std::cin &gt;&gt; l;</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>            }</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>            <span class="keywordflow">if</span>(mode == 3)</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>            {</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>                std::cout &lt;&lt; <span class="stringliteral">&quot;Index: &quot;</span>;</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                std::cin &gt;&gt; i;</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>            }</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>            <span class="comment">// Use the geometry helper</span></div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>            target_id = <a class="code hl_function" href="namespaceCHeT_1_1Config.html#abb31c82fe22c2e8933b164fa63c6f76f">GetGlobalIdFromGeometry</a>(c, l, i);</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        }</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>        <span class="comment">// Print result</span></div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <span class="keywordflow">if</span>(target_id != -1)</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>            <a class="code hl_function" href="namespaceCHeT_1_1Config.html#abf1c6757d6831a9dd2e43d304bf417bb">PrintBundleMapping</a>(target_id);</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>            std::cout &lt;&lt; <span class="stringliteral">&quot; -&gt; Mapping not found or wrong parameters.\n&quot;</span>;</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>    }</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>}</div>
 </div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span> </div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>} <span class="comment">// namespace GS</span></div>
-<div class="ttc" id="anamespaceGS_html"><div class="ttname"><a href="namespaceGS.html">GS</a></div><div class="ttdoc">Global Settings namespace containing configuration structures, physical constants,...</div></div>
-<div class="ttc" id="anamespaceGS_html_a0655291fb41703a2cf3b9fc8de4cfc16"><div class="ttname"><a href="namespaceGS.html#a0655291fb41703a2cf3b9fc8de4cfc16">GS::GetFiberProp</a></div><div class="ttdeci">FiberProp GetFiberProp(int b_id)</div><div class="ttdoc">Retrieves fiber properties given a global bundle ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00106">CHeTGlobalSettings.cc:106</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a10c74ba1fc8dbd88cdc7d6e69df5b6a5"><div class="ttname"><a href="namespaceGS.html#a10c74ba1fc8dbd88cdc7d6e69df5b6a5">GS::GetGlobalBundleId</a></div><div class="ttdeci">int GetGlobalBundleId(int board_id, int channel_id)</div><div class="ttdoc">Converts Hardware Board/Channel to Global Bundle ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00139">CHeTGlobalSettings.cc:139</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a13035038ab64eb0f6451785caaee739c"><div class="ttname"><a href="namespaceGS.html#a13035038ab64eb0f6451785caaee739c">GS::FindIntersections</a></div><div class="ttdeci">std::vector&lt; BundlesIntersection &gt; FindIntersections(const std::vector&lt; int &gt; &amp;hit_ids)</div><div class="ttdoc">Finds 3D intersections between a list of hit bundles.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00159">CHeTGlobalSettings.cc:159</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a14c329d37bf8bdfafe31f470261b8651"><div class="ttname"><a href="namespaceGS.html#a14c329d37bf8bdfafe31f470261b8651">GS::GetGlobalIdFromGeometry</a></div><div class="ttdeci">int GetGlobalIdFromGeometry(int cyl_id, int layer_id, int layer_idx)</div><div class="ttdoc">Helper: Converts Geometry (Cyl, Layer, Index) to Global ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00211">CHeTGlobalSettings.cc:211</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a22df113f553dbbd60ac0f860d4188a4a"><div class="ttname"><a href="namespaceGS.html#a22df113f553dbbd60ac0f860d4188a4a">GS::GetBoardGlobalOffset</a></div><div class="ttdeci">int GetBoardGlobalOffset(int board_id)</div><div class="ttdoc">Returns the global offset (bundle count) for a specific board.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00074">CHeTGlobalSettings.cc:74</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a54b2f6609ea9324340d7870e391c7db1"><div class="ttname"><a href="namespaceGS.html#a54b2f6609ea9324340d7870e391c7db1">GS::PrintBundleMapping</a></div><div class="ttdeci">void PrintBundleMapping(int global_id)</div><div class="ttdoc">Helper: Prints mapping details for a given Global ID to stdout.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00242">CHeTGlobalSettings.cc:242</a></div></div>
-<div class="ttc" id="anamespaceGS_html_a9048f2ada034f9bc98cdda67297a59e9"><div class="ttname"><a href="namespaceGS.html#a9048f2ada034f9bc98cdda67297a59e9">GS::BUNDLE_WIDTH</a></div><div class="ttdeci">constexpr double BUNDLE_WIDTH</div><div class="ttdoc">Physical width of a bundle [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00072">CHeTGlobalSettings.hh:72</a></div></div>
-<div class="ttc" id="anamespaceGS_html_aa8432ae6b81647a4002401ffaaa24d4b"><div class="ttname"><a href="namespaceGS.html#aa8432ae6b81647a4002401ffaaa24d4b">GS::GetCylinders</a></div><div class="ttdeci">const std::vector&lt; CylinderConfig &gt; &amp; GetCylinders()</div><div class="ttdoc">Retrieves the configuration for all cylinders.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00080">CHeTGlobalSettings.cc:80</a></div></div>
-<div class="ttc" id="anamespaceGS_html_ab022c408929c784364ab471d7dc3293b"><div class="ttname"><a href="namespaceGS.html#ab022c408929c784364ab471d7dc3293b">GS::L_HALF</a></div><div class="ttdeci">constexpr double L_HALF</div><div class="ttdoc">Half-length of the detector [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00071">CHeTGlobalSettings.hh:71</a></div></div>
-<div class="ttc" id="anamespaceGS_html_ab547718e4ad4dd7526343cd069a03701"><div class="ttname"><a href="namespaceGS.html#ab547718e4ad4dd7526343cd069a03701">GS::MapExplorer</a></div><div class="ttdeci">void MapExplorer()</div><div class="ttdoc">Interactive CLI menu to explore the mapping.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00303">CHeTGlobalSettings.cc:303</a></div></div>
-<div class="ttc" id="anamespaceGS_html_af1a6aa8325748b7a67be16c9b2f48f2b"><div class="ttname"><a href="namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b">GS::wrap0_2pi</a></div><div class="ttdeci">double wrap0_2pi(double angle)</div><div class="ttdoc">Wraps an angle into the [0, 2*PI) range.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00098">CHeTGlobalSettings.cc:98</a></div></div>
-<div class="ttc" id="astructGS_1_1FiberProp_html"><div class="ttname"><a href="structGS_1_1FiberProp.html">GS::FiberProp</a></div><div class="ttdoc">Properties of a specific reconstructed fiber.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00046">CHeTGlobalSettings.hh:47</a></div></div>
-<div class="ttc" id="astructGS_1_1FiberProp_html_a24b7f71a33f528f16db9ee2cfee92b58"><div class="ttname"><a href="structGS_1_1FiberProp.html#a24b7f71a33f528f16db9ee2cfee92b58">GS::FiberProp::r</a></div><div class="ttdeci">double r</div><div class="ttdoc">Radius [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00050">CHeTGlobalSettings.hh:50</a></div></div>
-<div class="ttc" id="astructGS_1_1FiberProp_html_a3518464a4273c11af4d2612e8d0df64c"><div class="ttname"><a href="structGS_1_1FiberProp.html#a3518464a4273c11af4d2612e8d0df64c">GS::FiberProp::dir</a></div><div class="ttdeci">int dir</div><div class="ttdoc">Winding direction.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00052">CHeTGlobalSettings.hh:52</a></div></div>
-<div class="ttc" id="astructGS_1_1FiberProp_html_a845f71933b0f65c5f9169d05c35901be"><div class="ttname"><a href="structGS_1_1FiberProp.html#a845f71933b0f65c5f9169d05c35901be">GS::FiberProp::layerId</a></div><div class="ttdeci">int layerId</div><div class="ttdoc">0 for inner, 1 for outer</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00049">CHeTGlobalSettings.hh:49</a></div></div>
-<div class="ttc" id="astructGS_1_1FiberProp_html_aca9038b39066997a03ed2339dc5cb4f4"><div class="ttname"><a href="structGS_1_1FiberProp.html#aca9038b39066997a03ed2339dc5cb4f4">GS::FiberProp::phi0</a></div><div class="ttdeci">double phi0</div><div class="ttdoc">Initial angle [rad].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00051">CHeTGlobalSettings.hh:51</a></div></div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>} <span class="comment">// namespace Config</span></div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>} <span class="comment">// namespace CHeT</span></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a11d377869a06d5306624acef3ac691b7"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a11d377869a06d5306624acef3ac691b7">CHeT::Config::GetFiberProp</a></div><div class="ttdeci">FiberProp GetFiberProp(int b_id)</div><div class="ttdoc">Retrieves fiber properties given a global bundle ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00108">CHeTGlobalSettings.cc:108</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a31aae658900b9d336ce1430dd92bd01b"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">CHeT::Config::GetBoardGlobalOffset</a></div><div class="ttdeci">int GetBoardGlobalOffset(int board_id)</div><div class="ttdoc">Returns the global offset (bundle count) for a specific board.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00076">CHeTGlobalSettings.cc:76</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a4c1c72a1efea202187c7759e7b137914"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a4c1c72a1efea202187c7759e7b137914">CHeT::Config::FindIntersections</a></div><div class="ttdeci">std::vector&lt; BundlesIntersection &gt; FindIntersections(const std::vector&lt; int &gt; &amp;hit_ids)</div><div class="ttdoc">Finds 3D intersections between a list of hit bundles.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00161">CHeTGlobalSettings.cc:161</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a596fae75794d6fb7fe46b28b85e32f5f"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">CHeT::Config::BUNDLE_WIDTH</a></div><div class="ttdeci">constexpr double BUNDLE_WIDTH</div><div class="ttdoc">Physical width of a bundle [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00075">CHeTGlobalSettings.hh:75</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a9ee050b0cfdeb6c81dbf62c26f56eb9d"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">CHeT::Config::wrap0_2pi</a></div><div class="ttdeci">double wrap0_2pi(double angle)</div><div class="ttdoc">Wraps an angle into the [0, 2*PI) range.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00100">CHeTGlobalSettings.cc:100</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_aa9666537ba61550cc6d8d4200d5229f8"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#aa9666537ba61550cc6d8d4200d5229f8">CHeT::Config::GetGlobalBundleId</a></div><div class="ttdeci">int GetGlobalBundleId(int board_id, int channel_id)</div><div class="ttdoc">Converts Hardware Board/Channel to Global Bundle ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00141">CHeTGlobalSettings.cc:141</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_aada991d4dc6bfdd143a4f047656441fa"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#aada991d4dc6bfdd143a4f047656441fa">CHeT::Config::MapExplorer</a></div><div class="ttdeci">void MapExplorer()</div><div class="ttdoc">Interactive CLI menu to explore the mapping.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00305">CHeTGlobalSettings.cc:305</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_ab595b71f5e0a8af04fc3a372bd66210e"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">CHeT::Config::GetCylinders</a></div><div class="ttdeci">const std::vector&lt; CylinderConfig &gt; &amp; GetCylinders()</div><div class="ttdoc">Retrieves the configuration for all cylinders.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00082">CHeTGlobalSettings.cc:82</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_abb31c82fe22c2e8933b164fa63c6f76f"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#abb31c82fe22c2e8933b164fa63c6f76f">CHeT::Config::GetGlobalIdFromGeometry</a></div><div class="ttdeci">int GetGlobalIdFromGeometry(int cyl_id, int layer_id, int layer_idx)</div><div class="ttdoc">Helper: Converts Geometry (Cyl, Layer, Index) to Global ID.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00213">CHeTGlobalSettings.cc:213</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_abf1c6757d6831a9dd2e43d304bf417bb"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#abf1c6757d6831a9dd2e43d304bf417bb">CHeT::Config::PrintBundleMapping</a></div><div class="ttdeci">void PrintBundleMapping(int global_id)</div><div class="ttdoc">Helper: Prints mapping details for a given Global ID to stdout.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00244">CHeTGlobalSettings.cc:244</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_ada5d85110cb946893a8bbeed11ab01e5"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">CHeT::Config::L_HALF</a></div><div class="ttdeci">constexpr double L_HALF</div><div class="ttdoc">Half-length of the detector [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00074">CHeTGlobalSettings.hh:74</a></div></div>
+<div class="ttc" id="astructCHeT_1_1Config_1_1FiberProp_html"><div class="ttname"><a href="structCHeT_1_1Config_1_1FiberProp.html">CHeT::Config::FiberProp</a></div><div class="ttdoc">Properties of a specific reconstructed fiber.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00049">CHeTGlobalSettings.hh:50</a></div></div>
+<div class="ttc" id="astructCHeT_1_1Config_1_1FiberProp_html_a47de4693d5966ab0063027789d040375"><div class="ttname"><a href="structCHeT_1_1Config_1_1FiberProp.html#a47de4693d5966ab0063027789d040375">CHeT::Config::FiberProp::layerId</a></div><div class="ttdeci">int layerId</div><div class="ttdoc">0 for inner, 1 for outer</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00052">CHeTGlobalSettings.hh:52</a></div></div>
+<div class="ttc" id="astructCHeT_1_1Config_1_1FiberProp_html_a87d35df8606e365f973ba63b0e387fa9"><div class="ttname"><a href="structCHeT_1_1Config_1_1FiberProp.html#a87d35df8606e365f973ba63b0e387fa9">CHeT::Config::FiberProp::dir</a></div><div class="ttdeci">int dir</div><div class="ttdoc">Winding direction.</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00055">CHeTGlobalSettings.hh:55</a></div></div>
+<div class="ttc" id="astructCHeT_1_1Config_1_1FiberProp_html_adf785c847c6a6593f81de3382c4333d5"><div class="ttname"><a href="structCHeT_1_1Config_1_1FiberProp.html#adf785c847c6a6593f81de3382c4333d5">CHeT::Config::FiberProp::r</a></div><div class="ttdeci">double r</div><div class="ttdoc">Radius [mm].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00053">CHeTGlobalSettings.hh:53</a></div></div>
+<div class="ttc" id="astructCHeT_1_1Config_1_1FiberProp_html_afa00e6e01dd69010ce00d257bb559fb0"><div class="ttname"><a href="structCHeT_1_1Config_1_1FiberProp.html#afa00e6e01dd69010ce00d257bb559fb0">CHeT::Config::FiberProp::phi0</a></div><div class="ttdeci">double phi0</div><div class="ttdoc">Initial angle [rad].</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8hh_source.html#l00054">CHeTGlobalSettings.hh:54</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

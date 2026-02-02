@@ -1,5 +1,0 @@
-<map id="GS::CylinderConfig" name="GS::CylinderConfig">
-<area shape="rect" id="Node000001" title="Configuration for a full cylinder (Inner + Outer layers)." alt="" coords="5,108,148,133"/>
-<area shape="rect" id="Node000002" href="$structGS_1_1LayerConfig.html" title="Configuration for a single fiber layer." alt="" coords="14,5,139,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,45,79,108,74,108,74,45"/>
-</map>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['wrap0_5f2pi_0',['wrap0_2pi',['../namespaceGS.html#af1a6aa8325748b7a67be16c9b2f48f2b',1,'GS']]]
+  ['setcuts_0',['SetCuts',['../classCHeT_1_1Data_1_1Reader.html#ae481cb0121a10c46fee38835fb161ff2',1,'CHeT::Data::Reader']]],
+  ['setsingleevent_1',['SetSingleEvent',['../classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2',1,'CHeT::Data::Reader']]]
 ];

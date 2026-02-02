@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['id_0',['id',['../structGS_1_1CylinderConfig.html#a1240ffa44292e179f2dfeb64e0ec7d99',1,'GS::CylinderConfig']]],
-  ['inner_1',['inner',['../structGS_1_1CylinderConfig.html#a1d7f1213b8abed985d4c1457f6e47ea5',1,'GS::CylinderConfig']]]
+  ['id_0',['id',['../structCHeT_1_1Config_1_1CylinderConfig.html#aad0a8edbf4fad8ad1e097f8a93d812dc',1,'CHeT::Config::CylinderConfig']]],
+  ['inner_1',['inner',['../structCHeT_1_1Config_1_1CylinderConfig.html#a5867ba78d19624823f9fc0e0e6bbd662',1,'CHeT::Config::CylinderConfig']]]
 ];

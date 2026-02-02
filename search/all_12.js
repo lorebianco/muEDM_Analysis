@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['z_0',['z',['../structGS_1_1BundlesIntersection.html#a5ab9a5fcb59d5a97cc75489c56c1f6b0',1,'GS::BundlesIntersection::z'],['../structCV_1_1VisPoint3D.html#a5e666b42717adc98154ddaa657fc1b3b',1,'CV::VisPoint3D::z']]],
-  ['z0_1',['z0',['../structCV_1_1VisLineTrack.html#a9def6db7f7b629a894d7579616cbe809',1,'CV::VisLineTrack']]]
+  ['z_0',['z',['../structCHeT_1_1Config_1_1BundlesIntersection.html#af606007a9aab2328a01e63f93374bcca',1,'CHeT::Config::BundlesIntersection::z'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#ac38428dfe0c4b9ab092afd3523a74402',1,'CHeT::Vis::VisPoint3D::z']]],
+  ['z0_1',['z0',['../structCHeT_1_1Vis_1_1VisLineTrack.html#ab941d250a6117bc4be8c8b289bd97ca9',1,'CHeT::Vis::VisLineTrack']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['dir_0',['dir',['../structGS_1_1FiberProp.html#a3518464a4273c11af4d2612e8d0df64c',1,'GS::FiberProp']]],
-  ['direction_1',['direction',['../structGS_1_1LayerConfig.html#aeae7f7ce61a98835216541e2a8faef36',1,'GS::LayerConfig']]]
+  ['dir_0',['dir',['../structCHeT_1_1Config_1_1FiberProp.html#a87d35df8606e365f973ba63b0e387fa9',1,'CHeT::Config::FiberProp']]],
+  ['direction_1',['direction',['../structCHeT_1_1Config_1_1LayerConfig.html#a4055575ec2de9e6c9545267070f09ca1',1,'CHeT::Config::LayerConfig']]]
 ];

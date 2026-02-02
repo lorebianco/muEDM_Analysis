@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y_0',['y',['../structGS_1_1BundlesIntersection.html#a1acd145001015b3d90442b2e71d2ca04',1,'GS::BundlesIntersection::y'],['../structCV_1_1VisPoint2D.html#ab566eb7429f8650aab8eddb8809f9c09',1,'CV::VisPoint2D::y']]]
+  ['y_0',['y',['../structCHeT_1_1Config_1_1BundlesIntersection.html#a0abac62a5b95d51987c5f4c4350abb45',1,'CHeT::Config::BundlesIntersection::y'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#aae5811ba0e54f0ca8ade11712c9ba3e9',1,'CHeT::Vis::VisPoint2D::y']]]
 ];

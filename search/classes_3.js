@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['layerconfig_0',['LayerConfig',['../structGS_1_1LayerConfig.html',1,'GS']]]
+  ['layerconfig_0',['LayerConfig',['../structCHeT_1_1Config_1_1LayerConfig.html',1,'CHeT::Config']]]
 ];

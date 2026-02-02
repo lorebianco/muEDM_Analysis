@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['color_0',['color',['../structGS_1_1LayerConfig.html#a49d07132c0b0610c26d1398ce8e9b0b3',1,'GS::LayerConfig::color'],['../structGS_1_1FiberProp.html#a233759c08c0a277e34b111aa04823a8f',1,'GS::FiberProp::color'],['../structCV_1_1VisLineTrack.html#ac946eaa5aaf1d6149bd6e7cd5782d711',1,'CV::VisLineTrack::color'],['../structCV_1_1VisPoint2D.html#a4a1a0ffb009595ae8d4dc85b00fc4ebd',1,'CV::VisPoint2D::color'],['../structCV_1_1VisPoint3D.html#a46d3fa637cbc7e5b8b26b2ae17397461',1,'CV::VisPoint3D::color']]],
-  ['cv_1',['CV',['../namespaceCV.html',1,'']]],
-  ['cylinderconfig_2',['CylinderConfig',['../structGS_1_1CylinderConfig.html',1,'GS']]],
-  ['cylinderid_3',['cylinderId',['../structGS_1_1BundlesIntersection.html#a585e8f3add7dc113ecb6f0f56c853954',1,'GS::BundlesIntersection']]]
+  ['chet_3a_3aconfig_0',['Config',['../namespaceCHeT_1_1Config.html',1,'CHeT']]],
+  ['chet_3a_3avis_1',['Vis',['../namespaceCHeT_1_1Vis.html',1,'CHeT']]],
+  ['color_2',['color',['../structCHeT_1_1Config_1_1LayerConfig.html#a47bbd0b59e3982280a7343838465b4b5',1,'CHeT::Config::LayerConfig::color'],['../structCHeT_1_1Config_1_1FiberProp.html#af9ceb03da146056a8def5eb7335fed48',1,'CHeT::Config::FiberProp::color'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#aef81c3124bd874ff4303f1d4fc8a2334',1,'CHeT::Vis::VisLineTrack::color'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#a3551290c3a3f35362d3c15abdd05ece8',1,'CHeT::Vis::VisPoint2D::color'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#a5098f0b2ec079ca80b16c3fefe90ca7f',1,'CHeT::Vis::VisPoint3D::color']]],
+  ['cylinderconfig_3',['CylinderConfig',['../structCHeT_1_1Config_1_1CylinderConfig.html',1,'CHeT::Config']]],
+  ['cylinderid_4',['cylinderId',['../structCHeT_1_1Config_1_1BundlesIntersection.html#a09c5bf17758079158fda602c29312c33',1,'CHeT::Config::BundlesIntersection']]]
 ];
