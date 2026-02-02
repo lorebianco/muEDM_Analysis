@@ -39,11 +39,13 @@ bool ClipLineToBox(double x0, double y0, double z0, double ux, double uy,
 
 } // anonymous namespace
 
-namespace CV
+namespace CHeT
+{
+namespace Vis
 {
 
 void Draw2D(const std::vector<int> &bundle_ids,
-    const std::vector<GS::BundlesIntersection> &inters,
+    const std::vector<CHeT::Config::BundlesIntersection> &inters,
     const std::vector<VisLineTrack> &tracks,
     const std::vector<VisPoint2D> &extraPoints)
 {
@@ -89,8 +91,8 @@ void Draw2D(const std::vector<int> &bundle_ids,
     // --- Draw Bundles ---
     for(int b_id : bundle_ids)
     {
-        GS::FiberProp p = GS::GetFiberProp(b_id);
-        double d_phi_w = (GS::BUNDLE_WIDTH / p.r) / 2.0;
+        CHeT::Config::FiberProp p = CHeT::Config::GetFiberProp(b_id);
+        double d_phi_w = (CHeT::Config::BUNDLE_WIDTH / p.r) / 2.0;
 
         std::vector<double> vz, vphi, vx, vy;
         vz.reserve(500);
@@ -101,8 +103,10 @@ void Draw2D(const std::vector<int> &bundle_ids,
         // Generate points along the fiber
         for(int i = 0; i < 500; ++i)
         {
-            double z = -GS::L_HALF + i * (2.0 * GS::L_HALF / 499.0);
-            double alpha = (z + GS::L_HALF) / (2.0 * GS::L_HALF);
+            double z = -CHeT::Config::L_HALF
+                + i * (2.0 * CHeT::Config::L_HALF / 499.0);
+            double alpha
+                = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
             double ph = p.phi0 + p.dir * alpha * M_PI;
             vz.push_back(z);
             vphi.push_back(ph);
@@ -130,10 +134,11 @@ void Draw2D(const std::vector<int> &bundle_ids,
         std::vector<double> sz, sf;
         for(size_t i = 0; i < 500; ++i)
         {
-            double cf = GS::wrap0_2pi(vphi[i]);
+            double cf = CHeT::Config::wrap0_2pi(vphi[i]);
 
             // Check for wrap-around jump
-            if(i > 0 && std::abs(cf - GS::wrap0_2pi(vphi[i - 1])) > M_PI)
+            if(i > 0
+                && std::abs(cf - CHeT::Config::wrap0_2pi(vphi[i - 1])) > M_PI)
             {
                 // Draw current segment
                 TGraph *h = new TGraph();
@@ -247,18 +252,19 @@ void Draw2D(const std::vector<int> &bundle_ids,
     ax->ChangeLabel(5, -1, -1, -1, -1, -1, "2#pi");
 
     // 2. ZX and ZY
-    auto cyls = GS::GetCylinders();
+    auto cyls = CHeT::Config::GetCylinders();
 
     pad_zx->cd();
     pad_zx->SetGrid();
     mg_zx->Draw("A");
     mg_zx->SetTitle("Top View ZX; x [mm]; z [mm]");
     mg_zx->GetXaxis()->SetLimits(-40, 40);
-    mg_zx->GetYaxis()->SetRangeUser(-GS::L_HALF - 20, GS::L_HALF + 20);
+    mg_zx->GetYaxis()->SetRangeUser(
+        -CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
     for(auto &c : cyls)
     {
-        TBox *b = new TBox(
-            -c.inner.radius, -GS::L_HALF, c.inner.radius, GS::L_HALF);
+        TBox *b = new TBox(-c.inner.radius, -CHeT::Config::L_HALF,
+            c.inner.radius, CHeT::Config::L_HALF);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -268,12 +274,13 @@ void Draw2D(const std::vector<int> &bundle_ids,
     pad_zy->SetGrid();
     mg_zy->Draw("A");
     mg_zy->SetTitle("Lateral View ZY; z [mm]; y [mm]");
-    mg_zy->GetXaxis()->SetLimits(-GS::L_HALF - 20, GS::L_HALF + 20);
+    mg_zy->GetXaxis()->SetLimits(
+        -CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
     mg_zy->GetYaxis()->SetRangeUser(-40, 40);
     for(auto &c : cyls)
     {
-        TBox *b = new TBox(
-            -GS::L_HALF, -c.inner.radius, GS::L_HALF, c.inner.radius);
+        TBox *b = new TBox(-CHeT::Config::L_HALF, -c.inner.radius,
+            CHeT::Config::L_HALF, c.inner.radius);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -326,24 +333,28 @@ void Draw3D(const std::vector<int> &hit_ids,
     // --- Draw Skeleton (Inactive fibers) ---
     if(drawSkeleton)
     {
-        auto cylinders = GS::GetCylinders();
+        auto cylinders = CHeT::Config::GetCylinders();
         int b_global_idx = 0;
 
         for(const auto &cyl : cylinders)
         {
-            const GS::LayerConfig *layers[2] = { &cyl.inner, &cyl.outer };
+            const CHeT::Config::LayerConfig *layers[2]
+                = { &cyl.inner, &cyl.outer };
             for(int l = 0; l < 2; ++l)
             {
                 for(int b = 0; b < layers[l]->nBundles; ++b)
                 {
-                    GS::FiberProp p = GS::GetFiberProp(b_global_idx + b);
+                    CHeT::Config::FiberProp p
+                        = CHeT::Config::GetFiberProp(b_global_idx + b);
 
                     // Ghost fiber
                     TPolyLine3D *bg_f = new TPolyLine3D(10);
                     for(int i = 0; i < 10; ++i)
                     {
-                        double z = -GS::L_HALF + i * (2.0 * GS::L_HALF / 9.0);
-                        double a = (z + GS::L_HALF) / (2.0 * GS::L_HALF);
+                        double z = -CHeT::Config::L_HALF
+                            + i * (2.0 * CHeT::Config::L_HALF / 9.0);
+                        double a = (z + CHeT::Config::L_HALF)
+                            / (2.0 * CHeT::Config::L_HALF);
                         double ph = p.phi0 + p.dir * a * M_PI;
                         bg_f->SetPoint(
                             i, z, p.r * std::cos(ph), p.r * std::sin(ph));
@@ -361,13 +372,15 @@ void Draw3D(const std::vector<int> &hit_ids,
     {
         if(id < 0)
             continue;
-        GS::FiberProp p = GS::GetFiberProp(id);
+        CHeT::Config::FiberProp p = CHeT::Config::GetFiberProp(id);
 
         TPolyLine3D *fl = new TPolyLine3D(50); // More detailed for active ones
         for(int i = 0; i < 50; ++i)
         {
-            double z = -GS::L_HALF + i * (2.0 * GS::L_HALF / 49.0);
-            double a = (z + GS::L_HALF) / (2.0 * GS::L_HALF);
+            double z = -CHeT::Config::L_HALF
+                + i * (2.0 * CHeT::Config::L_HALF / 49.0);
+            double a
+                = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
             double ph = p.phi0 + p.dir * a * M_PI;
             fl->SetPoint(i, z, p.r * std::cos(ph), p.r * std::sin(ph));
         }
@@ -420,4 +433,5 @@ void Draw3D(const std::vector<int> &hit_ids,
     c_3d->Update();
 }
 
-} // namespace CV
+} // namespace Vis
+} // namespace CHeT

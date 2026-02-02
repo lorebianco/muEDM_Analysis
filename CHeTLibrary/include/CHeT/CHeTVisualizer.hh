@@ -27,12 +27,14 @@
 #include "CHeT/CHeTGlobalSettings.hh"
 
 /**
- * @namespace CV
- * @brief ChetVisualizer namespace.
+ * @namespace CHeT::Vis
+ * @brief CHeT Visualization namespace.
  * Contains tools for 2D and 3D visualization of the detector, tracks, and hits
  * using ROOT.
  */
-namespace CV
+namespace CHeT
+{
+namespace Vis
 {
 
 // --- Visualization Data Structures ---
@@ -125,12 +127,13 @@ struct VisPoint3D
  * Transverse view.
  *
  * @param bundle_ids Vector of global bundle IDs that fired.
- * @param inters Vector of intersections (usually from GS::FindIntersections).
+ * @param inters Vector of intersections (usually from
+ * CHeT::Config::FindIntersections).
  * @param tracks Optional list of tracks to overlay.
  * @param extraPoints Optional list of extra 2D points to draw on the XY plane.
  */
 void Draw2D(const std::vector<int> &bundle_ids,
-    const std::vector<GS::BundlesIntersection> &inters,
+    const std::vector<CHeT::Config::BundlesIntersection> &inters,
     const std::vector<VisLineTrack> &tracks = {},
     const std::vector<VisPoint2D> &extraPoints = {});
 
@@ -147,6 +150,7 @@ void Draw3D(const std::vector<int> &hit_ids,
     const std::vector<VisLineTrack> &tracks = {},
     const std::vector<VisPoint3D> &points = {}, bool drawSkeleton = true);
 
-} // namespace CV
+} // namespace Vis
+} // namespace CHeT
 
 #endif // CHETVISUALIZER_HH

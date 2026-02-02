@@ -5,7 +5,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace GS
+namespace CHeT
+{
+namespace Config
 {
 
 // --- Internal Data Structures (Hidden from Header) ---
@@ -374,4 +376,5 @@ void MapExplorer()
     }
 }
 
-} // namespace GS
+} // namespace Config
+} // namespace CHeT

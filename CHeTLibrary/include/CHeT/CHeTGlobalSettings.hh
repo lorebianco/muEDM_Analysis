@@ -8,12 +8,15 @@
 #include <string>
 #include <vector>
 
+namespace CHeT
+{
+
 /**
- * @namespace GS
+ * @namespace CHeT::Config
  * @brief Global Settings namespace containing configuration structures,
  * physical constants, and utility functions for the detector geometry.
  */
-namespace GS
+namespace Config
 {
 
 // --- Configuration Structures ---
@@ -138,6 +141,8 @@ void PrintBundleMapping(int global_id);
  */
 void MapExplorer();
 
-} // namespace GS
+} // namespace Config
+
+} // namespace CHeT
 
 #endif // CHETGLOBALSETTINGS_HH

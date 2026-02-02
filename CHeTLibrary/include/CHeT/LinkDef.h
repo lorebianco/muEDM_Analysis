@@ -5,24 +5,31 @@
 #pragma link off all functions;
 #pragma link C++ nestedclasses;
 
-// Activates namespace GS (GlobalSettings)
-#pragma link C++ namespace GS;
-#pragma link C++ class GS::LayerConfig + ;
-#pragma link C++ class GS::CylinderConfig + ;
-#pragma link C++ class GS::FiberProp + ;
-#pragma link C++ class GS::BundlesIntersection + ;
-#pragma link C++ function GS::GetCylinders;
-#pragma link C++ function GS::GetFiberProp;
-#pragma link C++ function GS::FindIntersections;
-#pragma link C++ function GS::MapExplorer;
-#pragma link C++ function GS::PrintBundleMapping;
+// Activates namespace CHeT
+#pragma link C++ namespace CHeT;
 
-// Activates namespace CV
-#pragma link C++ namespace CV;
-#pragma link C++ class CV::VisLineTrack + ;
-#pragma link C++ class CV::VisPoint2D + ;
-#pragma link C++ class CV::VisPoint3D + ;
-#pragma link C++ function CV::Draw2D;
-#pragma link C++ function CV::Draw3D;
+// Activates namespace CHeT::Config (ex GS)
+#pragma link C++ namespace CHeT::Config;
+#pragma link C++ class CHeT::Config::LayerConfig + ;
+#pragma link C++ class CHeT::Config::CylinderConfig + ;
+#pragma link C++ class CHeT::Config::FiberProp + ;
+#pragma link C++ class CHeT::Config::BundlesIntersection + ;
+#pragma link C++ function CHeT::Config::GetCylinders;
+#pragma link C++ function CHeT::Config::GetFiberProp;
+#pragma link C++ function CHeT::Config::FindIntersections;
+#pragma link C++ function CHeT::Config::MapExplorer;
+#pragma link C++ function CHeT::Config::PrintBundleMapping;
+
+// Activates namespace CHeT::Vis (ex CV)
+#pragma link C++ namespace CHeT::Vis;
+#pragma link C++ class CHeT::Vis::VisLineTrack + ;
+#pragma link C++ class CHeT::Vis::VisPoint2D + ;
+#pragma link C++ class CHeT::Vis::VisPoint3D + ;
+#pragma link C++ function CHeT::Vis::Draw2D;
+#pragma link C++ function CHeT::Vis::Draw3D;
+
+// Activates namespace CHeT::Data (contains Reader)
+#pragma link C++ namespace CHeT::Data;
+#pragma link C++ class CHeT::Data::Reader + ;
 
 #endif
