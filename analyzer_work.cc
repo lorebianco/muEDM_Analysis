@@ -1,5 +1,5 @@
 /**
- * UNIFIED ANALYSIS & SIMULATION FRAMEWORK
+ * UNIFIED ANALYSIS & SIMULATION SOFTWARE
  *
  * Contains:
  * 1. Data Structures (Tracks, Hits, Fits)
@@ -14,10 +14,17 @@
 #include <filesystem>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
+#include <sys/select.h>
+#include <type_traits>
+#include <unistd.h>
 #include <vector>
 
 // ROOT Includes
+#include <Rtypes.h>
+#include <RtypesCore.h>
+
 #include <Math/Factory.h>
 #include <Math/Functor.h>
 #include <Math/Minimizer.h>
@@ -25,12 +32,13 @@
 #include <ROOT/RDFHelpers.hxx>
 #include <ROOT/RDataFrame.hxx>
 #include <ROOT/RVec.hxx>
-#include <Rtypes.h>
-#include <RtypesCore.h>
 #include <TCanvas.h>
+#include <TDecompSVD.h>
+#include <TDirectory.h>
 #include <TEfficiency.h>
 #include <TF1.h>
 #include <TFitResult.h>
+#include <TGraph.h>
 #include <TGraphAsymmErrors.h>
 #include <TH1D.h>
 #include <TH2D.h>
@@ -38,13 +46,16 @@
 #include <TLatex.h>
 #include <TLegend.h>
 #include <TLine.h>
+#include <TMarker.h>
 #include <TMath.h>
+#include <TMatrixD.h>
 #include <TPaveText.h>
 #include <TROOT.h>
 #include <TRandom.h>
 #include <TRandom3.h>
 #include <TStyle.h>
 #include <TSystem.h>
+#include <TVectorD.h>
 
 // Custom Includes
 #include "CHeT/CHeTGlobalSettings.hh"
@@ -62,7 +73,16 @@ using RVecUS = RVec<unsigned short>;
 using RVecUC = RVec<unsigned char>;
 
 // Debug
-Bool_t DEBUG_TOY = false;
+constexpr bool DEBUG_TOY = false;
+constexpr bool DEBUG_RUN = false;
+
+// Configurazione
+void SetOptimalConfig()
+{
+    // Config::SetOffsetExp(29. * TMath::DegToRad()); // 29 optimal
+    Config::SetDelta2(
+        Config::GetDelta2() + 4.5 * TMath::DegToRad()); // 4.5 optimal
+}
 
 // ==============================================================================
 // 1. DATA STRUCTURES
@@ -91,7 +111,7 @@ struct RecoTrack
 struct FitOutput
 {
     RecoTrack track;
-    std::vector<Vis::VisPoint3D> fittedPoints;
+    vector<Vis::VisPoint3D> fittedPoints;
 };
 
 // Struttura dati passata al funtore di minimizzazione
@@ -168,7 +188,7 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
     printf("Track Params: x0=%.2f, z0=%.2f, sx=%.4f, sz=%.4f\n", tr.x0, tr.z0,
         tr.sx, tr.sz);
 
-    const double L_SAFE = Config::L_HALF - 5.0;
+    const double L_SAFE = Config::L_HALF; // - 5.0;
     const double TOL_BUNDLE = 1.5;
 
     auto cylinders = Config::GetCylinders();
@@ -284,13 +304,14 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
 
                         if(hit_bundle)
                         {
-                            printf("         [SUCCESS] FOUND MATCH! Hit ID: %d "
+                            printf("         \033[1;32m[SUCCESS]\033[0m FOUND "
+                                   "MATCH! Hit ID: %d "
                                    "(Delta: %d)\n",
                                 found_id, found_id - best_bundle_id);
                         }
                         else
                         {
-                            printf("         \033[31m[FAIL]\033[0m EXPECTED "
+                            printf("         \033[1;31m[FAIL]\033[0m EXPECTED "
                                    "HIT NOT FOUND.\n");
                             printf("         (Hits in this event: ");
                             for(int h : hit_ids)
@@ -312,9 +333,170 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
     printf("************************************************************\n\n");
 }
 
+void InspectEventImpl(bool condition, const vector<int> &hit_ids,
+    const vector<Vis::VisLineTrack> &tracks, const string &msg)
+{
+    static bool stop_debug = false;
+    if(stop_debug || !condition)
+        return;
+
+    cout << "\n[DEBUG] " << msg << " | Hits: " << hit_ids.size() << endl;
+
+    // Disegna tutto
+    Vis::Draw3D(hit_ids, tracks, {}, true);
+
+    cout << "Press ENTER for next event, 'q' to stop debugging..." << endl;
+
+    while(true)
+    {
+        gSystem->ProcessEvents();
+
+        fd_set readfds;
+        FD_ZERO(&readfds);
+        FD_SET(STDIN_FILENO, &readfds);
+
+        struct timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 50000; // 50ms
+
+        int ready
+            = select(STDIN_FILENO + 1, &readfds, nullptr, nullptr, &timeout);
+        if(ready > 0)
+        {
+            char c = cin.get();
+            if(c == 'q' || c == 'Q')
+            {
+                stop_debug = true;
+                cout << "Debugging stopped. Processing remaining events..."
+                     << endl;
+                break;
+            }
+            if(c == '\n')
+                break;
+        }
+    }
+}
+
+/**
+ * @brief InspectEvent using Variadic Templates (C++17).
+ * Allows passing CosmicTrack, RecoTrack, and string messages in any order.
+ */
+template <typename... Args>
+void InspectEvent(bool condition, const vector<int> &hit_ids, Args &&...args)
+{
+    if(!condition)
+        return;
+
+    vector<Vis::VisLineTrack> tracks;
+    string msg = "Event Inspection"; // Default message
+
+    // Lambda to process each argument type
+    auto process = [&](auto &&arg)
+    {
+        using T = decay_t<decltype(arg)>;
+
+        if constexpr(is_same_v<T, CosmicTrack>)
+        {
+            // True Track: Yellow, Solid
+            tracks.emplace_back(
+                arg.x0, arg.y0, arg.z0, arg.ux, arg.uy, arg.uz, kYellow + 1, 3);
+        }
+        else if constexpr(is_same_v<T, RecoTrack>)
+        {
+            // Reco Track: Red, Dashed
+            if(arg.converged)
+            {
+                tracks.emplace_back(
+                    arg.x0, 0.0, arg.z0, arg.sx, 1.0, arg.sz, kRed, 2, 7, true);
+            }
+            else
+            {
+                msg += " [Fit Failed]";
+            }
+        }
+        else if constexpr(is_convertible_v<T, string>)
+        {
+            // Custom Message
+            msg = string(arg);
+        }
+    };
+
+    // Fold expression to iterate over all arguments
+    (process(std::forward<Args>(args)), ...);
+
+    InspectEventImpl(true, hit_ids, tracks, msg);
+}
+
 // ==============================================================================
 // 3. MATH & FITTING ENGINE (Minuit2 & Hough)
 // ==============================================================================
+
+// Da lavorare
+double Track3DNeg2LogL_DOCA(
+    const double *par, const FitData &data, bool usePrior)
+{
+    // Parametri della traccia
+    const double x0 = par[0];
+    const double sx = par[1];
+    const double z0 = par[2];
+    const double sz = par[3];
+
+    // Vettore direzione della traccia: v = (sx, 1, sz)
+    // Non serve normalizzarlo subito, lo faremo nel calcolo della distanza
+    const double vx = sx;
+    const double vy = 1.0;
+    const double vz = sz;
+    const double v2
+        = vx * vx + vy * vy + vz * vz; // Norma quadra del vettore direzione
+
+    const double sigma2 = 0.3;
+    const double sigmaL2 = 1e-6;
+
+    double n2ll = 0.0;
+    if(usePrior)
+        n2ll = 2.0 * log(1.0 + sx * sx + sz * sz);
+
+    for(size_t i = 0; i < data.props.size(); ++i)
+    {
+        // 1. Punto sulla fibra in base alla coordinata locale zi (parametro del
+        // fit)
+        const double zi_loc = par[4 + i];
+        const auto &p = data.props[i];
+
+        const double alpha = (zi_loc + Config::L_HALF) / (2.0 * Config::L_HALF);
+        const double phi_f = p.phi0 + p.dir * alpha * M_PI;
+
+        const double xf = p.r * cos(phi_f);
+        const double yf = p.r * sin(phi_f);
+        const double zf = zi_loc;
+
+        // 2. Calcolo della DOCA al quadrato tra il punto P=(xf, yf, zf)
+        //    e la retta Passante per P0=(x0, 0, z0) con direzione V=(sx, 1, sz)
+
+        // Vettore W = P_fibra - P0_traccia
+        const double wx = xf - x0;
+        const double wy = yf - 0.0;
+        const double wz = zf - z0;
+
+        // Prodotto scalare (W . V)
+        const double w_dot_v = wx * vx + wy * vy + wz * vz;
+
+        // Distanza al quadrato: DOCA^2 = |W|^2 - (W.V)^2 / |V|^2
+        const double w2 = wx * wx + wy * wy + wz * wz;
+        const double doca2 = w2 - (w_dot_v * w_dot_v) / v2;
+
+        // Aggiungiamo al log-likelihood (assumendo doca2 segua una gaussiana)
+        n2ll += doca2 / sigma2;
+
+        // 3. Penalty per sforamento lunghezza fisica della fibra
+        if(abs(zi_loc) > Config::L_HALF)
+        {
+            double diff = abs(zi_loc) - Config::L_HALF;
+            n2ll += (diff * diff) / sigmaL2;
+        }
+    }
+    return n2ll;
+}
 
 // Funzione Chi2 / LogLikelihood
 double Track3DNeg2LogL(const double *par, const FitData &data, bool usePrior)
@@ -323,7 +505,7 @@ double Track3DNeg2LogL(const double *par, const FitData &data, bool usePrior)
     const double sx = par[1];
     const double z0 = par[2];
     const double sz = par[3];
-    const double sigma2 = 0.3; // Risoluzione fibra (0.2mm / sqrt(12))^2 ~ 0.3
+    const double sigma2 = 0.3; // Risoluzione bundle (2mm / sqrt(12))^2 ~ 0.3
     const double sigmaL2 = 1e-6; // Penalty forte per hit fuori lunghezza fisica
 
     double n2ll = 0.0;
@@ -372,8 +554,8 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
     if(n_hits < 3)
         return { { 0, 0, 0, 0, -1.0, false }, {} };
 
-    ROOT::Math::Minimizer *min
-        = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad");
+    unique_ptr<ROOT::Math::Minimizer> min(
+        ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad"));
     min->SetPrintLevel(0); // 0 = Silent
 
     auto chi2_func = [&](const double *par)
@@ -400,6 +582,69 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
     FitOutput output;
     output.track = { res[0], res[2], res[1], res[3], chi2, conv };
 
+    if(DEBUG_RUN && conv && res[0] >= -17 && res[0] <= -16)
+    {
+        TCanvas *cContour = (TCanvas *)gROOT->FindObject("cContour");
+        if(!cContour)
+            cContour = new TCanvas("cContour", "Contour", 600, 400);
+        else
+            cContour->Clear();
+        cContour->cd();
+
+        if(conv)
+        {
+            // Esempio: Vogliamo scansionare il parametro 0 ("x0")
+            // Scan(indice_parametro, numero_punti, x_min, x_max)
+            // Se metti x_min=0 e x_max=0, usa +/- 2 sigma dall'errore trovato
+            unsigned int n_points = 150;
+            std::vector<double> x_coords(n_points);
+            std::vector<double> y_coords(n_points);
+
+            // Minuit2 esegue lo scan
+            bool scan_ok = min->Scan(
+                0, n_points, x_coords.data(), y_coords.data(), -30, 30);
+
+            if(scan_ok)
+            {
+                auto gScan
+                    = new TGraph(n_points, x_coords.data(), y_coords.data());
+                gScan->SetTitle("Scan of parameter x0;x0;-2logL");
+                gScan->SetMarkerStyle(20);
+
+                // Disegna (se sei in una app interattiva o salva su file)
+                gScan->Draw("ALP");
+            }
+        }
+
+        /*
+         *
+        // Contour(param1, param2, n_punti)
+        // Esempio: Correlazione tra x0 (par 0) e sx (par 1)
+        unsigned int n_points = 40;
+        vector<double> x_cont(n_points + 1); // +1 per chiudere il cerchio
+        vector<double> y_cont(n_points + 1);
+
+        // Errore a 1 sigma (default ErrorDef = 1 per Chi2)
+        bool contour_ok
+            = min->Contour(0, 1, n_points, x_cont.data(), y_cont.data());
+
+        if(contour_ok)
+        {
+            // Chiudiamo graficamente il poligono
+            x_cont[n_points] = x_cont[0];
+            y_cont[n_points] = y_cont[0];
+
+            auto gContour
+                = new TGraph(n_points + 1, x_cont.data(), y_cont.data());
+            gContour->SetLineColor(kRed);
+            gContour->SetLineWidth(2);
+
+            gContour->Draw("AL"); // A=Axis, L=Line
+        }
+        *
+        */
+    }
+
     if(conv)
     {
         for(int i = 0; i < n_hits; ++i)
@@ -414,7 +659,7 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
 
             // Visualizzazione: punti neri cerchiati
             output.fittedPoints.emplace_back(
-                x_fit, y_fit, z_fit, kBlack, 24, 1.0);
+                x_fit, y_fit, z_fit, kBlack, 24, 1.0, true);
         }
     }
     return output;
@@ -429,9 +674,10 @@ vector<HoughResult> DoHoughTransform(
     Int_t nBinsRho = 40;
     Double_t rhoMin = -30.0, rhoMax = 30.0;
 
-    gROOT->Delete("h_xy_pol;1");
-    TH2D *h_pol = new TH2D("h_xy_pol", "Hough Polare XY;#theta [rad];#rho [mm]",
-        nBinsTheta, thetaMin, thetaMax, nBinsRho, rhoMin, rhoMax);
+    auto h_pol = make_unique<TH2D>("h_xy_pol",
+        "Hough Polare XY;#theta [rad];#rho [mm]", nBinsTheta, thetaMin,
+        thetaMax, nBinsRho, rhoMin, rhoMax);
+    h_pol->SetDirectory(nullptr);
 
     auto inters = Config::FindIntersections(hit_ids);
     for(auto &p : inters)
@@ -439,13 +685,14 @@ vector<HoughResult> DoHoughTransform(
         for(int it = 1; it <= nBinsTheta; ++it)
         {
             double theta = h_pol->GetXaxis()->GetBinCenter(it);
-            double rho = p.x * cos(theta) + p.y * sin(theta);
+            double rho = p.x_loc * cos(theta) + p.y_loc * sin(theta);
             h_pol->Fill(theta, rho);
         }
     }
 
     // Ricerca Picchi
-    TH2D *h_work = (TH2D *)h_pol->Clone("h_work");
+    unique_ptr<TH2D> h_work(static_cast<TH2D *>(h_pol->Clone("h_work")));
+    h_work->SetDirectory(nullptr);
     vector<HoughResult> candidates;
     Double_t topWeight = 0.0;
 
@@ -483,16 +730,16 @@ vector<HoughResult> DoHoughTransform(
     }
 
     // Scommentare per debug grafico
-    /*
+
     TCanvas *c = (TCanvas *)gROOT->FindObject("c_hough");
     if(!c)
         c = new TCanvas("c_hough", "Hough Polare Space", 600, 400);
+    else
+        c->Clear();
     c->cd();
     h_pol->SetStats(0);
-    h_pol->Draw("COLZ");
-    */
+    h_pol->DrawCopy("COLZ");
 
-    delete h_work;
     return candidates;
 }
 
@@ -500,7 +747,8 @@ vector<HoughResult> DoHoughTransform(
 // 4. SIMULATION ENGINE (Generator & Digitizer)
 // ==============================================================================
 
-CosmicTrack GenerateCosmic()
+CosmicTrack GenerateCosmic(double xC_up = 0., double zC_up = 0.,
+    double xC_down = 0., double zC_down = 0.)
 {
     static TRandom3 rnd(0);
     CosmicTrack track;
@@ -513,8 +761,8 @@ CosmicTrack GenerateCosmic()
     while(!accepted)
     {
         track.y0 = yUp;
-        track.x0 = rnd.Uniform(-halfX_up, halfX_up);
-        track.z0 = rnd.Uniform(-halfZ_up, halfZ_up);
+        track.x0 = rnd.Uniform(xC_up - halfX_up, xC_up + halfX_up);
+        track.z0 = rnd.Uniform(zC_up - halfZ_up, zC_up + halfZ_up);
 
         Double_t cosTheta, cosThetaSq_test, phi;
         do
@@ -533,14 +781,21 @@ CosmicTrack GenerateCosmic()
         Double_t x_proj = track.x0 + track.ux * t;
         Double_t z_proj = track.z0 + track.uz * t;
 
-        if(abs(x_proj) <= halfX_down && abs(z_proj) <= halfZ_down)
+        if(abs(x_proj - xC_down) <= halfX_down
+            && abs(z_proj - zC_down) <= halfZ_down)
             accepted = true;
     }
     return track;
 }
 
-vector<Int_t> FindHitBundles(CosmicTrack tr, Double_t efficiency = 1.)
+vector<Int_t> FindHitBundles(
+    const CosmicTrack &track_in, double efficiency = 1.0)
 {
+    // Convert Global Track to Local Frame for simulation
+    CosmicTrack track = track_in;
+    Config::ApplyInverseTransformation(track.x0, track.y0, track.z0);
+    Config::ApplyInverseRotation(track.ux, track.uy, track.uz);
+
     vector<Int_t> hits;
     auto cylinders = Config::GetCylinders();
     int current_global_offset = 0;
@@ -554,9 +809,9 @@ vector<Int_t> FindHitBundles(CosmicTrack tr, Double_t efficiency = 1.)
             Double_t R = lay.radius;
 
             // Intersezione Retta XY - Cerchio
-            Double_t A = tr.ux * tr.ux + tr.uy * tr.uy;
-            Double_t B = 2.0 * (tr.x0 * tr.ux + tr.y0 * tr.uy);
-            Double_t C = tr.x0 * tr.x0 + tr.y0 * tr.y0 - R * R;
+            Double_t A = track.ux * track.ux + track.uy * track.uy;
+            Double_t B = 2.0 * (track.x0 * track.ux + track.y0 * track.uy);
+            Double_t C = track.x0 * track.x0 + track.y0 * track.y0 - R * R;
             Double_t delta = B * B - 4 * A * C;
 
             if(delta >= 0)
@@ -566,12 +821,12 @@ vector<Int_t> FindHitBundles(CosmicTrack tr, Double_t efficiency = 1.)
                 for(int i = 0; i < 2; ++i)
                 {
                     Double_t t = t_sol[i];
-                    Double_t zi = tr.z0 + tr.uz * t;
+                    Double_t zi = track.z0 + track.uz * t;
                     // Check Z geometrico
                     if(abs(zi) <= Config::L_HALF)
                     {
-                        Double_t xi = tr.x0 + tr.ux * t;
-                        Double_t yi = tr.y0 + tr.uy * t;
+                        Double_t xi = track.x0 + track.ux * t;
+                        Double_t yi = track.y0 + track.uy * t;
                         Double_t phi_track = atan2(yi, xi);
 
                         // Check Bundles
@@ -605,8 +860,13 @@ vector<Int_t> FindHitBundles(CosmicTrack tr, Double_t efficiency = 1.)
     return hits;
 }
 
-bool IsGeometricIntersection(const CosmicTrack &tr)
+bool IsGeometricIntersection(const CosmicTrack &tr_in)
 {
+    // Convert Global Track to Local Frame for geometric check
+    CosmicTrack tr = tr_in;
+    Config::ApplyInverseTransformation(tr.x0, tr.y0, tr.z0);
+    Config::ApplyInverseRotation(tr.ux, tr.uy, tr.uz);
+
     auto cylinders = Config::GetCylinders();
     Double_t A = tr.ux * tr.ux + tr.uy * tr.uy;
     Double_t B = 2.0 * (tr.x0 * tr.ux + tr.y0 * tr.uy);
@@ -910,7 +1170,13 @@ void PlotRawCorrelation(
             (double)totMax },
         "All_ToA", "All_ToT");
 
-    TCanvas *cRaw = new TCanvas("cRaw", "Correlation Analysis", 800, 600);
+    TCanvas *cRaw = (TCanvas *)gROOT->FindObject("cRaw");
+    if(!cRaw)
+        cRaw = new TCanvas("cRaw", "Correlation Analysis", 800, 600);
+    else
+        cRaw->Clear();
+
+    cRaw->cd();
     cRaw->SetLogz();
     h_raw_corr->DrawCopy("COLZ");
     PrintSummary(rawCount.GetValue(), nPassed.GetValue(), toaMin, toaMax,
@@ -1011,8 +1277,12 @@ void PlotMultiplicity(
     // ------------------------------------------
 
     // Canvas 1: Multiplicity (Stile Classico)
-    TCanvas *cMult
-        = new TCanvas("cMult", Form("Multiplicity - Run %d", runID), 1200, 800);
+    TCanvas *cMult = (TCanvas *)gROOT->FindObject("cMult");
+    if(!cMult)
+        cMult = new TCanvas(
+            "cMult", Form("Multiplicity - Run %d", runID), 1200, 800);
+    else
+        cMult->Clear();
     cMult->Divide(1, 2);
 
     cMult->cd(1);
@@ -1067,8 +1337,12 @@ void PlotMultiplicity(
     legLay->Draw();
 
     // --- Canvas 2: Occupancy (Stile a Barre Separate) ---
-    TCanvas *cOcc = new TCanvas(
-        "cOcc", Form("Bundle Occupancy - Run %d", runID), 1200, 800);
+    TCanvas *cOcc = (TCanvas *)gROOT->FindObject("cOcc");
+    if(!cOcc)
+        cOcc = new TCanvas(
+            "cOcc", Form("Bundle Occupancy - Run %d", runID), 1200, 800);
+    else
+        cOcc->Clear();
     cOcc->Divide(2, 2);
 
     auto DrawOcc = [](TH1D *h, int col)
@@ -1120,16 +1394,20 @@ void PlotEstimators(
             100, toaMin, toaMax, 100, 0, 5000 },
         "FirstToA", "SumToT");
 
-    TCanvas *c
-        = new TCanvas("c", Form("Estimators - Run %d", runID), 1200, 800);
-    c->Divide(2, 2);
-    c->cd(1);
+    TCanvas *cEst = (TCanvas *)gROOT->FindObject("cEst");
+    if(!cEst)
+        cEst = new TCanvas(
+            "cEst", Form("Estimators - Run %d", runID), 1200, 800);
+    else
+        cEst->Clear();
+    cEst->Divide(2, 2);
+    cEst->cd(1);
     h_toa->SetLineColor(kBlue + 1);
     h_toa->DrawCopy();
-    c->cd(2);
+    cEst->cd(2);
     h_tot->SetLineColor(kRed + 1);
     h_tot->DrawCopy();
-    c->cd(3);
+    cEst->cd(3);
     h_corr->DrawCopy("COLZ");
 
     PrintSummary(nRaw, nPassed.GetValue(), toaMin, toaMax, totMin, totMax);
@@ -1158,7 +1436,11 @@ void PlotMultiplicityCorrelations(
             -0.5, 100.5, 200, 0, 10000 },
         "nHits_Total", "SumToT");
 
-    TCanvas *cMultCorr = new TCanvas("cMultCorr", "Correlations", 1400, 600);
+    TCanvas *cMultCorr = (TCanvas *)gROOT->FindObject("cMultCorr");
+    if(!cMultCorr)
+        cMultCorr = new TCanvas("cMultCorr", "Correlations", 1400, 600);
+    else
+        cMultCorr->Clear();
     cMultCorr->Divide(2, 1);
     cMultCorr->cd(1);
     gPad->SetLogz();
@@ -1203,8 +1485,8 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
         -0.5, max_id + 0.5);
     TH1D *h_match = new TH1D(
         "h_match", "Matched", max_id + 1, -0.5, max_id + 0.5); // Verde
-    TH1D *h_noise = new TH1D(
-        "h_noise", "Unassigned", max_id + 1, -0.5, max_id + 0.5); // Rosso
+    TH1D *h_noise = new TH1D("h_noise", "Unassigned", max_id + 1, -0.5,
+        max_id + 0.5); // Rosso
 
     for(int i = 0; i <= max_id; ++i)
     {
@@ -1278,7 +1560,7 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
     h_all->Draw("AXIS SAME"); // Ridisegna assi sopra
 
     // ---------------------------------------------------------
-    // Canvas Originale Efficiencies
+    // Canvas Efficiencies
     // ---------------------------------------------------------
     TCanvas *cEff
         = new TCanvas("cEff", Form("Efficiencies Run %d", runID), 900, 1200);
@@ -1567,17 +1849,20 @@ void FitCosmicEvent(Int_t eventID, Int_t runID, Double_t toaMin,
 
     if(tr.converged)
         visTracks.emplace_back(tr.x0, 0.0, tr.z0, // Punto di start (a y=0)
-            tr.sx, 1.0, tr.sz, // Vettore direzione (dx/dy, dy/dy, dz/dy)
-            kBlack, 3 // Colore e spessore
+            tr.sx, 1.0,
+            tr.sz, // Vettore direzione (dx/dy, dy/dy, dz/dy)
+            kBlack, 3, 1,
+            true // Colore, spessore, stile, isLocal
         );
 
     // Disegna (Hit + Traccia Fit)
     Vis::Draw2D(hit_ids, Config::FindIntersections(hit_ids), visTracks);
+
     Vis::Draw3D(hit_ids, visTracks, fitOut.fittedPoints);
 }
 
 void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
-    UInt_t totMin, UInt_t totMax, Double_t minPValue = 0.01,
+    UInt_t totMin, UInt_t totMax, Double_t minPValue = 0.,
     Bool_t doEfficiency = true)
 {
     // Disabilitiamo MT implicito per evitare conflitti con Minuit nel loop
@@ -1586,39 +1871,51 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
         ROOT::EnableImplicitMT();
 
     SetGlobalStyle();
+
     cout << "Starting Full Run Analysis for Run " << runID << "..." << endl;
 
     EffMap bundleStats, layerStats, cylStats;
     map<int, int> occupancyMap;
 
     // --- 1. Definizione Istogrammi ---
-    TH1D *h_chi2 = new TH1D(
+    TDirectory::AddDirectory(false);
+    auto h_chi2 = make_unique<TH1D>(
         "h_chi2", "Normalized #chi^{2};#chi^{2} / ndf;Events", 100, 0, 20);
-    TH1D *h_prob = new TH1D("h_prob", "Prob(#chi^{2});Prob;Events", 50, 0, 1);
-    TH1D *h_nhits
-        = new TH1D("h_nhits", "Hits per Track;N Hits;Events", 15, -0.5, 50.5);
+    auto h_prob
+        = make_unique<TH1D>("h_prob", "Prob(#chi^{2});Prob;Events", 50, 0, 1);
+    auto h_nhits = make_unique<TH1D>(
+        "h_nhits", "Hits per Track;N Hits;Events", 15, -0.5, 50.5);
 
-    TH1D *h_x0
-        = new TH1D("h_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
-    TH1D *h_z0 = new TH1D(
+    auto h_x0 = make_unique<TH1D>(
+        "h_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
+    auto h_z0 = make_unique<TH1D>(
         "h_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
-    TH1D *h_sx
-        = new TH1D("h_sx", "Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
-    TH1D *h_sz = new TH1D("h_sz", "Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
-    TH1D *h_phi = new TH1D("h_phi", "Azimuthal Angle #phi; #phi [rad];Events",
-        100, -TMath::Pi(), TMath::Pi());
-    TH1D *h_cosTheta = new TH1D("h_cosTheta",
+    auto h_sx = make_unique<TH1D>(
+        "h_sx", "Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
+    auto h_sz = make_unique<TH1D>(
+        "h_sz", "Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
+    auto h_phi
+        = make_unique<TH1D>("h_phi", "Azimuthal Angle #phi; #phi [rad];Events",
+            100, -TMath::Pi(), TMath::Pi());
+    auto h_cosTheta = make_unique<TH1D>("h_cosTheta",
         "Polar Angle cos(#theta); cos(#theta); Events", 100, -1.0, 0.0);
 
     // --- 2. Estrazione Dati con RDataFrame ---
     string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
         + to_string(runID) + ".root";
 
+    // Geometry test
+    // Config::SetOffsetExp(29. * TMath::DegToRad()); // 29 optimal
+    // Config::SetDelta2(
+    //     Config::GetDelta2() + 4.5 * TMath::DegToRad()); // 4.5 optimal
+    // Config::SetDelta1(Config::GetDelta1() - 18.0 * (M_PI / 180.0));
+
+    // Data reader
     Data::Reader reader(filename);
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
     auto df = reader.GetEstimators();
 
-    auto all_hits_ptr = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
+    auto all_hits_ptr = df.Take<RVecI>("All_Bundle");
     const auto &all_hits = *all_hits_ptr;
 
     // --- 3. Loop di Fitting ---
@@ -1634,7 +1931,7 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
         hits.erase(unique(hits.begin(), hits.end()), hits.end());
 
         // Minimo 3 hits per tentare il fit
-        if(hits.size() < 3)
+        if(hits.size() < 4)
             continue;
 
         if(i % 1000 == 0)
@@ -1648,6 +1945,13 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
             double chi2_red = out.track.chi2;
             double ndf = hits.size() * 2 - 4;
             double prob = TMath::Prob(chi2_red * ndf, (int)ndf);
+
+            if(DEBUG_RUN)
+            {
+                Bool_t condition = prob > 0 && prob < 0.01;
+                Bool_t condition2 = out.track.x0 >= -17 && out.track.x0 <= -16;
+                InspectEvent(condition2, hits, out.track);
+            }
 
             if(prob < minPValue)
                 continue;
@@ -1695,15 +1999,18 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
         nEvents, 100.0 * nFitted / nEvents);
 
     // --- 4. Plotting ---
-    TCanvas *cAn1
-        = new TCanvas("cAn1", "Run Analysis Results - GOF", 800, 1200);
+    TCanvas *cAn1 = (TCanvas *)gROOT->FindObject("cAn1");
+    if(!cAn1)
+        cAn1 = new TCanvas("cAn1", "Run Analysis Results - GOF", 800, 1200);
+    else
+        cAn1->Clear();
     cAn1->Divide(1, 3);
 
     cAn1->cd(1);
     gPad->SetLogy();
     h_chi2->SetLineColor(kBlue + 1);
     h_chi2->SetLineWidth(2);
-    h_chi2->Draw();
+    h_chi2->DrawCopy();
 
     cAn1->cd(2);
     h_prob->SetLineColor(kMagenta + 1);
@@ -1715,8 +2022,11 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
     h_nhits->SetFillColor(kGray);
     h_nhits->DrawCopy();
 
-    TCanvas *cAn2
-        = new TCanvas("cAn2", "Run Analysis Results - Pars", 1200, 800);
+    TCanvas *cAn2 = (TCanvas *)gROOT->FindObject("cAn2");
+    if(!cAn2)
+        cAn2 = new TCanvas("cAn2", "Run Analysis Results - Pars", 1200, 800);
+    else
+        cAn2->Clear();
     cAn2->Divide(2, 2);
     cAn2->cd(1);
     h_x0->SetLineColor(kRed + 1);
@@ -1783,7 +2093,7 @@ void RunSingleHough()
 
         // Aggiungiamo come traccia puramente XY (z0=0, uz=0)
         // Style 2 = Dashed
-        visTracks.emplace_back(x0, y0, 0, ux, uy, 0, colors[i % 2], 2, 2);
+        visTracks.emplace_back(x0, y0, 0, ux, uy, 0, colors[i % 2], 2, 2, true);
     }
 
     // Disegno
@@ -1805,17 +2115,24 @@ void RunSingleMC(double efficiency = 1.0)
     if(trFit.converged)
     {
         // --- 1. Calcoli Lineari (Posizione e Slopes) ---
-        double t_to_y0 = -trTrue.y0 / trTrue.uy;
-        double true_x0 = trTrue.x0 + trTrue.ux * t_to_y0;
-        double true_z0 = trTrue.z0 + trTrue.uz * t_to_y0;
-        double true_sx = trTrue.ux / trTrue.uy;
-        double true_sz = trTrue.uz / trTrue.uy;
+        // Convertiamo la traccia VERA (Globale) nel sistema LOCALE per il
+        // confronto
+        CosmicTrack trTrueLoc = trTrue;
+        Config::ApplyInverseTransformation(
+            trTrueLoc.x0, trTrueLoc.y0, trTrueLoc.z0);
+        Config::ApplyInverseRotation(trTrueLoc.ux, trTrueLoc.uy, trTrueLoc.uz);
+
+        double t_to_y0 = -trTrueLoc.y0 / trTrueLoc.uy;
+        double true_x0 = trTrueLoc.x0 + trTrueLoc.ux * t_to_y0;
+        double true_z0 = trTrueLoc.z0 + trTrueLoc.uz * t_to_y0;
+        double true_sx = trTrueLoc.ux / trTrueLoc.uy;
+        double true_sz = trTrueLoc.uz / trTrueLoc.uy;
 
         // --- 2. Calcoli Angolari (Phi e CosTheta) ---
 
         // A. True Angles
-        double true_cosTheta = trTrue.uy;
-        double true_phi = atan2(trTrue.ux, trTrue.uz);
+        double true_cosTheta = trTrueLoc.uy;
+        double true_phi = atan2(trTrueLoc.ux, trTrueLoc.uz);
 
         // B. Fitted Angles
         // Ricostruiamo il vettore dal fit (sx, 1, sz) e lo normalizziamo
@@ -1863,7 +2180,8 @@ void RunSingleMC(double efficiency = 1.0)
         printf("==============================================================="
                "\n");
 
-        DebugEfficiencyCalculation(trFit, hit_ids);
+        if(DEBUG_TOY)
+            DebugEfficiencyCalculation(trFit, hit_ids);
     }
     else
     {
@@ -1880,70 +2198,75 @@ void RunSingleMC(double efficiency = 1.0)
     // 2. Traccia Fit
     if(trFit.converged)
         visTracks.emplace_back(trFit.x0, 0.0, trFit.z0, // Punto a y=0
-            trFit.sx, 1.0, trFit.sz, // Vettore direzionale non normalizzato
-            kBlack, 2, 7 // Tratteggiato
+            trFit.sx, 1.0,
+            trFit.sz, // Vettore direzionale non normalizzato
+            kBlack, 2, 7, true // Tratteggiato, isLocal
         );
 
     Vis::Draw2D(hit_ids, Config::FindIntersections(hit_ids), visTracks);
+
     Vis::Draw3D(hit_ids, visTracks, fitRes.fittedPoints);
 }
 
 void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
-    Double_t minPValue = 0.01, Bool_t doEfficiency = true,
+    Double_t minPValue = 0., Bool_t doEfficiency = true,
     bool doDoubleFit = true)
 {
     // --- 1. Definizione Istogrammi ---
+    TDirectory::AddDirectory(false);
 
     // a. Istogrammi Residui (Bias)
-    TH1D *h_res_x0 = new TH1D("h_res_x0",
+    auto h_res_x0 = make_unique<TH1D>("h_res_x0",
         "X0 Position Bias (Fit - True); #DeltaX0 [mm]; Counts", 100,
         -1 / efficiency, 1 / efficiency);
-    TH1D *h_res_z0 = new TH1D("h_res_z0",
+    auto h_res_z0 = make_unique<TH1D>("h_res_z0",
         "Z0 Position Bias (Fit - True); #DeltaZ0 [mm]; Counts", 100,
         -5 / efficiency, 5 / efficiency);
-    TH1D *h_res_sx = new TH1D("h_res_sx",
+    auto h_res_sx = make_unique<TH1D>("h_res_sx",
         "X Slope Bias (sx_{fit} - sx_{true}); #Deltasx [rad]; Counts", 100,
         -0.1 / efficiency, 0.1 / efficiency);
-    TH1D *h_res_sz = new TH1D("h_res_sz",
+    auto h_res_sz = make_unique<TH1D>("h_res_sz",
         "Z Slope Bias (sz_{fit} - sz_{true}); #Deltasz [rad]; Counts", 100,
         -0.5 / efficiency, 0.5 / efficiency);
-    TH1D *h_res_phi = new TH1D("h_res_phi",
+    auto h_res_phi = make_unique<TH1D>("h_res_phi",
         "Bias Phi (Fit - True); #Delta #phi [rad]; Counts", 100, -3, 3);
-    TH1D *h_res_cosTheta = new TH1D("h_res_cosTheta",
+    auto h_res_cosTheta = make_unique<TH1D>("h_res_cosTheta",
         "Bias CosTheta (Fit - True); #Delta cos#theta; Counts", 100, -0.02,
         0.02);
+    auto h_res_z_hit = make_unique<TH1D>("h_res_z_hit",
+        "Z Hit Residuals (Fit - True); #Delta z_{hit} [mm]; Counts", 100, -10,
+        10);
 
     // b. Istogrammi Variabili Fittate (Distribution)
-    TH1D *h_fit_x0 = new TH1D(
+    auto h_fit_x0 = make_unique<TH1D>(
         "h_fit_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
-    TH1D *h_fit_z0 = new TH1D(
+    auto h_fit_z0 = make_unique<TH1D>(
         "h_fit_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
-    TH1D *h_fit_sx = new TH1D("h_fit_sx",
+    auto h_fit_sx = make_unique<TH1D>("h_fit_sx",
         "Reconstructed Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
-    TH1D *h_fit_sz = new TH1D(
+    auto h_fit_sz = make_unique<TH1D>(
         "h_fit_sz", "Reconstructed Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
-    TH1D *h_fit_phi = new TH1D("h_fit_phi", "Reco #phi; #phi [rad]; Events",
-        100, -TMath::Pi(), TMath::Pi());
-    TH1D *h_fit_cosTheta = new TH1D("h_fit_cosTheta",
+    auto h_fit_phi = make_unique<TH1D>("h_fit_phi",
+        "Reco #phi; #phi [rad]; Events", 100, -TMath::Pi(), TMath::Pi());
+    auto h_fit_cosTheta = make_unique<TH1D>("h_fit_cosTheta",
         "Reco cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
 
     // c. Istogrammi Variabili True (Distribution)
-    TH1D *h_true_x0 = new TH1D("h_true_x0",
+    auto h_true_x0 = make_unique<TH1D>("h_true_x0",
         "True X0 Distribution;x_{0}^{true} [mm];Events", 80, -40, 40);
-    TH1D *h_true_z0 = new TH1D("h_true_z0",
+    auto h_true_z0 = make_unique<TH1D>("h_true_z0",
         "True Z0 Distribution;z_{0}^{true} [mm];Events", 100, -150, 150);
-    TH1D *h_true_sx = new TH1D(
+    auto h_true_sx = make_unique<TH1D>(
         "h_true_sx", "True Slope X (sx);sx^{true};Events", 100, -1.2, 1.2);
-    TH1D *h_true_sz = new TH1D(
+    auto h_true_sz = make_unique<TH1D>(
         "h_true_sz", "True Slope Z (sz);sz^{true};Events", 100, -2, 2);
-    TH1D *h_true_phi = new TH1D("h_true_phi", "True #phi; #phi [rad];Events",
-        100, -TMath::Pi(), TMath::Pi());
-    TH1D *h_true_cosTheta = new TH1D("h_true_cosTheta",
+    auto h_true_phi = make_unique<TH1D>("h_true_phi",
+        "True #phi; #phi [rad];Events", 100, -TMath::Pi(), TMath::Pi());
+    auto h_true_cosTheta = make_unique<TH1D>("h_true_cosTheta",
         "True cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
 
     // Debug
-    TH2D *hDebug = new TH2D("", "", 100, -3, 3, 100, -3, 3);
-    TCanvas *cDbg = nullptr;
+    // TH2D *hDebug = new TH2D("", "", 100, -3, 3, 100, -3, 3);
 
     // --- Contatori ---
     int n_triggers = 0;
@@ -1961,51 +2284,23 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
             printf("\rProcessing event %d/%d", i, nEvents);
 
         // 1. Generazione
-        CosmicTrack trueTr = GenerateCosmic();
+        CosmicTrack trueTr = GenerateCosmic(); // -9.75, 10, -9.75, -50 //
+                                               // -9.75, -19, -9.75, -19 //
+                                               // -41.3, 14.5, 41.3, -14.5
         n_triggers++;
 
         // 2. Accettanza Geometrica
+        // IsGeometricIntersection gestisce internamente la rotazione inversa
         bool crosses_cylinder = IsGeometricIntersection(trueTr);
         if(crosses_cylinder)
             n_geo_accepted++;
 
         // 3. Digitizzazione
+        // FindHitBundles gestisce internamente la rotazione inversa, quindi
+        // passiamo trueTr (Globale)
         vector<Int_t> hit_ids = FindHitBundles(trueTr, efficiency);
 
-        // Debug
-        if(DEBUG_TOY && efficiency > 0.99 && hit_ids.size() != 8
-            && hit_ids.size() != 4 && hit_ids.size() != 0)
-        {
-            // DEBUG: Se siamo al 100% di efficienza, ci aspettiamo 0, 4 o 8
-            // hits. Se ne troviamo un numero diverso, c'è un problema
-            // geometrico o di logica.
-            cout << "\n[DEBUG] Anomalous Event found! Hits: " << hit_ids.size()
-                 << endl;
-
-            if(!cDbg)
-                cDbg = new TCanvas("cDbg", "Debug Anomalous Event", 1000, 800);
-            else
-                cDbg->Clear();
-
-            cDbg->cd();
-
-            // Visualizza la traccia vera in verde
-            Vis::VisLineTrack vTr(trueTr.x0, trueTr.y0, trueTr.z0, trueTr.ux,
-                trueTr.uy, trueTr.uz, kGreen + 2, 3);
-
-            // Disegna tutto
-            Vis::Draw3D(hit_ids, { vTr }, {}, true);
-
-            cDbg->Update();
-            gSystem->ProcessEvents();
-
-            cout << "Press ENTER to continue processing..." << endl;
-            if(cin.peek() == '\n')
-                cin.ignore(); // Flush se necessario
-            cin.get(); // Attesa input
-        }
-
-        if(hit_ids.size() < 3)
+        if(hit_ids.size() < 4)
             continue;
         n_reconstructible++;
 
@@ -2020,6 +2315,18 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         double ndf = hit_ids.size() * 2 - 4;
         double prob = TMath::Prob(chi2_red * ndf, (int)ndf);
 
+        // Debug
+        if(DEBUG_TOY)
+        {
+            bool condition = hit_ids.size() != 8 && hit_ids.size() != 4
+                && hit_ids.size() != 0;
+            Bool_t condition2 = fitTr.x0 >= -17 && fitTr.x0 <= -16;
+            InspectEvent(condition2, hit_ids, trueTr, fitTr);
+        }
+
+        // if(fitTr.x0 <= -21 || fitTr.x0 >= -20)
+        //     continue;
+
         if(prob < minPValue)
             continue;
 
@@ -2031,13 +2338,19 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         // x = x0 + sx*y  => sx = ux/uy
         // z = z0 + sz*y  => sz = uz/uy
         // x(y=0) = x_gen + ux * t_0  dove t_0 porta a y=0 => t_0 = -y_gen/uy
-        double t_to_y0 = -trueTr.y0 / trueTr.uy;
-        double true_x0_at_y0 = trueTr.x0 + trueTr.ux * t_to_y0;
-        double true_z0_at_y0 = trueTr.z0 + trueTr.uz * t_to_y0;
-        double true_sx = trueTr.ux / trueTr.uy;
-        double true_sz = trueTr.uz / trueTr.uy;
-        double true_phi = atan2(trueTr.ux, trueTr.uz);
-        double true_cosTheta = trueTr.uy;
+        // USIAMO LA TRACCIA RUOTATA (LOCALE) PER IL CONFRONTO
+        CosmicTrack trueTrLoc = trueTr;
+        Config::ApplyInverseTransformation(
+            trueTrLoc.x0, trueTrLoc.y0, trueTrLoc.z0);
+        Config::ApplyInverseRotation(trueTrLoc.ux, trueTrLoc.uy, trueTrLoc.uz);
+
+        double t_to_y0 = -trueTrLoc.y0 / trueTrLoc.uy;
+        double true_x0_at_y0 = trueTrLoc.x0 + trueTrLoc.ux * t_to_y0;
+        double true_z0_at_y0 = trueTrLoc.z0 + trueTrLoc.uz * t_to_y0;
+        double true_sx = trueTrLoc.ux / trueTrLoc.uy;
+        double true_sz = trueTrLoc.uz / trueTrLoc.uy;
+        double true_phi = atan2(trueTrLoc.ux, trueTrLoc.uz);
+        double true_cosTheta = trueTrLoc.uy;
 
         // B. Calcolo variabili FIT nel formalismo FISICO (Angoli)
         // Vettore direttore fit non normalizzato: V = (sx, 1, sz)
@@ -2063,6 +2376,62 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         h_res_phi->Fill(dPhi);
         h_res_cosTheta->Fill(fit_cosTheta - true_cosTheta);
 
+        // Fill Z hit residuals
+        for(size_t k = 0; k < hit_ids.size(); ++k)
+        {
+            int id = hit_ids[k];
+            auto prop = Config::GetFiberProp(id);
+            double R = prop.r;
+
+            // Intersection trueTrLoc with cylinder R (Local Frame)
+            double A
+                = trueTrLoc.ux * trueTrLoc.ux + trueTrLoc.uy * trueTrLoc.uy;
+            double B = 2
+                * (trueTrLoc.x0 * trueTrLoc.ux + trueTrLoc.y0 * trueTrLoc.uy);
+            double C = trueTrLoc.x0 * trueTrLoc.x0 + trueTrLoc.y0 * trueTrLoc.y0
+                - R * R;
+            double delta = B * B - 4 * A * C;
+
+            if(delta >= 0)
+            {
+                double t1 = (-B - sqrt(delta)) / (2 * A);
+                double t2 = (-B + sqrt(delta)) / (2 * A);
+                double z1 = trueTrLoc.z0 + trueTrLoc.uz * t1;
+                double z2 = trueTrLoc.z0 + trueTrLoc.uz * t2;
+
+                // Select closest to fiber phi to identify correct intersection
+                double x1 = trueTrLoc.x0 + trueTrLoc.ux * t1;
+                double y1 = trueTrLoc.y0 + trueTrLoc.uy * t1;
+                double phi1 = atan2(y1, x1);
+
+                double x2 = trueTrLoc.x0 + trueTrLoc.ux * t2;
+                double y2 = trueTrLoc.y0 + trueTrLoc.uy * t2;
+                double phi2 = atan2(y2, x2);
+
+                double alpha1 = (z1 + Config::L_HALF) / (2.0 * Config::L_HALF);
+                double phi_f1 = prop.phi0 + prop.dir * alpha1 * M_PI;
+                double dphi1
+                    = abs(Config::wrap0_2pi(phi1) - Config::wrap0_2pi(phi_f1));
+                if(dphi1 > M_PI)
+                    dphi1 = 2.0 * M_PI - dphi1;
+
+                double alpha2 = (z2 + Config::L_HALF) / (2.0 * Config::L_HALF);
+                double phi_f2 = prop.phi0 + prop.dir * alpha2 * M_PI;
+                double dphi2
+                    = abs(Config::wrap0_2pi(phi2) - Config::wrap0_2pi(phi_f2));
+                if(dphi2 > M_PI)
+                    dphi2 = 2.0 * M_PI - dphi2;
+
+                double z_true = (dphi1 < dphi2) ? z1 : z2;
+
+                if(k < fitRes.fittedPoints.size())
+                {
+                    double z_fit = fitRes.fittedPoints[k].z;
+                    h_res_z_hit->Fill(z_fit - z_true);
+                }
+            }
+        }
+
         // Riempimento Variabili Fittate
         h_fit_x0->Fill(fitTr.x0);
         h_fit_z0->Fill(fitTr.z0);
@@ -2079,7 +2448,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         h_true_phi->Fill(true_phi);
         h_true_cosTheta->Fill(true_cosTheta);
 
-        hDebug->Fill(true_phi, fit_phi);
+        // hDebug->Fill(true_phi, fit_phi);
 
         // Efficiency
         if(doEfficiency)
@@ -2109,13 +2478,17 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     printf("=================================\n");
 
     // --- Plotting Bias (Canvas 1) ---
-    TCanvas *c_res = new TCanvas("c_res", "Fit Residuals MC", 1200, 800);
+    TCanvas *c_res = (TCanvas *)gROOT->FindObject("c_res");
+    if(!c_res)
+        c_res = new TCanvas("c_res", "Fit Residuals MC", 1200, 800);
+    else
+        c_res->Clear();
     c_res->Divide(2, 2);
 
     gStyle->SetOptStat(1110);
     gStyle->SetOptFit(111);
 
-    auto fitResidui = [](TH1D *h, bool useDoubleGauss)
+    auto fitResidui = [](auto h, bool useDoubleGauss)
     {
         if(!h || h->GetEntries() < 50)
             return;
@@ -2128,7 +2501,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         }
         else
         {
-            TF1 *f2 = new TF1("f2",
+            auto f2 = make_unique<TF1>("f2",
                 "[0]*exp(-0.5*((x-[1])/[2])^2) + [3]*exp(-0.5*((x-[1])/[4])^2)",
                 h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
 
@@ -2152,76 +2525,88 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
             f2->SetLineColor(kRed);
             f2->SetNpx(1000);
 
-            auto fitptr = h->Fit(f2, "SLMQ");
+            auto fitptr = h->Fit(f2.get(), "SLMQ");
 
             if(fitptr->IsValid())
             {
-                TF1 *fCore = new TF1("fCore", "gaus", h->GetXaxis()->GetXmin(),
-                    h->GetXaxis()->GetXmax());
+                auto fCore = make_unique<TF1>("fCore", "gaus",
+                    h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
                 fCore->SetParameters(f2->GetParameter(0), f2->GetParameter(1),
                     f2->GetParameter(2));
                 fCore->SetLineColor(kGreen + 2);
                 fCore->SetLineStyle(2);
-                fCore->Draw("same");
+                fCore->DrawCopy("same");
 
-                TF1 *fTail = new TF1("fTail", "gaus", h->GetXaxis()->GetXmin(),
-                    h->GetXaxis()->GetXmax());
+                auto fTail = make_unique<TF1>("fTail", "gaus",
+                    h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
                 fTail->SetParameters(f2->GetParameter(3), f2->GetParameter(1),
                     f2->GetParameter(4));
                 fTail->SetLineColor(kMagenta);
                 fTail->SetLineStyle(2);
-                fTail->Draw("same");
+                fTail->DrawCopy("same");
 
-                f2->Draw("same");
+                f2->DrawCopy("same");
             }
         }
     };
 
     c_res->cd(1);
-    h_res_x0->Draw();
-    fitResidui(h_res_x0, doDoubleFit);
+    fitResidui(h_res_x0->DrawCopy(), doDoubleFit);
     c_res->cd(2);
-    h_res_z0->Draw();
-    fitResidui(h_res_z0, doDoubleFit);
+    fitResidui(h_res_z0->DrawCopy(), doDoubleFit);
     c_res->cd(3);
-    h_res_sx->Draw();
-    fitResidui(h_res_sx, doDoubleFit);
+    fitResidui(h_res_sx->DrawCopy(), doDoubleFit);
     // h_res_phi->Draw();
-    // fitResidui(h_res_phi, doDoubleFit);
+    // fitResidui(h_res_phi.get(), doDoubleFit);
     c_res->cd(4);
-    h_res_sz->Draw();
-    fitResidui(h_res_sz, doDoubleFit);
+    fitResidui(h_res_sz->DrawCopy(), doDoubleFit);
     // h_res_cosTheta->Draw();
     // fitResidui(h_res_cosTheta, doDoubleFit);
 
+    TCanvas *c_zres = (TCanvas *)gROOT->FindObject("c_zres");
+    if(!c_zres)
+        c_zres = new TCanvas("c_zres", "Z Hit Residuals", 600, 400);
+    else
+        c_zres->Clear();
+    c_zres->cd();
+    fitResidui(h_res_z_hit->DrawCopy(), doDoubleFit);
+
     // --- Plotting Parametri Fittati (Canvas 2) ---
-    TCanvas *c_pars
-        = new TCanvas("c_pars", "Fitted Parameters Distribution", 1200, 800);
+    TCanvas *c_pars = (TCanvas *)gROOT->FindObject("c_pars");
+    if(!c_pars)
+        c_pars = new TCanvas(
+            "c_pars", "Fitted Parameters Distribution", 1200, 800);
+    else
+        c_pars->Clear();
     c_pars->Divide(2, 2);
 
     c_pars->cd(1);
     h_fit_x0->SetLineColor(kRed + 1);
-    h_fit_x0->Draw();
+    h_fit_x0->DrawCopy();
 
     c_pars->cd(2);
     h_fit_z0->SetLineColor(kBlue + 1);
-    h_fit_z0->Draw();
+    h_fit_z0->DrawCopy();
 
     c_pars->cd(3);
     h_fit_sx->SetLineColor(kGreen + 2);
-    h_fit_sx->Draw();
+    h_fit_sx->DrawCopy();
     // h_fit_phi->SetLineColor(kGreen + 2);
     // h_fit_phi->Draw();
 
     c_pars->cd(4);
     h_fit_sz->SetLineColor(kOrange + 1);
-    h_fit_sz->Draw();
+    h_fit_sz->DrawCopy();
     // h_fit_cosTheta->SetLineColor(kOrange + 1);
     // h_fit_cosTheta->Draw();
 
     // --- Plotting Parametri True (Canvas 3) ---
-    TCanvas *c_true = new TCanvas(
-        "c_true", "True Parameters Distribution (Reconstructed)", 1200, 800);
+    TCanvas *c_true = (TCanvas *)gROOT->FindObject("c_true");
+    if(!c_true)
+        c_true = new TCanvas("c_true",
+            "True Parameters Distribution (Reconstructed)", 1200, 800);
+    else
+        c_true->Clear();
     c_true->Divide(2, 2);
 
     // Stile: Azure + Fill per distinguerli
@@ -2230,17 +2615,17 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     c_true->cd(1);
     h_true_x0->SetLineColor(trueColor);
     h_true_x0->SetFillColorAlpha(trueColor, 0.3);
-    h_true_x0->Draw();
+    h_true_x0->DrawCopy();
 
     c_true->cd(2);
     h_true_z0->SetLineColor(trueColor);
     h_true_z0->SetFillColorAlpha(trueColor, 0.3);
-    h_true_z0->Draw();
+    h_true_z0->DrawCopy();
 
     c_true->cd(3);
     h_true_sx->SetLineColor(trueColor);
     h_true_sx->SetFillColorAlpha(trueColor, 0.3);
-    h_true_sx->Draw();
+    h_true_sx->DrawCopy();
     // h_true_phi->SetLineColor(trueColor);
     // h_true_phi->SetFillColorAlpha(trueColor, 0.3);
     // h_true_phi->Draw();
@@ -2248,7 +2633,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     c_true->cd(4);
     h_true_sz->SetLineColor(trueColor);
     h_true_sz->SetFillColorAlpha(trueColor, 0.3);
-    h_true_sz->Draw();
+    h_true_sz->DrawCopy();
     // h_true_cosTheta->SetLineColor(trueColor);
     // h_true_cosTheta->SetFillColorAlpha(trueColor, 0.3);
     // h_true_cosTheta->Draw();
@@ -2260,8 +2645,494 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         PlotEfficiencyResults(
             -1, bundleStats, layerStats, cylStats, occupancyMap);
 
-    if(DEBUG_TOY && cDbg)
-        delete cDbg;
-
     return;
+}
+
+// ==============================================================================
+// 8. SYSTEMATIC SENSITIVITY GRID (The "Table")
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// STRUTTURE DATI
+// ------------------------------------------------------------------------------
+
+struct SysParams
+{
+    double x0, z0, sx, sz; // Solo i parametri che ti interessano
+
+    SysParams operator-(const SysParams &other) const
+    {
+        return { x0 - other.x0, z0 - other.z0, sx - other.sx, sz - other.sz };
+    }
+    SysParams &operator+=(const SysParams &other)
+    {
+        x0 += other.x0;
+        z0 += other.z0;
+        sx += other.sx;
+        sz += other.sz;
+        return *this;
+    }
+    SysParams operator/(double d) const
+    {
+        return { x0 / d, z0 / d, sx / d, sz / d };
+    }
+};
+
+// ------------------------------------------------------------------------------
+// MOTORE DI SIMULAZIONE (RunSystematicToy)
+// ------------------------------------------------------------------------------
+// (Identico a prima, ma pulito per usare la struct semplificata)
+
+SysParams RunSystematicToy(int nEvents, double efficiency, double shearX = 0.,
+    double shearZ = 0., bool useResiduals = false)
+{
+    // Snapshot geometria corrente
+    double tx, ty, tz, rx, ry, rz;
+    Config::GetTranslation(tx, ty, tz);
+    Config::GetRotation(rx, ry, rz);
+
+    SysParams sumObs = { 0, 0, 0, 0 }; // Ora accumula osservabili, non bias
+    int nGood = 0;
+
+    for(int i = 0; i < nEvents; ++i)
+    {
+        // "Shear" Systematics: Misalignment of Trigger Paddles
+        // x/z up = +val/2, x/z down = -val/2
+        double xC_up = shearX / 2.0;
+        double xC_down = -shearX / 2.0;
+        double zC_up = shearZ / 2.0;
+        double zC_down = -shearZ / 2.0;
+
+        CosmicTrack trTrue = GenerateCosmic(xC_up, zC_up, xC_down, zC_down);
+
+        // 1. Generazione Hits (Geometria Sporca)
+        vector<int> hits = FindHitBundles(trTrue, efficiency);
+        if(hits.size() < 4)
+            continue;
+
+        // 2. Fit (Geometria Pulita)
+        Config::SetTranslation(0, 0, 0);
+        Config::SetRotation(0, 0, 0);
+        FitOutput fitOut = Do3DFit(hits, false);
+
+        // 3. Ripristino (Geometria Sporca)
+        Config::SetTranslation(tx, ty, tz);
+        Config::SetRotation(rx, ry, rz);
+
+        if(fitOut.track.converged)
+        {
+            sumObs.x0 += fitOut.track.x0;
+            sumObs.z0 += fitOut.track.z0;
+            sumObs.sx += fitOut.track.sx;
+            sumObs.sz += fitOut.track.sz;
+
+            if(useResiduals)
+            {
+                // Proiezione Verità a y=0 globale
+                double t = -trTrue.y0 / trTrue.uy;
+                double true_x0 = trTrue.x0 + trTrue.ux * t;
+                double true_z0 = trTrue.z0 + trTrue.uz * t;
+                double true_sx = trTrue.ux / trTrue.uy;
+                double true_sz = trTrue.uz / trTrue.uy;
+
+                sumObs.x0 -= true_x0;
+                sumObs.z0 -= true_z0;
+                sumObs.sx -= true_sx;
+                sumObs.sz -= true_sz;
+            }
+            nGood++;
+        }
+    }
+    if(nGood > 0)
+        return sumObs / nGood;
+    return { 0, 0, 0, 0 };
+}
+
+// ------------------------------------------------------------------------------
+// FUNZIONE GRIGLIA COMPLETA
+// ------------------------------------------------------------------------------
+
+/**
+ * @brief Genera la Matrice di Sensibilità completa 4x4.
+ *
+ * Esegue 4 scan indipendenti (ShiftX, ShiftZ, RotX, RotZ).
+ * Per ogni scan calcola la pendenza (slope) dell'errore indotto su (x0, z0, sx,
+ * sz).
+ *
+ * @param rangePos Range di scansione per X e Z [mm] (es. 2.0 significa da -2 a
+ * +2)
+ * @param rangeRot Range di scansione per Rotazioni [rad] (es. 0.005 significa
+ * da -5 a +5 mrad)
+ * @param nSteps Numero di punti per ogni scan (es. 5)
+ * @param nEventsPerPoint Precisione statistica per ogni punto (es. 5000)
+ */
+void StudySystematicSensitivityGrid(Double_t efficiency,
+    Double_t rangePos = 2.0, double rangeRot = 0.005, Double_t rangeShear = 20.,
+    int nSteps = 5, int nEventsPerPoint = 5000, bool useResiduals = false)
+{
+    if(ROOT::IsImplicitMTEnabled())
+        ROOT::DisableImplicitMT();
+
+    // Etichette
+    const char *sysLabs[]
+        = { "Shift X", "Shift Z", "Rot X", "Rot Z", "Shear X", "Shear Z" };
+    const char *parLabs[] = { "x0 [mm]", "z0 [mm]", "sx [mrad]", "sz [mrad]" };
+    const char *units[]
+        = { "mm", "mm", "mrad", "mrad", "mm", "mm" }; // Unità dei sistematici
+
+    // Matrice per salvare le pendenze (Sensitivity Coefficients)
+    // sensitivity[syst][param]
+    double sensitivity[6][4];
+
+    // Canvas gigante per i plot di linearità (4x6)
+    TCanvas *cGrid
+        = new TCanvas("cSensGrid", "Systematic Sensitivity Grid", 1200, 1500);
+    cGrid->Divide(4, 6, 0.001,
+        0.001); // 4 colonne (params), 6 righe (systematics)
+
+    // 0. Calcolo Baseline (Bias intrinseco a 0,0,0)
+    printf("Calculating Baseline...\n");
+    Config::SetTranslation(0, 0, 0);
+    Config::SetRotation(0, 0, 0);
+    SysParams baseline
+        = RunSystematicToy(nEventsPerPoint, efficiency, 0, 0, useResiduals);
+
+    // Loop sui 6 Sistematici (Righe della matrice)
+    for(int iSys = 0; iSys < 6; ++iSys)
+    {
+        double minVal, maxVal;
+        if(iSys < 2) // Shifts
+        {
+            minVal = -rangePos;
+            maxVal = rangePos;
+        }
+        else if(iSys < 4) // Rotations
+        {
+            minVal = -rangeRot;
+            maxVal = rangeRot;
+        }
+        else // Shears
+        {
+            minVal = -rangeShear;
+            maxVal = rangeShear;
+        }
+        double step = (maxVal - minVal) / (nSteps - 1);
+
+        // Prepariamo 4 grafici per questa riga (uno per ogni parametro fittato)
+        TGraph *graphs[4];
+        for(int k = 0; k < 4; ++k)
+        {
+            graphs[k] = new TGraph();
+            graphs[k]->SetTitle(Form("%s -> %s", sysLabs[iSys], parLabs[k]));
+        }
+
+        printf("Scanning %s ... ", sysLabs[iSys]);
+        fflush(stdout);
+
+        // Scan Loop
+        for(int pt = 0; pt < nSteps; ++pt)
+        {
+            double val = minVal + pt * step;
+
+            // Applica Geometria
+            Config::SetTranslation(0, 0, 0);
+            Config::SetRotation(0, 0, 0);
+            double sX = 0., sZ = 0.;
+
+            if(iSys == 0)
+                Config::SetTranslation(val, 0, 0);
+            if(iSys == 1)
+                Config::SetTranslation(0, 0, val);
+            if(iSys == 2)
+                Config::SetRotation(val, 0, 0);
+            if(iSys == 3)
+                Config::SetRotation(0, 0, val);
+            if(iSys == 4)
+                sX = val;
+            if(iSys == 5)
+                sZ = val;
+
+            // Run Toy
+            SysParams res = RunSystematicToy(
+                nEventsPerPoint, efficiency, sX, sZ, useResiduals);
+
+            // Qui calcoliamo la differenza delle medie:
+            // (Media Ricostruita con Sistematica) - (Media Ricostruita
+            // Nominale) Questo include sia effetti geometrici che di
+            // accettanza.
+            SysParams net = res - baseline;
+
+            double plotVal = (iSys >= 2 && iSys < 4) ? val * 1000.0 : val;
+
+            graphs[0]->SetPoint(pt, plotVal, net.x0);
+            graphs[1]->SetPoint(pt, plotVal, net.z0);
+            graphs[2]->SetPoint(pt, plotVal, net.sx * 1000.0); // rad -> mrad
+            graphs[3]->SetPoint(pt, plotVal, net.sz * 1000.0); // rad -> mrad
+        }
+        printf("Done.\n");
+
+        // Analisi Linearità e Plotting
+        for(int iPar = 0; iPar < 4; ++iPar)
+        {
+            int padIdx = iSys * 4 + iPar + 1; // 1-based index per TCanvas
+            cGrid->cd(padIdx);
+            gPad->SetGrid();
+
+            // Fit Lineare: y = p0 + p1*x
+            graphs[iPar]->Fit("pol1", "Q");
+            TF1 *fit = graphs[iPar]->GetFunction("pol1");
+            double slope = (fit) ? fit->GetParameter(1) : 0.0;
+
+            // Salva nella matrice
+            sensitivity[iSys][iPar] = slope;
+
+            // Cosmetica Grafico
+            graphs[iPar]->SetMarkerStyle(20);
+            graphs[iPar]->SetMarkerSize(0.8);
+            if(std::abs(slope) > 0.1)
+                graphs[iPar]->SetMarkerColor(
+                    kRed); // Evidenzia correlazioni forti
+            else
+                graphs[iPar]->SetMarkerColor(kBlue);
+
+            graphs[iPar]->Draw("AP"); // Axis + Points
+
+            // Scrivi la pendenza sul grafico
+            TLatex lat;
+            lat.SetNDC();
+            lat.SetTextSize(0.08);
+            lat.DrawLatex(0.2, 0.8, Form("m = %.3f", slope));
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // OUTPUT: TABELLA ASCII
+    // --------------------------------------------------------------------------
+    printf("\n\n");
+    printf("==================================================================="
+           "===============\n");
+    printf("                       SENSITIVITY MATRIX (JACOBIAN)               "
+           "               \n");
+    printf("==================================================================="
+           "===============\n");
+    printf("Row: Systematic Source | Col: Fitted Parameter Response\n");
+    printf("Values represent the slope: (Delta Param) / (Delta Syst)\n");
+    printf("-------------------------------------------------------------------"
+           "---------------\n");
+    printf("Source (Unit)     | %12s | %12s | %12s | %12s |\n", "x0 [mm]",
+        "z0 [mm]", "sx [mrad]", "sz [mrad]");
+    printf("-------------------------------------------------------------------"
+           "---------------\n");
+
+    for(int i = 0; i < 6; ++i)
+    {
+        printf("%-17s |", Form("%s [%s]", sysLabs[i], units[i]));
+        for(int j = 0; j < 4; ++j)
+        {
+            // Colora output se significativo (opzionale nel terminale)
+            double val = sensitivity[i][j];
+            if(std::abs(val) < 1e-4)
+                printf(" %12.1e |", val); // Notazione sci per zeri
+            else
+                printf(" %12.4f |", val);
+        }
+        printf("\n");
+    }
+    printf("==================================================================="
+           "===============\n");
+
+    // --------------------------------------------------------------------------
+    // OUTPUT: HEATMAP GRAFICA (Matrice Colorata)
+    // --------------------------------------------------------------------------
+    TCanvas *cMat
+        = new TCanvas("cSensMat", "Sensitivity Matrix Heatmap", 800, 600);
+    cMat->cd();
+    gStyle->SetPaintTextFormat("5.3f");
+    gStyle->SetPalette(
+        kTemperatureMap); // Palette Divergente (Blu negativo, Rosso positivo)
+
+    TH2D *hMat = new TH2D("hSensMat",
+        "Sensitivity Coefficients (Slope);Fitted Parameter;Systematic Source",
+        4, 0, 4, 6, 0, 6);
+
+    // Riempimento (Attenzione: TH2D ha (x,y), noi vogliamo (Col, Row))
+    for(int r = 0; r < 6; ++r)
+    {
+        for(int c = 0; c < 4; ++c)
+        {
+            // Y axis: 6-r (per avere riga 0 in alto)
+            hMat->SetBinContent(c + 1, 6 - r, sensitivity[r][c]);
+        }
+        hMat->GetYaxis()->SetBinLabel(6 - r, sysLabs[r]);
+    }
+    for(int c = 0; c < 4; ++c)
+        hMat->GetXaxis()->SetBinLabel(c + 1, parLabs[c]);
+
+    hMat->SetMarkerSize(1.5);
+    hMat->Draw("COLZ TEXT");
+
+    printf("\nGenerated 2 Canvases:\n");
+    printf("1. cSensGrid: 24 plots showing linearity scans.\n");
+    printf("2. cSensMat:  Summary heatmap of coefficients.\n");
+}
+
+// ==============================================================================
+// 9. SYSTEMATIC SOLVER
+// ==============================================================================
+
+struct SystematicCalculator
+{
+    // Matrice di Sensibilità (Hardcoded dai risultati precedenti)
+    // Righe: ShiftX, ShiftZ, RotX, RotZ, ShearX, ShearZ
+    // Colonne: x0, z0, sx, sz
+    // Units:
+    //  Input: [mm, mm, mrad, mrad, mm, mm]
+    //  Output: [mm, mm, mrad, mrad]
+    static constexpr double M[6][4] = {
+        { -0.0710, -0.0144, 0.7249, -0.0148 }, // Shift X [mm]
+        { 0.0006, -0.9636, -0.0305, 0.0410 }, // Shift Z [mm]
+        { 7.2e-05, 0.0014, -0.0049, -1.0240 }, // Rot X [mrad]
+        { 0.0003, -0.0003, 1.0115, 0.0071 }, // Rot Z [mrad]
+        { 0.0041, -0.0005, 1.0589, -0.0213 }, // Shear X [mm]
+        { 0.0019, 0.0501, 0.0197, 1.1175 } // Shear Z [mm]
+        // { 0., 0., 0., 0. }, // Shear X [mm]
+        // { 0., 0., 0., 0. }, // Shear Z [mm]
+    };
+
+    /**
+     * @brief Calcola lo spostamento atteso sui parametri fittati (Predict)
+     * dati i valori dei sistematici in input.
+     *
+     * @param shiftX [mm]
+     * @param shiftZ [mm]
+     * @param rotX [mrad]
+     * @param rotZ [mrad]
+     * @param shearX [mm]
+     * @param shearZ [mm]
+     */
+    static void Predict(double shiftX, double shiftZ, double rotX, double rotZ,
+        double shearX, double shearZ)
+    {
+        double S[6] = { shiftX, shiftZ, rotX, rotZ, shearX, shearZ };
+        double P[4] = { 0, 0, 0, 0 }; // x0, z0, sx, sz
+
+        // P = M^T * S (Attenzione: la matrice sopra è [Sorgente][Parametro],
+        // quindi tecnicamente P_j = Sum_i (M_ij * S_i))
+
+        for(int j = 0; j < 4; ++j) // Loop Parametri
+        {
+            for(int i = 0; i < 6; ++i) // Loop Sistematici
+            {
+                P[j] += M[i][j] * S[i];
+            }
+        }
+
+        printf("\n=== SYSTEMATIC PREDICTION ===\n");
+        printf("Input Systematics:\n");
+        printf("  Shift X: %8.4f mm\n", shiftX);
+        printf("  Shift Z: %8.4f mm\n", shiftZ);
+        printf("  Rot X:   %8.4f mrad\n", rotX);
+        printf("  Rot Z:   %8.4f mrad\n", rotZ);
+        printf("  Shear X: %8.4f mm\n", shearX);
+        printf("  Shear Z: %8.4f mm\n", shearZ);
+        printf("-----------------------------\n");
+        printf("Predicted Parameter Bias:\n");
+        printf("  Delta x0: %8.4f mm\n", P[0]);
+        printf("  Delta z0: %8.4f mm\n", P[1]);
+        printf("  Delta sx: %8.4f mrad\n", P[2]);
+        printf("  Delta sz: %8.4f mrad\n", P[3]);
+        printf("=============================\n");
+    }
+
+    /**
+     * @brief Calcola i parametri di allineamento (Sistematici) usando SVD.
+     * Risolve il sistema lineare A * x = b dove:
+     *  - A è la matrice Jacobiana (4x6) trasposta di M
+     *  - x è il vettore dei sistematici cercati (6 elementi)
+     *  - b è il vettore dei residui osservati (4 elementi)
+     *
+     * Essendo il sistema sottodeterminato (4 equazioni, 6 incognite),
+     * SVD fornisce la soluzione a norma minima (Minimum Norm Solution).
+     */
+    static void CalculateAlignment(
+        double dx0, double dz0, double dsx, double dsz)
+    {
+        // Costruzione matrice A (4x6)
+        TMatrixD A(4, 6);
+        for(int obs = 0; obs < 4; ++obs)
+        {
+            for(int sys = 0; sys < 6; ++sys)
+            {
+                A[obs][sys] = M[sys][obs]; // Nota gli indici scambiati rispetto
+                                           // all'array M statico
+            }
+        }
+
+        TVectorD b(4);
+        b[0] = dx0;
+        b[1] = dz0;
+        b[2] = dsx;
+        b[3] = dsz;
+
+        printf("\n=== ALIGNMENT CALCULATION (SVD - Underdetermined) ===\n");
+        printf("Target Residuals: dx0=%.3f, dz0=%.3f, dsx=%.3f, dsz=%.3f\n",
+            dx0, dz0, dsx, dsz);
+
+        // --- SOLUZIONE DEL SISTEMA SOTTODETERMINATO ---
+
+        // 1. Trasponiamo A per avere una matrice 6x4 (Rows >= Cols)
+        //    Ora abbiamo 6 righe e 4 colonne.
+        TMatrixD AT(TMatrixD::kTransposed, A);
+
+        // 2. Decomposizione SVD sulla Trasposta
+        TDecompSVD svd(AT);
+
+        if(!svd.Decompose())
+        {
+            printf("SVD Decomposition failed.\n");
+            return;
+        }
+
+        // 3. Calcoliamo la Pseudo-Inversa della Trasposta (AT_pinv sarà 4x6)
+        TMatrixD AT_pinv = svd.Invert();
+
+        // 4. La Pseudo-Inversa di A è la trasposta della Pseudo-Inversa di AT
+        //    A_pinv sarà 6x4.
+        TMatrixD A_pinv(TMatrixD::kTransposed, AT_pinv);
+
+        // 5. Calcoliamo i parametri: x = A_pinv * b
+        TVectorD x = A_pinv * b;
+
+        // --- FINE SOLUZIONE ---
+
+        printf("-----------------------------------\n");
+        printf("Estimated Alignment Parameters (Min-Norm Solution):\n");
+        printf("  Shift X: %8.4f mm\n", x[0]);
+        printf("  Shift Z: %8.4f mm\n", x[1]);
+        printf("  Rot X:   %8.4f mrad\n", x[2]);
+        printf("  Rot Z:   %8.4f mrad\n", x[3]);
+        printf("  Shear X: %8.4f mm\n", x[4]);
+        printf("  Shear Z: %8.4f mm\n", x[5]);
+        printf("-----------------------------------\n");
+
+        // Verifica (Reprojection)
+        TVectorD b_rec = A * x;
+        printf("Reprojected Residuals (Check):\n");
+        printf("  dx0: %8.4f (diff: %.1e)\n", b_rec[0], b_rec[0] - dx0);
+        printf("  dz0: %8.4f (diff: %.1e)\n", b_rec[1], b_rec[1] - dz0);
+        printf("  dsx: %8.4f (diff: %.1e)\n", b_rec[2], b_rec[2] - dsx);
+        printf("  dsz: %8.4f (diff: %.1e)\n", b_rec[3], b_rec[3] - dsz);
+        printf("===================================\n");
+    }
+};
+
+void SolveSystematics(double sX = 0, double sZ = 0, double rX = 0,
+    double rZ = 0, double shX = 0, double shZ = 0)
+{
+    SystematicCalculator::Predict(sX, sZ, rX, rZ, shX, shZ);
+}
+
+void FindAlignment(double dx0, double dz0, double dsx, double dsz)
+{
+    SystematicCalculator::CalculateAlignment(dx0, dz0, dsx * 1e3, dsz * 1e3);
 }

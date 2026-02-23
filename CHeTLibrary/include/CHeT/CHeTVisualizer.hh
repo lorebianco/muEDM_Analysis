@@ -50,19 +50,22 @@ struct VisLineTrack
     int color; ///< ROOT Color index
     int width; ///< Line width
     int style; ///< Line style
+    bool isLocalFrame; ///< If true, coordinates are in Detector Local Frame
 
     /**
      * @brief Construct a new VisLineTrack.
      * Automatically normalizes the direction vector (dx, dy, dz).
      */
     VisLineTrack(double _x, double _y, double _z, double _dx, double _dy,
-        double _dz, int _col = kYellow, int _w = 2, int _s = 1)
+        double _dz, int _col = kYellow, int _w = 2, int _s = 1,
+        bool _isLocal = false)
         : x0(_x)
         , y0(_y)
         , z0(_z)
         , color(_col)
         , width(_w)
         , style(_s)
+        , isLocalFrame(_isLocal)
     {
         double norm = std::sqrt(_dx * _dx + _dy * _dy + _dz * _dz);
         if(norm > 0)
@@ -108,15 +111,17 @@ struct VisPoint3D
     int color; ///< ROOT Color index
     int markerStyle; ///< ROOT Marker style
     double size; ///< Marker size
+    bool isLocalFrame; ///< If true, coordinates are in Detector Local Frame
 
     VisPoint3D(double _x, double _y, double _z, int _col = kRed, int _mst = 20,
-        double _sz = 1.0)
+        double _sz = 1.0, bool _isLocal = false)
         : x(_x)
         , y(_y)
         , z(_z)
         , color(_col)
         , markerStyle(_mst)
         , size(_sz)
+        , isLocalFrame(_isLocal)
     {
     }
 };

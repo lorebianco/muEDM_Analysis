@@ -227,7 +227,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
     {
         TGraph *gi = new TGraph();
         for(size_t i = 0; i < inters.size(); ++i)
-            gi->SetPoint(i, inters[i].x, inters[i].y);
+            gi->SetPoint(i, inters[i].x_loc, inters[i].y_loc);
         gi->SetMarkerStyle(20);
         gi->SetMarkerSize(0.8);
         gi->SetMarkerColor(kBlack);
@@ -316,12 +316,88 @@ void Draw3D(const std::vector<int> &hit_ids,
     else
         c_3d->Clear();
 
-    // Frame limits
-    const double z_lim = 190.0;
-    const double r_lim = 35.0;
+    // Calculate dynamic bounding box based on geometry and transformation
+    double min_x_phys = 1e9, max_x_phys = -1e9;
+    double min_y_phys = 1e9, max_y_phys = -1e9;
+    double min_z_phys = 1e9, max_z_phys = -1e9;
 
-    TH3F *h_frame = new TH3F("h_frame", "; Z [mm]; X [mm]; Y [mm]", 1, -z_lim,
-        z_lim, 1, -r_lim, r_lim, 1, -r_lim, r_lim);
+    auto cylinders = CHeT::Config::GetCylinders();
+    double max_R = 0;
+    for(const auto &cyl : cylinders)
+    {
+        if(cyl.outer.radius > max_R)
+            max_R = cyl.outer.radius;
+    }
+    if(max_R < 1.0)
+        max_R = 100.0; // Fallback
+
+    double corners[8][3] = { { max_R, max_R, CHeT::Config::L_HALF },
+        { max_R, -max_R, CHeT::Config::L_HALF },
+        { -max_R, max_R, CHeT::Config::L_HALF },
+        { -max_R, -max_R, CHeT::Config::L_HALF },
+        { max_R, max_R, -CHeT::Config::L_HALF },
+        { max_R, -max_R, -CHeT::Config::L_HALF },
+        { -max_R, max_R, -CHeT::Config::L_HALF },
+        { -max_R, -max_R, -CHeT::Config::L_HALF } };
+
+    for(int i = 0; i < 8; ++i)
+    {
+        double x = corners[i][0];
+        double y = corners[i][1];
+        double z = corners[i][2];
+        CHeT::Config::ApplyTransformation(x, y, z);
+
+        if(x < min_x_phys)
+            min_x_phys = x;
+        if(x > max_x_phys)
+            max_x_phys = x;
+        if(y < min_y_phys)
+            min_y_phys = y;
+        if(y > max_y_phys)
+            max_y_phys = y;
+        if(z < min_z_phys)
+            min_z_phys = z;
+        if(z > max_z_phys)
+            max_z_phys = z;
+    }
+
+    double margin = 20.0;
+    min_x_phys -= margin;
+    max_x_phys += margin;
+    min_y_phys -= margin;
+    max_y_phys += margin;
+    min_z_phys -= margin;
+    max_z_phys += margin;
+
+    // Force aspect ratio to be isotropic (Cube) only if rotated
+    double rx, ry, rz;
+    CHeT::Config::GetRotation(rx, ry, rz);
+    bool isRotated
+        = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
+
+    if(isRotated)
+    {
+        double dx = max_x_phys - min_x_phys;
+        double dy = max_y_phys - min_y_phys;
+        double dz = max_z_phys - min_z_phys;
+        double max_dim = std::max({ dx, dy, dz });
+
+        double cx = (min_x_phys + max_x_phys) / 2.0;
+        double cy = (min_y_phys + max_y_phys) / 2.0;
+        double cz = (min_z_phys + max_z_phys) / 2.0;
+
+        min_x_phys = cx - max_dim / 2.0;
+        max_x_phys = cx + max_dim / 2.0;
+        min_y_phys = cy - max_dim / 2.0;
+        max_y_phys = cy + max_dim / 2.0;
+        min_z_phys = cz - max_dim / 2.0;
+        max_z_phys = cz + max_dim / 2.0;
+    }
+
+    // ROOT Frame: X->Z_phys, Y->X_phys, Z->Y_phys
+    TH3F *h_frame
+        = new TH3F("h_frame", "; Z [mm]; X [mm]; Y [mm]", 1, min_z_phys,
+            max_z_phys, 1, min_x_phys, max_x_phys, 1, min_y_phys, max_y_phys);
     h_frame->SetDirectory(
         0); // Detach from directory to prevent ROOT auto-deletion issues
     h_frame->SetStats(0);
@@ -356,8 +432,14 @@ void Draw3D(const std::vector<int> &hit_ids,
                         double a = (z + CHeT::Config::L_HALF)
                             / (2.0 * CHeT::Config::L_HALF);
                         double ph = p.phi0 + p.dir * a * M_PI;
-                        bg_f->SetPoint(
-                            i, z, p.r * std::cos(ph), p.r * std::sin(ph));
+
+                        double x3 = p.r * std::cos(ph);
+                        double y3 = p.r * std::sin(ph);
+                        double z3 = z;
+                        CHeT::Config::ApplyTransformation(x3, y3, z3);
+
+                        // Map to ROOT: X_root=z, Y_root=x, Z_root=y
+                        bg_f->SetPoint(i, z3, x3, y3);
                     }
                     bg_f->SetLineColorAlpha(p.color, 0.1); // Very transparent
                     bg_f->Draw("same");
@@ -382,7 +464,14 @@ void Draw3D(const std::vector<int> &hit_ids,
             double a
                 = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
             double ph = p.phi0 + p.dir * a * M_PI;
-            fl->SetPoint(i, z, p.r * std::cos(ph), p.r * std::sin(ph));
+
+            double x3 = p.r * std::cos(ph);
+            double y3 = p.r * std::sin(ph);
+            double z3 = z;
+            CHeT::Config::ApplyTransformation(x3, y3, z3);
+
+            // Map to ROOT: X_root=z, Y_root=x, Z_root=y
+            fl->SetPoint(i, z3, x3, y3);
         }
         fl->SetLineColor(p.color);
         fl->SetLineWidth(3);
@@ -390,14 +479,21 @@ void Draw3D(const std::vector<int> &hit_ids,
     }
 
     // --- Draw Tracks ---
-    for(const auto &tr : tracks)
+    for(const auto &tr_in : tracks)
     {
+        VisLineTrack tr = tr_in;
+        if(tr.isLocalFrame)
+        {
+            CHeT::Config::ApplyTransformation(tr.x0, tr.y0, tr.z0);
+            CHeT::Config::ApplyRotation(tr.ux, tr.uy, tr.uz);
+        }
+
         double tmin, tmax;
         // Use the internal helper function
         bool ok = ClipLineToBox(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz,
-            -r_lim, r_lim, // X
-            -r_lim, r_lim, // Y
-            -z_lim, z_lim, // Z
+            min_x_phys, max_x_phys, // X
+            min_y_phys, max_y_phys, // Y
+            min_z_phys, max_z_phys, // Z
             tmin, tmax);
 
         if(ok)
@@ -415,8 +511,14 @@ void Draw3D(const std::vector<int> &hit_ids,
     }
 
     // --- Draw 3D Points ---
-    for(const auto &pt : points)
+    for(const auto &pt_in : points)
     {
+        VisPoint3D pt = pt_in;
+        if(pt.isLocalFrame)
+        {
+            CHeT::Config::ApplyTransformation(pt.x, pt.y, pt.z);
+        }
+
         TPolyMarker3D *pm = new TPolyMarker3D(1);
         // Note: Mapping Physics (x,y,z) to ROOT 3D Frame (Z, X, Y)
         // ROOT X axis = Physics Z

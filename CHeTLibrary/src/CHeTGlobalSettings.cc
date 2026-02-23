@@ -12,6 +12,26 @@ namespace Config
 
 // --- Internal Data Structures (Hidden from Header) ---
 
+// Backing variables for geometry settings
+static double g_OFFSET_EXP = 40.0 * (M_PI / 180.0);
+static double g_DELTA1 = 1.267;
+static double g_DELTA2 = 1.420 + (18.0 * M_PI / 180.0);
+static bool g_GeometryDirty = true;
+static std::vector<CylinderConfig> g_Cylinders;
+
+// Rotation Globals (Euler angles in radians)
+static double g_RotX = 0.0;
+static double g_RotY = 0.0;
+static double g_RotZ = 0.0;
+// Precomputed Rotation Matrix (Local -> Global)
+static double g_R[3][3] = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+static bool g_IsRotated = false;
+
+// Translation Globals [mm]
+static double g_TransX = 0.0;
+static double g_TransY = 0.0;
+static double g_TransZ = 0.0;
+
 // Static map for board offsets
 static const std::map<int, int> BOARD_OFFSETS = {
     { 0, 0 }, // Board 0: Cylinder 0 (Inner)
@@ -73,6 +93,165 @@ static const std::map<int, std::map<int, int>> BOARD_MAPS = {
 
 // --- Implementation ---
 
+double GetOffsetExp()
+{
+    return g_OFFSET_EXP;
+}
+void SetOffsetExp(double val)
+{
+    g_OFFSET_EXP = val;
+    g_GeometryDirty = true;
+}
+
+double GetDelta1()
+{
+    return g_DELTA1;
+}
+void SetDelta1(double val)
+{
+    g_DELTA1 = val;
+    g_GeometryDirty = true;
+}
+
+double GetDelta2()
+{
+    return g_DELTA2;
+}
+void SetDelta2(double val)
+{
+    g_DELTA2 = val;
+    g_GeometryDirty = true;
+}
+
+void SetRotation(double rx, double ry, double rz)
+{
+    g_RotX = rx;
+    g_RotY = ry;
+    g_RotZ = rz;
+    g_IsRotated
+        = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
+
+    if(g_IsRotated)
+    {
+        double cx = std::cos(rx), sx = std::sin(rx);
+        double cy = std::cos(ry), sy = std::sin(ry);
+        double cz = std::cos(rz), sz = std::sin(rz);
+
+        // Calculate Rotation Matrix Columns by transforming basis vectors
+        auto rotate = [&](double x, double y, double z, double &ox, double &oy,
+                          double &oz)
+        {
+            // Rx
+            double y1 = y * cx - z * sx;
+            double z1 = y * sx + z * cx;
+            double x1 = x;
+            // Ry
+            double z2 = z1 * cy - x1 * sy;
+            double x2 = z1 * sy + x1 * cy;
+            double y2 = y1;
+            // Rz
+            double x3 = x2 * cz - y2 * sz;
+            double y3 = x2 * sz + y2 * cz;
+            double z3 = z2;
+            ox = x3;
+            oy = y3;
+            oz = z3;
+        };
+
+        // Col 0
+        rotate(1, 0, 0, g_R[0][0], g_R[1][0], g_R[2][0]);
+        // Col 1
+        rotate(0, 1, 0, g_R[0][1], g_R[1][1], g_R[2][1]);
+        // Col 2
+        rotate(0, 0, 1, g_R[0][2], g_R[1][2], g_R[2][2]);
+    }
+    else
+    {
+        // Identity
+        g_R[0][0] = 1;
+        g_R[0][1] = 0;
+        g_R[0][2] = 0;
+        g_R[1][0] = 0;
+        g_R[1][1] = 1;
+        g_R[1][2] = 0;
+        g_R[2][0] = 0;
+        g_R[2][1] = 0;
+        g_R[2][2] = 1;
+    }
+}
+
+void GetRotation(double &rx, double &ry, double &rz)
+{
+    rx = g_RotX;
+    ry = g_RotY;
+    rz = g_RotZ;
+}
+
+void SetTranslation(double tx, double ty, double tz)
+{
+    g_TransX = tx;
+    g_TransY = ty;
+    g_TransZ = tz;
+}
+
+void GetTranslation(double &tx, double &ty, double &tz)
+{
+    tx = g_TransX;
+    ty = g_TransY;
+    tz = g_TransZ;
+}
+
+void ApplyRotation(double &x, double &y, double &z)
+{
+    if(!g_IsRotated)
+        return;
+
+    double xn = g_R[0][0] * x + g_R[0][1] * y + g_R[0][2] * z;
+    double yn = g_R[1][0] * x + g_R[1][1] * y + g_R[1][2] * z;
+    double zn = g_R[2][0] * x + g_R[2][1] * y + g_R[2][2] * z;
+
+    x = xn;
+    y = yn;
+    z = zn;
+}
+
+void ApplyInverseRotation(double &x, double &y, double &z)
+{
+    if(!g_IsRotated)
+        return;
+
+    // Transpose multiplication
+    double xn = g_R[0][0] * x + g_R[1][0] * y + g_R[2][0] * z;
+    double yn = g_R[0][1] * x + g_R[1][1] * y + g_R[2][1] * z;
+    double zn = g_R[0][2] * x + g_R[1][2] * y + g_R[2][2] * z;
+
+    x = xn;
+    y = yn;
+    z = zn;
+}
+
+void ApplyTransformation(double &x, double &y, double &z)
+{
+    // 1. Rotation (Local -> Aligned Global)
+    ApplyRotation(x, y, z);
+
+    // 2. Translation (Aligned Global -> Global)
+    x += g_TransX;
+    y += g_TransY;
+    z += g_TransZ;
+}
+
+void ApplyInverseTransformation(double &x, double &y, double &z)
+{
+    // 1. Inverse Translation (Global -> Aligned Global)
+    x -= g_TransX;
+    y -= g_TransY;
+    z -= g_TransZ;
+
+    // 2. Inverse Rotation (Aligned Global -> Local)
+    ApplyInverseRotation(x, y, z);
+}
+
 int GetBoardGlobalOffset(int board_id)
 {
     auto it = BOARD_OFFSETS.find(board_id);
@@ -81,20 +260,25 @@ int GetBoardGlobalOffset(int board_id)
 
 const std::vector<CylinderConfig> &GetCylinders()
 {
-    // IMPROVEMENT: Static initialization. The vector is created only once.
-    static const std::vector<CylinderConfig> cylinders = {
-        {
-            0, // Cylinder 1
-            { 45, 17.0, 4.294 + DELTA1 + OFFSET_EXP, -1, 632 }, // Inner (Red)
-            { 49, 17.0, 3.829 + DELTA1 + OFFSET_EXP, 1, 807 } // Outer (Orange)
-        },
-        {
-            1, // Cylinder 2
-            { 59, 21.0, 2.609 + DELTA2 + OFFSET_EXP, -1, 600 }, // Inner (Blue)
-            { 60, 21.0, 3.351 + DELTA2 + OFFSET_EXP, 1, 432 } // Outer (Cyan)
-        }
-    };
-    return cylinders;
+    if(g_GeometryDirty || g_Cylinders.empty())
+    {
+        g_Cylinders = { {
+                            0, // Cylinder 1
+                            { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1,
+                                632 }, // Inner (Red)
+                            { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1,
+                                807 } // Outer (Orange)
+                        },
+            {
+                1, // Cylinder 2
+                { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1,
+                    600 }, // Inner (Blue)
+                { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1,
+                    432 } // Outer (Cyan)
+            } };
+        g_GeometryDirty = false;
+    }
+    return g_Cylinders;
 }
 
 double wrap0_2pi(double angle)
@@ -198,8 +382,19 @@ std::vector<BundlesIntersection> FindIntersections(
                         // DeltaZ depends on Bundle Width and Helix slope.
                         double deltaZ = (BUNDLE_WIDTH / p1.r) * (L_HALF / M_PI);
 
-                        out.push_back({ zi, p1.r * std::cos(ph),
-                            p1.r * std::sin(ph), p1.cylinderId, deltaZ });
+                        // Calculate local coordinates
+                        double x_loc = p1.r * std::cos(ph);
+                        double y_loc = p1.r * std::sin(ph);
+                        double z_loc = zi;
+
+                        // Apply global rotation (to copies)
+                        double x_rot = x_loc;
+                        double y_rot = y_loc;
+                        double z_rot = z_loc;
+                        ApplyTransformation(x_rot, y_rot, z_rot);
+
+                        out.push_back({ z_rot, x_rot, y_rot, z_loc, x_loc,
+                            y_loc, p1.cylinderId, deltaZ });
                     }
                 }
             }

@@ -1,4 +1,3 @@
-#include "CHeT/CHeTGlobalSettings.hh"
 #include "CHeT/CHeTReader.hh"
 
 using namespace std;
@@ -38,6 +37,27 @@ void Reader::SetSingleEvent(long eventID)
     fHeadNode = fDF.Range(eventID, eventID + 1);
 }
 
+void Reader::SetEnabledBoards(const std::vector<int> &boards)
+{
+    fEnabledBoards = boards;
+}
+
+void Reader::SetEnabledCylinders(const std::vector<int> &cylinders)
+{
+    fEnabledCylinders = cylinders;
+}
+
+void Reader::SetEnabledLayers(const std::vector<int> &layers)
+{
+    fEnabledLayers = layers;
+}
+
+void Reader::SetEnabledGeometries(
+    const std::vector<std::pair<int, int>> &geometries)
+{
+    fEnabledGeometries = geometries;
+}
+
 ROOT::RDF::RNode Reader::GetRaw()
 {
     return fHeadNode;
@@ -50,6 +70,12 @@ ROOT::RDF::RNode Reader::GetEstimators()
     double tMax = fToaMax;
     unsigned int totMin = fTotMin;
     unsigned int totMax = fTotMax;
+
+    // Capture filters
+    auto enabledBoards = fEnabledBoards;
+    auto enabledCylinders = fEnabledCylinders;
+    auto enabledLayers = fEnabledLayers;
+    auto enabledGeometries = fEnabledGeometries;
 
     // 1. ToA Corrections (Alignment w.r.t. FD00)
     // FD00 is the reference: only LSB -> ns conversion
@@ -95,8 +121,39 @@ ROOT::RDF::RNode Reader::GetEstimators()
         lay_cols.push_back(lay_n);
         bund_cols.push_back(bund_n);
 
+        // Check Board Filtering
+        bool isBoardEnabled = true;
+        if(!enabledBoards.empty())
+        {
+            if(std::find(enabledBoards.begin(), enabledBoards.end(), b_id)
+                == enabledBoards.end())
+            {
+                isBoardEnabled = false;
+            }
+        }
+
+        if(!isBoardEnabled)
+        {
+            // Define empty columns if board is disabled
+            // We use specific types to match the expected types in Concatenate
+            df_geo = df_geo.Define(toa_n, []() { return RVecD {}; })
+                         .Define(tot_n, []() { return RVecUS {}; })
+                         .Define(cyl_n, []() { return RVecI {}; })
+                         .Define(lay_n, []() { return RVecI {}; })
+                         .Define(bund_n, []() { return RVecI {}; });
+            continue;
+        }
+
+        // If board is enabled, we first calculate everything into temporary
+        // columns, then apply cylinder/layer filtering.
+        string toa_tmp = toa_n + "_tmp";
+        string tot_tmp = tot_n + "_tmp";
+        string cyl_tmp = cyl_n + "_tmp";
+        string lay_tmp = lay_n + "_tmp";
+        string bund_tmp = bund_n + "_tmp";
+
         // Time cuts on ToA and ToT
-        df_geo = df_geo.Define(toa_n,
+        df_geo = df_geo.Define(toa_tmp,
             [=](const RVecD &toa, const RVecUS &tot)
             {
                 return toa[(toa > tMin) && (toa < tMax) && (tot > totMin)
@@ -104,7 +161,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
             },
             { "FD" + id + "_corrToA", "FD" + id + "_ToT" });
 
-        df_geo = df_geo.Define(tot_n,
+        df_geo = df_geo.Define(tot_tmp,
             [=](const RVecD &toa, const RVecUS &tot)
             {
                 return tot[(toa > tMin) && (toa < tMax) && (tot > totMin)
@@ -113,7 +170,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
             { "FD" + id + "_corrToA", "FD" + id + "_ToT" });
 
         // Bundle ID Calculation (Geometry)
-        df_geo = df_geo.Define(bund_n,
+        df_geo = df_geo.Define(bund_tmp,
             [=](const RVecD &toa, const RVecUS &tot, const RVecUC &chans)
             {
                 RVecI bunds;
@@ -131,7 +188,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
                 "FD" + id + "_channel" });
 
         // Derive Cylinder and Layer from Global IDs
-        df_geo = df_geo.Define(cyl_n,
+        df_geo = df_geo.Define(cyl_tmp,
             [](const RVecI &bunds)
             {
                 RVecI cyls;
@@ -141,9 +198,9 @@ ROOT::RDF::RNode Reader::GetEstimators()
                             : -1);
                 return cyls;
             },
-            { bund_n });
+            { bund_tmp });
 
-        df_geo = df_geo.Define(lay_n,
+        df_geo = df_geo.Define(lay_tmp,
             [](const RVecI &bunds)
             {
                 RVecI lays;
@@ -152,7 +209,95 @@ ROOT::RDF::RNode Reader::GetEstimators()
                         (b >= 0) ? CHeT::Config::GetFiberProp(b).layerId : -1);
                 return lays;
             },
-            { bund_n });
+            { bund_tmp });
+
+        // Create Filter Mask based on Cylinder and Layer
+        string mask_n = "FD" + id + "_geo_mask";
+        df_geo = df_geo.Define(mask_n,
+            [enabledCylinders, enabledLayers, enabledGeometries](
+                const RVecI &cyls, const RVecI &lays)
+            {
+                // By default, keep everything (mask=1)
+                RVec<int> mask(cyls.size(), 1);
+
+                // If no filters are set, return all 1s
+                if(enabledCylinders.empty() && enabledLayers.empty()
+                    && enabledGeometries.empty())
+                {
+                    return mask;
+                }
+
+                for(size_t i = 0; i < cyls.size(); ++i)
+                {
+                    // Check Cylinder
+                    if(!enabledCylinders.empty())
+                    {
+                        bool found = false;
+                        for(auto c : enabledCylinders)
+                            if(c == cyls[i])
+                            {
+                                found = true;
+                                break;
+                            }
+                        if(!found)
+                        {
+                            mask[i] = 0;
+                            continue;
+                        } // Optimization: if fail cyl, fail hit
+                    }
+
+                    // Check Layer
+                    if(!enabledLayers.empty())
+                    {
+                        bool found = false;
+                        for(auto l : enabledLayers)
+                            if(l == lays[i])
+                            {
+                                found = true;
+                                break;
+                            }
+                        if(!found)
+                            mask[i] = 0;
+                    }
+
+                    // Check Specific Geometries (Cyl, Lay)
+                    if(!enabledGeometries.empty())
+                    {
+                        bool found = false;
+                        for(const auto &geo : enabledGeometries)
+                        {
+                            if(geo.first == cyls[i] && geo.second == lays[i])
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found)
+                            mask[i] = 0;
+                    }
+                }
+                return mask;
+            },
+            { cyl_tmp, lay_tmp });
+
+        // Apply Mask to final columns
+        // We use explicit lambdas to ensure type correctness
+        df_geo = df_geo
+                     .Define(toa_n,
+                         [](const RVecD &v, const RVecI &m) { return v[m]; },
+                         { toa_tmp, mask_n })
+                     .Define(tot_n,
+                         [](const RVecUS &v, const RVecI &m) { return v[m]; },
+                         { tot_tmp, mask_n })
+                     .Define(cyl_n,
+                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                         { cyl_tmp, mask_n })
+                     .Define(lay_n,
+                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                         { lay_tmp, mask_n })
+                     .Define(bund_n,
+                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                         { bund_tmp, mask_n });
     }
 
     // 3. Global Concatenation (All Boards -> Single Event Vector)

@@ -1,15 +1,17 @@
 #ifndef CHETREADER_HH
 #define CHETREADER_HH
 
+#include <algorithm>
 #include <iostream>
 #include <limits>
 #include <map>
 #include <string>
 #include <vector>
 
-// ROOT Includes
 #include <ROOT/RDataFrame.hxx>
 #include <ROOT/RVec.hxx>
+
+#include "CHeT/CHeTGlobalSettings.hh"
 
 namespace CHeT
 {
@@ -65,6 +67,35 @@ class Reader
     void SetSingleEvent(long eventID);
 
     /**
+     * @brief Restricts the analysis to specific boards.
+     * Only hits from these boards will be processed.
+     * @param boards Vector of board IDs (0, 1, 2, 3).
+     */
+    void SetEnabledBoards(const std::vector<int> &boards);
+
+    /**
+     * @brief Restricts the analysis to specific cylinders.
+     * Only hits belonging to these cylinders will be included in the output.
+     * @param cylinders Vector of cylinder IDs.
+     */
+    void SetEnabledCylinders(const std::vector<int> &cylinders);
+
+    /**
+     * @brief Restricts the analysis to specific layers.
+     * Only hits belonging to these layers will be included in the output.
+     * @param layers Vector of layer IDs.
+     */
+    void SetEnabledLayers(const std::vector<int> &layers);
+
+    /**
+     * @brief Restricts the analysis to specific (cylinder, layer) combinations.
+     * Only hits matching one of the provided pairs will be included.
+     * @param geometries Vector of pairs {cylinderId, layerId}.
+     */
+    void SetEnabledGeometries(
+        const std::vector<std::pair<int, int>> &geometries);
+
+    /**
      * @brief Returns the Raw node (the original tree).
      */
     ROOT::RDF::RNode GetRaw();
@@ -91,6 +122,12 @@ class Reader
     double fToaMax = 1e9;
     unsigned int fTotMin = 0;
     unsigned int fTotMax = 99999;
+
+    // Filters
+    std::vector<int> fEnabledBoards;
+    std::vector<int> fEnabledCylinders;
+    std::vector<int> fEnabledLayers;
+    std::vector<std::pair<int, int>> fEnabledGeometries;
 };
 
 } // namespace Data

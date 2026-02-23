@@ -68,6 +68,9 @@ struct BundlesIntersection
     double z; ///< Longitudinal position [mm]
     double x; ///< Transverse position X [mm]
     double y; ///< Transverse position Y [mm]
+    double z_loc; ///< Longitudinal position [mm] (Local)
+    double x_loc; ///< Transverse position X [mm] (Local)
+    double y_loc; ///< Transverse position Y [mm] (Local)
     int cylinderId; ///< ID of the cylinder where intersection occurs
     double widthZ; ///< Longitudinal uncertainty due to fiber thickness [mm]
 };
@@ -79,9 +82,125 @@ constexpr double L_HALF = 150.0; ///< Half-length of the detector [mm]
 constexpr double BUNDLE_WIDTH = 2.0; ///< Physical width of a bundle [mm]
 
 // --- Experimental Offsets ---
-constexpr double OFFSET_EXP = 40.0 * (M_PI / 180.0);
-constexpr double DELTA1 = 1.267;
-constexpr double DELTA2 = 1.420 + (18.0 * M_PI / 180.0);
+
+/**
+ * @brief Retrieves the current experimental angular offset (OFFSET_EXP).
+ * @return The offset value in radians.
+ */
+double GetOffsetExp();
+
+/**
+ * @brief Sets the experimental angular offset (OFFSET_EXP).
+ * @note Setting this value invalidates the geometry cache, causing a lazy
+ * recalculation.
+ * @param val The new offset value in radians.
+ */
+void SetOffsetExp(double val);
+
+/**
+ * @brief Retrieves the current experimental parameter DELTA1.
+ * Used in the configuration of Cylinder 1.
+ * @return The value of DELTA1.
+ */
+double GetDelta1();
+
+/**
+ * @brief Sets the experimental parameter DELTA1.
+ * @note Setting this value invalidates the geometry cache, causing a lazy
+ * recalculation.
+ * @param val The new value for DELTA1.
+ */
+void SetDelta1(double val);
+
+/**
+ * @brief Retrieves the current experimental parameter DELTA2.
+ * Used in the configuration of Cylinder 2.
+ * @return The value of DELTA2.
+ */
+double GetDelta2();
+
+/**
+ * @brief Sets the experimental parameter DELTA2.
+ * @note Setting this value invalidates the geometry cache, causing a lazy
+ * recalculation.
+ * @param val The new value for DELTA2.
+ */
+void SetDelta2(double val);
+
+// --- Rotation Settings ---
+
+/**
+ * @brief Sets the global rotation of the detector using Euler angles.
+ * Rotations are applied in order: X, then Y, then Z.
+ * @param rx Rotation around X axis [rad]
+ * @param ry Rotation around Y axis [rad]
+ * @param rz Rotation around Z axis [rad]
+ */
+void SetRotation(double rx, double ry, double rz);
+
+/**
+ * @brief Retrieves the current global rotation angles.
+ * @param rx Output rotation around X axis [rad]
+ * @param ry Output rotation around Y axis [rad]
+ * @param rz Output rotation around Z axis [rad]
+ */
+void GetRotation(double &rx, double &ry, double &rz);
+
+/**
+ * @brief Sets the global translation of the detector origin.
+ * @param tx Translation X [mm]
+ * @param ty Translation Y [mm]
+ * @param tz Translation Z [mm]
+ */
+void SetTranslation(double tx, double ty, double tz);
+
+/**
+ * @brief Retrieves the current global translation.
+ * @param tx Output Translation X [mm]
+ * @param ty Output Translation Y [mm]
+ * @param tz Output Translation Z [mm]
+ */
+void GetTranslation(double &tx, double &ty, double &tz);
+
+/**
+ * @brief Rotates a 3D VECTOR in-place from the Detector Local Frame to the
+ * Global Lab Frame. Uses the currently set rotation angles.
+ * This applies ONLY rotation (suitable for direction vectors).
+ * @param x X component
+ * @param y Y component
+ * @param z Z component
+ */
+void ApplyRotation(double &x, double &y, double &z);
+
+/**
+ * @brief Rotates a 3D VECTOR in-place from the Global Lab Frame to the
+ * Detector Local Frame. (Inverse of ApplyRotation).
+ * This applies ONLY rotation (suitable for direction vectors).
+ * @param x X component
+ * @param y Y component
+ * @param z Z component
+ */
+void ApplyInverseRotation(double &x, double &y, double &z);
+
+/**
+ * @brief Transforms a 3D POINT in-place from the Detector Local Frame to the
+ * Global Lab Frame. Applies Rotation then Translation.
+ * P_global = R * P_local + T
+ * @param x X coordinate [mm]
+ * @param y Y coordinate [mm]
+ * @param z Z coordinate [mm]
+ */
+void ApplyTransformation(double &x, double &y, double &z);
+
+/**
+ * @brief Transforms a 3D POINT in-place from the Global Lab Frame to the
+ * Detector Local Frame. Applies Inverse Translation then Inverse Rotation.
+ * P_local = R^T * (P_global - T)
+ * @param x X coordinate [mm]
+ * @param y Y coordinate [mm]
+ * @param z Z coordinate [mm]
+ */
+void ApplyInverseTransformation(double &x, double &y, double &z);
 
 // --- Function Declarations ---
 
