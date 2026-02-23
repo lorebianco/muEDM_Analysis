@@ -95,8 +95,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad2b4edc7d09091dd51718288162616af" id="r_ad2b4edc7d09091dd51718288162616af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html#ad2b4edc7d09091dd51718288162616af">VisPoint3D</a> (double _x, double _y, double _z, int _col=kRed, int _mst=20, double _sz=1.0)</td></tr>
-<tr class="separator:ad2b4edc7d09091dd51718288162616af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a29435025ee86bf9f1afcd9347e2e1f" id="r_a2a29435025ee86bf9f1afcd9347e2e1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html#a2a29435025ee86bf9f1afcd9347e2e1f">VisPoint3D</a> (double _x, double _y, double _z, int _col=kRed, int _mst=20, double _sz=1.0, bool _isLocal=false)</td></tr>
+<tr class="separator:a2a29435025ee86bf9f1afcd9347e2e1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -116,14 +116,17 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a2864c96fa56bc3cde73c0456afc1c871" id="r_a2864c96fa56bc3cde73c0456afc1c871"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html#a2864c96fa56bc3cde73c0456afc1c871">size</a></td></tr>
 <tr class="memdesc:a2864c96fa56bc3cde73c0456afc1c871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marker size.  <br /></td></tr>
 <tr class="separator:a2864c96fa56bc3cde73c0456afc1c871"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b856e22db624c2cdd53532a0bef9e02" id="r_a8b856e22db624c2cdd53532a0bef9e02"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html#a8b856e22db624c2cdd53532a0bef9e02">isLocalFrame</a></td></tr>
+<tr class="memdesc:a8b856e22db624c2cdd53532a0bef9e02"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, coordinates are in Detector Local Frame.  <br /></td></tr>
+<tr class="separator:a8b856e22db624c2cdd53532a0bef9e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structure representing a 3D point (e.g., space points, clusters). </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00105">105</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00108">108</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad2b4edc7d09091dd51718288162616af" name="ad2b4edc7d09091dd51718288162616af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2b4edc7d09091dd51718288162616af">&#9670;&#160;</a></span>VisPoint3D()</h2>
+<a id="a2a29435025ee86bf9f1afcd9347e2e1f" name="a2a29435025ee86bf9f1afcd9347e2e1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a29435025ee86bf9f1afcd9347e2e1f">&#9670;&#160;</a></span>VisPoint3D()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,7 +168,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>_sz</em> = <code>1.0</code>&#160;</td>
+          <td class="paramname"><em>_sz</em> = <code>1.0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>_isLocal</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -180,7 +189,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00112">112</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00116">116</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -199,7 +208,25 @@ Public Attributes</h2></td></tr>
 
 <p>ROOT Color index. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00108">108</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00111">111</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+
+</div>
+</div>
+<a id="a8b856e22db624c2cdd53532a0bef9e02" name="a8b856e22db624c2cdd53532a0bef9e02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b856e22db624c2cdd53532a0bef9e02">&#9670;&#160;</a></span>isLocalFrame</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CHeT::Vis::VisPoint3D::isLocalFrame</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>If true, coordinates are in Detector Local Frame. </p>
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00114">114</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -217,7 +244,7 @@ Public Attributes</h2></td></tr>
 
 <p>ROOT Marker style. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00109">109</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00112">112</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -235,7 +262,7 @@ Public Attributes</h2></td></tr>
 
 <p>Marker size. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00110">110</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00113">113</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -251,7 +278,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00107">107</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00110">110</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -267,7 +294,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00107">107</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00110">110</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -285,7 +312,7 @@ Public Attributes</h2></td></tr>
 
 <p>Coordinates. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00107">107</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00110">110</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>

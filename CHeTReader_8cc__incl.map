@@ -1,29 +1,30 @@
 <map id="src/CHeTReader.cc" name="src/CHeTReader.cc">
-<area shape="rect" id="Node000001" title=" " alt="" coords="311,5,453,31"/>
-<area shape="rect" id="Node000002" href="$CHeTGlobalSettings_8hh.html" title=" " alt="" coords="173,79,383,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="367,33,308,73,305,68,364,28"/>
-<area shape="rect" id="Node000009" href="$CHeTReader_8hh.html" title=" " alt="" coords="407,79,568,104"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="400,28,460,69,458,73,397,33"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="93,152,178,177"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="256,106,172,148,170,143,254,102"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="5,152,68,177"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="240,107,82,153,81,148,238,101"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="447,152,527,177"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="312,101,441,145,439,150,311,107"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="202,152,253,177"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="272,106,246,142,241,139,267,103"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="277,152,335,177"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="285,103,299,138,294,140,280,105"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="360,152,423,177"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="298,102,363,142,360,147,295,106"/>
-<area shape="poly" id="edge9_Node000009_Node000005" title=" " alt="" coords="490,104,490,138,485,138,485,104"/>
-<area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="444,107,267,154,265,149,442,101"/>
-<area shape="poly" id="edge12_Node000009_Node000007" title=" " alt="" coords="459,107,349,149,347,144,457,102"/>
-<area shape="poly" id="edge13_Node000009_Node000008" title=" " alt="" coords="473,106,420,146,417,141,470,102"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="551,152,610,177"/>
-<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="504,102,556,141,553,146,501,106"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="635,152,807,177"/>
-<area shape="poly" id="edge14_Node000009_Node000011" title=" " alt="" coords="526,101,671,145,669,151,524,107"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="831,152,954,177"/>
-<area shape="poly" id="edge15_Node000009_Node000012" title=" " alt="" coords="553,101,818,148,817,153,552,107"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="374,5,517,31"/>
+<area shape="rect" id="Node000002" href="$CHeTReader_8hh.html" title=" " alt="" coords="365,79,526,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="448,31,448,65,443,65,443,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,225,91,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="365,102,263,119,209,134,157,154,109,184,70,218,67,213,106,180,155,150,207,129,262,114,364,97"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="115,225,195,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="365,104,254,123,207,137,176,154,167,166,161,181,157,212,151,211,156,180,163,164,173,150,205,132,253,117,364,98"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="533,152,592,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="466,102,533,142,530,147,463,106"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="219,225,269,251"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="365,103,258,121,214,136,198,144,188,153,182,169,188,185,200,200,216,215,213,219,196,204,183,187,177,169,183,151,195,140,212,131,257,116,364,98"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="381,225,440,251"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="445,105,419,213,414,211,440,104"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="465,225,527,251"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="452,104,490,212,485,213,447,105"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="617,152,789,177"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="487,101,649,146,647,151,486,107"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="813,152,936,177"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="515,101,800,148,799,154,514,107"/>
+<area shape="rect" id="Node000011" href="$CHeTGlobalSettings_8hh.html" title=" " alt="" coords="197,152,408,177"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="424,106,339,148,337,143,421,102"/>
+<area shape="poly" id="edge11_Node000011_Node000003" title=" " alt="" coords="262,180,103,224,101,219,261,175"/>
+<area shape="poly" id="edge13_Node000011_Node000004" title=" " alt="" coords="280,180,192,222,190,217,278,175"/>
+<area shape="poly" id="edge14_Node000011_Node000006" title=" " alt="" coords="295,179,264,217,260,213,291,176"/>
+<area shape="poly" id="edge15_Node000011_Node000007" title=" " alt="" coords="321,175,383,215,380,220,319,180"/>
+<area shape="poly" id="edge16_Node000011_Node000008" title=" " alt="" coords="335,175,453,218,451,223,333,180"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="294,225,357,251"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="309,177,320,211,315,213,304,178"/>
 </map>

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['vislinetrack_0',['vislinetrack',['../structCHeT_1_1Vis_1_1VisLineTrack.html',1,'CHeT::Vis::VisLineTrack'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#ad4278e1d9bce2ebee299dc886c720cd2',1,'CHeT::Vis::VisLineTrack::VisLineTrack()']]],
-  ['vispoint2d_1',['vispoint2d',['../structCHeT_1_1Vis_1_1VisPoint2D.html',1,'CHeT::Vis::VisPoint2D'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#ad1406d0948039f3bfb2251415c827731',1,'CHeT::Vis::VisPoint2D::VisPoint2D()']]],
-  ['vispoint3d_2',['vispoint3d',['../structCHeT_1_1Vis_1_1VisPoint3D.html',1,'CHeT::Vis::VisPoint3D'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#ad2b4edc7d09091dd51718288162616af',1,'CHeT::Vis::VisPoint3D::VisPoint3D()']]]
+  ['ux_0',['ux',['../structCHeT_1_1Vis_1_1VisLineTrack.html#afb3cb00be1a0fde301de4483b12b6514',1,'CHeT::Vis::VisLineTrack']]],
+  ['uy_1',['uy',['../structCHeT_1_1Vis_1_1VisLineTrack.html#a48e7669ccc87d0b01943863d26ee6368',1,'CHeT::Vis::VisLineTrack']]],
+  ['uz_2',['uz',['../structCHeT_1_1Vis_1_1VisLineTrack.html#ab22a51cf9666ed12e78c1958db53744d',1,'CHeT::Vis::VisLineTrack']]]
 ];

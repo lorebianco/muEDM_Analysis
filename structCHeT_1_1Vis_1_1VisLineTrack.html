@@ -95,9 +95,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad4278e1d9bce2ebee299dc886c720cd2" id="r_ad4278e1d9bce2ebee299dc886c720cd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html#ad4278e1d9bce2ebee299dc886c720cd2">VisLineTrack</a> (double _x, double _y, double _z, double _dx, double _dy, double _dz, int _col=kYellow, int _w=2, int _s=1)</td></tr>
-<tr class="memdesc:ad4278e1d9bce2ebee299dc886c720cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html" title="Structure representing a reconstructed 3D track for visualization.">VisLineTrack</a>. Automatically normalizes the direction vector (dx, dy, dz).  <br /></td></tr>
-<tr class="separator:ad4278e1d9bce2ebee299dc886c720cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade40453809493a292a443b2b20b65609" id="r_ade40453809493a292a443b2b20b65609"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html#ade40453809493a292a443b2b20b65609">VisLineTrack</a> (double _x, double _y, double _z, double _dx, double _dy, double _dz, int _col=kYellow, int _w=2, int _s=1, bool _isLocal=false)</td></tr>
+<tr class="memdesc:ade40453809493a292a443b2b20b65609"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html" title="Structure representing a reconstructed 3D track for visualization.">VisLineTrack</a>. Automatically normalizes the direction vector (dx, dy, dz).  <br /></td></tr>
+<tr class="separator:ade40453809493a292a443b2b20b65609"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -124,14 +124,17 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a8d6dfa6b9915227a2c34aa60f7335e49" id="r_a8d6dfa6b9915227a2c34aa60f7335e49"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html#a8d6dfa6b9915227a2c34aa60f7335e49">style</a></td></tr>
 <tr class="memdesc:a8d6dfa6b9915227a2c34aa60f7335e49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Line style.  <br /></td></tr>
 <tr class="separator:a8d6dfa6b9915227a2c34aa60f7335e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2120a8a7b1d6a11a00e5eee7dc18bb7" id="r_ae2120a8a7b1d6a11a00e5eee7dc18bb7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html#ae2120a8a7b1d6a11a00e5eee7dc18bb7">isLocalFrame</a></td></tr>
+<tr class="memdesc:ae2120a8a7b1d6a11a00e5eee7dc18bb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, coordinates are in Detector Local Frame.  <br /></td></tr>
+<tr class="separator:ae2120a8a7b1d6a11a00e5eee7dc18bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structure representing a reconstructed 3D track for visualization. </p>
 
 <p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00046">46</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad4278e1d9bce2ebee299dc886c720cd2" name="ad4278e1d9bce2ebee299dc886c720cd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4278e1d9bce2ebee299dc886c720cd2">&#9670;&#160;</a></span>VisLineTrack()</h2>
+<a id="ade40453809493a292a443b2b20b65609" name="ade40453809493a292a443b2b20b65609"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade40453809493a292a443b2b20b65609">&#9670;&#160;</a></span>VisLineTrack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -191,7 +194,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>_s</em> = <code>1</code>&#160;</td>
+          <td class="paramname"><em>_s</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>_isLocal</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -208,7 +217,7 @@ Public Attributes</h2></td></tr>
 
 <p>Construct a new <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html" title="Structure representing a reconstructed 3D track for visualization.">VisLineTrack</a>. Automatically normalizes the direction vector (dx, dy, dz). </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00058">58</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00059">59</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
@@ -228,6 +237,24 @@ Public Attributes</h2></td></tr>
 <p>ROOT Color index. </p>
 
 <p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00050">50</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+
+</div>
+</div>
+<a id="ae2120a8a7b1d6a11a00e5eee7dc18bb7" name="ae2120a8a7b1d6a11a00e5eee7dc18bb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2120a8a7b1d6a11a00e5eee7dc18bb7">&#9670;&#160;</a></span>isLocalFrame</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CHeT::Vis::VisLineTrack::isLocalFrame</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>If true, coordinates are in Detector Local Frame. </p>
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00053">53</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>

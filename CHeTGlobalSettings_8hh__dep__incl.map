@@ -1,11 +1,13 @@
 <map id="include/CHeT/CHeTGlobalSettings.hh" name="include/CHeT/CHeTGlobalSettings.hh">
 <area shape="rect" id="Node000001" title=" " alt="" coords="225,5,488,31"/>
-<area shape="rect" id="Node000002" href="$CHeTVisualizer_8hh.html" title=" " alt="" coords="5,79,236,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="306,37,160,81,158,76,305,32"/>
-<area shape="rect" id="Node000004" href="$CHeTGlobalSettings_8cc.html" title=" " alt="" coords="260,79,453,104"/>
+<area shape="rect" id="Node000002" href="$CHeTReader_8hh.html" title=" " alt="" coords="5,79,217,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="305,37,152,81,150,76,304,32"/>
+<area shape="rect" id="Node000004" href="$CHeTVisualizer_8hh.html" title=" " alt="" coords="241,79,472,104"/>
 <area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="359,44,359,79,354,79,354,44"/>
-<area shape="rect" id="Node000005" href="$CHeTReader_8cc.html" title=" " alt="" coords="477,79,620,104"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="401,33,518,76,516,81,400,38"/>
-<area shape="rect" id="Node000003" href="$CHeTVisualizer_8cc.html" title=" " alt="" coords="40,152,201,177"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="123,118,123,152,118,152,118,118"/>
+<area shape="rect" id="Node000006" href="$CHeTGlobalSettings_8cc.html" title=" " alt="" coords="496,79,689,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="408,32,555,76,554,81,407,37"/>
+<area shape="rect" id="Node000003" href="$CHeTReader_8cc.html" title=" " alt="" coords="40,152,183,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="114,118,114,152,109,152,109,118"/>
+<area shape="rect" id="Node000005" href="$CHeTVisualizer_8cc.html" title=" " alt="" coords="276,152,437,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="359,118,359,152,354,152,354,118"/>
 </map>

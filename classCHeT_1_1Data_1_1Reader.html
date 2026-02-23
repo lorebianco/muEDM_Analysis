@@ -108,6 +108,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1d4a0fcee9a8ff5c640763263d5f76c2" id="r_a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2">SetSingleEvent</a> (long eventID)</td></tr>
 <tr class="memdesc:a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to a single event ID. Replaces any previous range or filter on the event entry.  <br /></td></tr>
 <tr class="separator:a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0a1fe28e0d3fc9db2738d224a701f4d" id="r_ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#ad0a1fe28e0d3fc9db2738d224a701f4d">SetEnabledBoards</a> (const std::vector&lt; int &gt; &amp;boards)</td></tr>
+<tr class="memdesc:ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to specific boards. Only hits from these boards will be processed.  <br /></td></tr>
+<tr class="separator:ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03f72c2389472b342a92c88a87090d12" id="r_a03f72c2389472b342a92c88a87090d12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a03f72c2389472b342a92c88a87090d12">SetEnabledCylinders</a> (const std::vector&lt; int &gt; &amp;cylinders)</td></tr>
+<tr class="memdesc:a03f72c2389472b342a92c88a87090d12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to specific cylinders. Only hits belonging to these cylinders will be included in the output.  <br /></td></tr>
+<tr class="separator:a03f72c2389472b342a92c88a87090d12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23764da54d0c4fe9dd4c6accd45cd410" id="r_a23764da54d0c4fe9dd4c6accd45cd410"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a23764da54d0c4fe9dd4c6accd45cd410">SetEnabledLayers</a> (const std::vector&lt; int &gt; &amp;layers)</td></tr>
+<tr class="memdesc:a23764da54d0c4fe9dd4c6accd45cd410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to specific layers. Only hits belonging to these layers will be included in the output.  <br /></td></tr>
+<tr class="separator:a23764da54d0c4fe9dd4c6accd45cd410"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac68039b496cf0f331ec74a64906bd8c4" id="r_ac68039b496cf0f331ec74a64906bd8c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#ac68039b496cf0f331ec74a64906bd8c4">SetEnabledGeometries</a> (const std::vector&lt; std::pair&lt; int, int &gt; &gt; &amp;geometries)</td></tr>
+<tr class="memdesc:ac68039b496cf0f331ec74a64906bd8c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to specific (cylinder, layer) combinations. Only hits matching one of the provided pairs will be included.  <br /></td></tr>
+<tr class="separator:ac68039b496cf0f331ec74a64906bd8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe7b4c5af57fd61917a3a3e82dea7233" id="r_abe7b4c5af57fd61917a3a3e82dea7233"><td class="memItemLeft" align="right" valign="top">ROOT::RDF::RNode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#abe7b4c5af57fd61917a3a3e82dea7233">GetRaw</a> ()</td></tr>
 <tr class="memdesc:abe7b4c5af57fd61917a3a3e82dea7233"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Raw node (the original tree).  <br /></td></tr>
 <tr class="separator:abe7b4c5af57fd61917a3a3e82dea7233"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,6 +145,14 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aaba93ac7511e9b7c736856761f33b775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0a65e22c7c76e963a8bc1b99e9a5bee" id="r_ad0a65e22c7c76e963a8bc1b99e9a5bee"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#ad0a65e22c7c76e963a8bc1b99e9a5bee">fTotMax</a> = 99999</td></tr>
 <tr class="separator:ad0a65e22c7c76e963a8bc1b99e9a5bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cdcf99b3167215c57f99364c8215e24" id="r_a6cdcf99b3167215c57f99364c8215e24"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a6cdcf99b3167215c57f99364c8215e24">fEnabledBoards</a></td></tr>
+<tr class="separator:a6cdcf99b3167215c57f99364c8215e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a139e48a077e9685646f9f6eec4eb61" id="r_a8a139e48a077e9685646f9f6eec4eb61"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a8a139e48a077e9685646f9f6eec4eb61">fEnabledCylinders</a></td></tr>
+<tr class="separator:a8a139e48a077e9685646f9f6eec4eb61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fd2e54e289f91c2ef96d9784679c261" id="r_a5fd2e54e289f91c2ef96d9784679c261"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a5fd2e54e289f91c2ef96d9784679c261">fEnabledLayers</a></td></tr>
+<tr class="separator:a5fd2e54e289f91c2ef96d9784679c261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af74dd451ba83cc665f48155b0d124ba2" id="r_af74dd451ba83cc665f48155b0d124ba2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; int, int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#af74dd451ba83cc665f48155b0d124ba2">fEnabledGeometries</a></td></tr>
+<tr class="separator:af74dd451ba83cc665f48155b0d124ba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Reads <a class="el" href="namespaceCHeT.html" title="Root namespace for the Cylindrical Helix Tracker (CHeT) project.">CHeT</a> data from ROOT files and processes it into high-level objects. </p>
@@ -143,7 +163,7 @@ Private Attributes</h2></td></tr>
 <li>Generating "Estimators" (calibrated and mapped hits). </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00035">35</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00037">37</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a71934f730c5d89eb5c3002905798e92a" name="a71934f730c5d89eb5c3002905798e92a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a71934f730c5d89eb5c3002905798e92a">&#9670;&#160;</a></span>Reader() <span class="overload">[1/2]</span></h2>
@@ -180,7 +200,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00018">18</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00017">17</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -234,7 +254,7 @@ Private Attributes</h2></td></tr>
 <li>Aggregation of all hits into unique vectors (All_Bundle, All_Lay...). </li>
 </ol>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00046">46</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00066">66</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -255,7 +275,7 @@ Private Attributes</h2></td></tr>
 
 <p>Returns the Raw node (the original tree). </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00041">41</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00061">61</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -334,7 +354,119 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00027">27</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00026">26</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+
+</div>
+</div>
+<a id="ad0a1fe28e0d3fc9db2738d224a701f4d" name="ad0a1fe28e0d3fc9db2738d224a701f4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0a1fe28e0d3fc9db2738d224a701f4d">&#9670;&#160;</a></span>SetEnabledBoards()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Data::Reader::SetEnabledBoards </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>boards</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restricts the analysis to specific boards. Only hits from these boards will be processed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">boards</td><td>Vector of board IDs (0, 1, 2, 3). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00040">40</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+
+</div>
+</div>
+<a id="a03f72c2389472b342a92c88a87090d12" name="a03f72c2389472b342a92c88a87090d12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03f72c2389472b342a92c88a87090d12">&#9670;&#160;</a></span>SetEnabledCylinders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Data::Reader::SetEnabledCylinders </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>cylinders</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restricts the analysis to specific cylinders. Only hits belonging to these cylinders will be included in the output. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cylinders</td><td>Vector of cylinder IDs. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00045">45</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+
+</div>
+</div>
+<a id="ac68039b496cf0f331ec74a64906bd8c4" name="ac68039b496cf0f331ec74a64906bd8c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac68039b496cf0f331ec74a64906bd8c4">&#9670;&#160;</a></span>SetEnabledGeometries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Data::Reader::SetEnabledGeometries </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::pair&lt; int, int &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>geometries</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restricts the analysis to specific (cylinder, layer) combinations. Only hits matching one of the provided pairs will be included. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">geometries</td><td>Vector of pairs {cylinderId, layerId}. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00055">55</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+
+</div>
+</div>
+<a id="a23764da54d0c4fe9dd4c6accd45cd410" name="a23764da54d0c4fe9dd4c6accd45cd410"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23764da54d0c4fe9dd4c6accd45cd410">&#9670;&#160;</a></span>SetEnabledLayers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Data::Reader::SetEnabledLayers </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>layers</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restricts the analysis to specific layers. Only hits belonging to these layers will be included in the output. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">layers</td><td>Vector of layer IDs. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00050">50</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -362,7 +494,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00036">36</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00035">35</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -387,7 +519,103 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00086">86</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00117">117</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+
+</div>
+</div>
+<a id="a6cdcf99b3167215c57f99364c8215e24" name="a6cdcf99b3167215c57f99364c8215e24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cdcf99b3167215c57f99364c8215e24">&#9670;&#160;</a></span>fEnabledBoards</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; CHeT::Data::Reader::fEnabledBoards</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00127">127</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+
+</div>
+</div>
+<a id="a8a139e48a077e9685646f9f6eec4eb61" name="a8a139e48a077e9685646f9f6eec4eb61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a139e48a077e9685646f9f6eec4eb61">&#9670;&#160;</a></span>fEnabledCylinders</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; CHeT::Data::Reader::fEnabledCylinders</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00128">128</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+
+</div>
+</div>
+<a id="af74dd451ba83cc665f48155b0d124ba2" name="af74dd451ba83cc665f48155b0d124ba2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af74dd451ba83cc665f48155b0d124ba2">&#9670;&#160;</a></span>fEnabledGeometries</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;int, int&gt; &gt; CHeT::Data::Reader::fEnabledGeometries</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00130">130</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+
+</div>
+</div>
+<a id="a5fd2e54e289f91c2ef96d9784679c261" name="a5fd2e54e289f91c2ef96d9784679c261"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fd2e54e289f91c2ef96d9784679c261">&#9670;&#160;</a></span>fEnabledLayers</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; CHeT::Data::Reader::fEnabledLayers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00129">129</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -411,7 +639,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00084">84</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00115">115</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -435,7 +663,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00087">87</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00118">118</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -459,7 +687,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00091">91</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00122">122</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -483,7 +711,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00090">90</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00121">121</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -507,7 +735,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00093">93</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00124">124</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -531,7 +759,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00092">92</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00123">123</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -555,7 +783,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00085">85</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00116">116</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
