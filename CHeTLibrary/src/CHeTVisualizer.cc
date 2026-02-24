@@ -1,3 +1,4 @@
+#include "CHeT/CHeTGlobalSettings.hh"
 #include "CHeT/CHeTVisualizer.hh"
 
 // --- Internal Implementation Details ---
@@ -6,9 +7,8 @@ namespace
 
 // Helper: Clipping algorithm to keep lines inside the detector box.
 // Moved to anonymous namespace to keep the header clean.
-bool ClipLineToBox(double x0, double y0, double z0, double ux, double uy,
-    double uz, double xmin, double xmax, double ymin, double ymax, double zmin,
-    double zmax, double &tmin, double &tmax)
+bool ClipLineToBox(double x0, double y0, double z0, double ux, double uy, double uz, double xmin,
+    double xmax, double ymin, double ymax, double zmin, double zmax, double &tmin, double &tmax)
 {
     tmin = -1e30;
     tmax = 1e30;
@@ -44,9 +44,7 @@ namespace CHeT
 namespace Vis
 {
 
-void Draw2D(const std::vector<int> &bundle_ids,
-    const std::vector<CHeT::Config::BundlesIntersection> &inters,
-    const std::vector<VisLineTrack> &tracks,
+void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> &tracks,
     const std::vector<VisPoint2D> &extraPoints)
 {
     // --- 1. Canvas Phi-Z (Unrolled) ---
@@ -103,10 +101,8 @@ void Draw2D(const std::vector<int> &bundle_ids,
         // Generate points along the fiber
         for(int i = 0; i < 500; ++i)
         {
-            double z = -CHeT::Config::L_HALF
-                + i * (2.0 * CHeT::Config::L_HALF / 499.0);
-            double alpha
-                = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
+            double z = -CHeT::Config::L_HALF + i * (2.0 * CHeT::Config::L_HALF / 499.0);
+            double alpha = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
             double ph = p.phi0 + p.dir * alpha * M_PI;
             vz.push_back(z);
             vphi.push_back(ph);
@@ -137,8 +133,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
             double cf = CHeT::Config::wrap0_2pi(vphi[i]);
 
             // Check for wrap-around jump
-            if(i > 0
-                && std::abs(cf - CHeT::Config::wrap0_2pi(vphi[i - 1])) > M_PI)
+            if(i > 0 && std::abs(cf - CHeT::Config::wrap0_2pi(vphi[i - 1])) > M_PI)
             {
                 // Draw current segment
                 TGraph *h = new TGraph();
@@ -146,8 +141,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
                 for(int j = 0; j < nn; ++j)
                     h->SetPoint(j, sf[j] + d_phi_w, sz[j]);
                 for(int j = 0; j < nn; ++j)
-                    h->SetPoint(
-                        nn + j, sf[nn - 1 - j] - d_phi_w, sz[nn - 1 - j]);
+                    h->SetPoint(nn + j, sf[nn - 1 - j] - d_phi_w, sz[nn - 1 - j]);
 
                 h->SetFillColorAlpha(p.color, 0.3);
                 h->SetLineWidth(0);
@@ -223,6 +217,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
     }
 
     // --- Draw Intersections (XY) ---
+    auto inters = Config::FindIntersections(bundle_ids);
     if(!inters.empty())
     {
         TGraph *gi = new TGraph();
@@ -259,12 +254,11 @@ void Draw2D(const std::vector<int> &bundle_ids,
     mg_zx->Draw("A");
     mg_zx->SetTitle("Top View ZX; x [mm]; z [mm]");
     mg_zx->GetXaxis()->SetLimits(-40, 40);
-    mg_zx->GetYaxis()->SetRangeUser(
-        -CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
+    mg_zx->GetYaxis()->SetRangeUser(-CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
     for(auto &c : cyls)
     {
-        TBox *b = new TBox(-c.inner.radius, -CHeT::Config::L_HALF,
-            c.inner.radius, CHeT::Config::L_HALF);
+        TBox *b = new TBox(
+            -c.inner.radius, -CHeT::Config::L_HALF, c.inner.radius, CHeT::Config::L_HALF);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -274,13 +268,12 @@ void Draw2D(const std::vector<int> &bundle_ids,
     pad_zy->SetGrid();
     mg_zy->Draw("A");
     mg_zy->SetTitle("Lateral View ZY; z [mm]; y [mm]");
-    mg_zy->GetXaxis()->SetLimits(
-        -CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
+    mg_zy->GetXaxis()->SetLimits(-CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
     mg_zy->GetYaxis()->SetRangeUser(-40, 40);
     for(auto &c : cyls)
     {
-        TBox *b = new TBox(-CHeT::Config::L_HALF, -c.inner.radius,
-            CHeT::Config::L_HALF, c.inner.radius);
+        TBox *b = new TBox(
+            -CHeT::Config::L_HALF, -c.inner.radius, CHeT::Config::L_HALF, c.inner.radius);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -304,8 +297,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
     c_xy->Update();
 }
 
-void Draw3D(const std::vector<int> &hit_ids,
-    const std::vector<VisLineTrack> &tracks,
+void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tracks,
     const std::vector<VisPoint3D> &points, bool drawSkeleton)
 {
     // gStyle->SetCanvasPreferGL(kTRUE);
@@ -331,14 +323,11 @@ void Draw3D(const std::vector<int> &hit_ids,
     if(max_R < 1.0)
         max_R = 100.0; // Fallback
 
-    double corners[8][3] = { { max_R, max_R, CHeT::Config::L_HALF },
-        { max_R, -max_R, CHeT::Config::L_HALF },
-        { -max_R, max_R, CHeT::Config::L_HALF },
-        { -max_R, -max_R, CHeT::Config::L_HALF },
-        { max_R, max_R, -CHeT::Config::L_HALF },
-        { max_R, -max_R, -CHeT::Config::L_HALF },
-        { -max_R, max_R, -CHeT::Config::L_HALF },
-        { -max_R, -max_R, -CHeT::Config::L_HALF } };
+    double corners[8][3]
+        = { { max_R, max_R, CHeT::Config::L_HALF }, { max_R, -max_R, CHeT::Config::L_HALF },
+              { -max_R, max_R, CHeT::Config::L_HALF }, { -max_R, -max_R, CHeT::Config::L_HALF },
+              { max_R, max_R, -CHeT::Config::L_HALF }, { max_R, -max_R, -CHeT::Config::L_HALF },
+              { -max_R, max_R, -CHeT::Config::L_HALF }, { -max_R, -max_R, -CHeT::Config::L_HALF } };
 
     for(int i = 0; i < 8; ++i)
     {
@@ -372,8 +361,7 @@ void Draw3D(const std::vector<int> &hit_ids,
     // Force aspect ratio to be isotropic (Cube) only if rotated
     double rx, ry, rz;
     CHeT::Config::GetRotation(rx, ry, rz);
-    bool isRotated
-        = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
+    bool isRotated = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
 
     if(isRotated)
     {
@@ -395,11 +383,9 @@ void Draw3D(const std::vector<int> &hit_ids,
     }
 
     // ROOT Frame: X->Z_phys, Y->X_phys, Z->Y_phys
-    TH3F *h_frame
-        = new TH3F("h_frame", "; Z [mm]; X [mm]; Y [mm]", 1, min_z_phys,
-            max_z_phys, 1, min_x_phys, max_x_phys, 1, min_y_phys, max_y_phys);
-    h_frame->SetDirectory(
-        0); // Detach from directory to prevent ROOT auto-deletion issues
+    TH3F *h_frame = new TH3F("h_frame", "; Z [mm]; X [mm]; Y [mm]", 1, min_z_phys, max_z_phys, 1,
+        min_x_phys, max_x_phys, 1, min_y_phys, max_y_phys);
+    h_frame->SetDirectory(0); // Detach from directory to prevent ROOT auto-deletion issues
     h_frame->SetStats(0);
     h_frame->GetXaxis()->SetTitleOffset(1.5);
     h_frame->GetYaxis()->SetTitleOffset(1.5);
@@ -414,23 +400,19 @@ void Draw3D(const std::vector<int> &hit_ids,
 
         for(const auto &cyl : cylinders)
         {
-            const CHeT::Config::LayerConfig *layers[2]
-                = { &cyl.inner, &cyl.outer };
+            const CHeT::Config::LayerConfig *layers[2] = { &cyl.inner, &cyl.outer };
             for(int l = 0; l < 2; ++l)
             {
                 for(int b = 0; b < layers[l]->nBundles; ++b)
                 {
-                    CHeT::Config::FiberProp p
-                        = CHeT::Config::GetFiberProp(b_global_idx + b);
+                    CHeT::Config::FiberProp p = CHeT::Config::GetFiberProp(b_global_idx + b);
 
                     // Ghost fiber
                     TPolyLine3D *bg_f = new TPolyLine3D(10);
                     for(int i = 0; i < 10; ++i)
                     {
-                        double z = -CHeT::Config::L_HALF
-                            + i * (2.0 * CHeT::Config::L_HALF / 9.0);
-                        double a = (z + CHeT::Config::L_HALF)
-                            / (2.0 * CHeT::Config::L_HALF);
+                        double z = -CHeT::Config::L_HALF + i * (2.0 * CHeT::Config::L_HALF / 9.0);
+                        double a = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
                         double ph = p.phi0 + p.dir * a * M_PI;
 
                         double x3 = p.r * std::cos(ph);
@@ -459,10 +441,8 @@ void Draw3D(const std::vector<int> &hit_ids,
         TPolyLine3D *fl = new TPolyLine3D(50); // More detailed for active ones
         for(int i = 0; i < 50; ++i)
         {
-            double z = -CHeT::Config::L_HALF
-                + i * (2.0 * CHeT::Config::L_HALF / 49.0);
-            double a
-                = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
+            double z = -CHeT::Config::L_HALF + i * (2.0 * CHeT::Config::L_HALF / 49.0);
+            double a = (z + CHeT::Config::L_HALF) / (2.0 * CHeT::Config::L_HALF);
             double ph = p.phi0 + p.dir * a * M_PI;
 
             double x3 = p.r * std::cos(ph);
@@ -490,19 +470,17 @@ void Draw3D(const std::vector<int> &hit_ids,
 
         double tmin, tmax;
         // Use the internal helper function
-        bool ok = ClipLineToBox(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz,
-            min_x_phys, max_x_phys, // X
-            min_y_phys, max_y_phys, // Y
-            min_z_phys, max_z_phys, // Z
-            tmin, tmax);
+        bool ok
+            = ClipLineToBox(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz, min_x_phys, max_x_phys, // X
+                min_y_phys, max_y_phys, // Y
+                min_z_phys, max_z_phys, // Z
+                tmin, tmax);
 
         if(ok)
         {
             TPolyLine3D *lt = new TPolyLine3D(2);
-            lt->SetPoint(0, tr.z0 + tr.uz * tmin, tr.x0 + tr.ux * tmin,
-                tr.y0 + tr.uy * tmin);
-            lt->SetPoint(1, tr.z0 + tr.uz * tmax, tr.x0 + tr.ux * tmax,
-                tr.y0 + tr.uy * tmax);
+            lt->SetPoint(0, tr.z0 + tr.uz * tmin, tr.x0 + tr.ux * tmin, tr.y0 + tr.uy * tmin);
+            lt->SetPoint(1, tr.z0 + tr.uz * tmax, tr.x0 + tr.ux * tmax, tr.y0 + tr.uy * tmax);
             lt->SetLineColor(tr.color);
             lt->SetLineWidth(tr.width);
             lt->SetLineStyle(tr.style);

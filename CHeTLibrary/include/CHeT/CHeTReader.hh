@@ -56,8 +56,7 @@ class Reader
      * @param totMin Minimum Time over Threshold [LSB]
      * @param totMax Maximum Time over Threshold [LSB]
      */
-    void SetCuts(
-        double toaMin, double toaMax, unsigned int totMin, unsigned int totMax);
+    void SetCuts(double toaMin, double toaMax, unsigned int totMin, unsigned int totMax);
 
     /**
      * @brief Restricts the analysis to a single event ID.
@@ -92,8 +91,7 @@ class Reader
      * Only hits matching one of the provided pairs will be included.
      * @param geometries Vector of pairs {cylinderId, layerId}.
      */
-    void SetEnabledGeometries(
-        const std::vector<std::pair<int, int>> &geometries);
+    void SetEnabledGeometries(const std::vector<std::pair<int, int>> &geometries);
 
     /**
      * @brief Returns the Raw node (the original tree).

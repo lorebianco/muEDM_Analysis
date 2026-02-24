@@ -23,8 +23,7 @@ Reader::Reader(const std::string &filename, const std::string &treeName)
     // Disable implicit MT if necessary, or manage it at higher level
 }
 
-void Reader::SetCuts(
-    double toaMin, double toaMax, unsigned int totMin, unsigned int totMax)
+void Reader::SetCuts(double toaMin, double toaMax, unsigned int totMin, unsigned int totMax)
 {
     fToaMin = toaMin;
     fToaMax = toaMax;
@@ -52,8 +51,7 @@ void Reader::SetEnabledLayers(const std::vector<int> &layers)
     fEnabledLayers = layers;
 }
 
-void Reader::SetEnabledGeometries(
-    const std::vector<std::pair<int, int>> &geometries)
+void Reader::SetEnabledGeometries(const std::vector<std::pair<int, int>> &geometries)
 {
     fEnabledGeometries = geometries;
 }
@@ -79,8 +77,8 @@ ROOT::RDF::RNode Reader::GetEstimators()
 
     // 1. ToA Corrections (Alignment w.r.t. FD00)
     // FD00 is the reference: only LSB -> ns conversion
-    auto df_corr = fHeadNode.Define("FD00_corrToA",
-        [](const RVecUI &toa) { return RVecD(toa) / 2.0; }, { "FD00_ToA" });
+    auto df_corr = fHeadNode.Define(
+        "FD00_corrToA", [](const RVecUI &toa) { return RVecD(toa) / 2.0; }, { "FD00_ToA" });
 
     // Other boards (FD01..FD03) are aligned using fine timestamp
     for(const string &id : { "01", "02", "03" })
@@ -92,8 +90,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
                 // Note: original code had * 1e3, check units!
                 return RVecD(toa) / 2.0 + (t - t0) * 1e3;
             },
-            { "FD" + id + "_ToA", "FD" + id + "_fine_tstamp",
-                "FD00_fine_tstamp" });
+            { "FD" + id + "_ToA", "FD" + id + "_fine_tstamp", "FD00_fine_tstamp" });
     }
 
     // 2. Loop Board -> Selection -> Bundle Mapping
@@ -101,8 +98,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
     vector<string> toa_cols, tot_cols, cyl_cols, lay_cols, bund_cols;
 
     // Map string ID -> numeric ID for geometry
-    map<string, int> board_id_map
-        = { { "00", 0 }, { "01", 1 }, { "02", 2 }, { "03", 3 } };
+    map<string, int> board_id_map = { { "00", 0 }, { "01", 1 }, { "02", 2 }, { "03", 3 } };
 
     for(const auto &[id_str, id_num] : board_id_map)
     {
@@ -125,8 +121,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
         bool isBoardEnabled = true;
         if(!enabledBoards.empty())
         {
-            if(std::find(enabledBoards.begin(), enabledBoards.end(), b_id)
-                == enabledBoards.end())
+            if(std::find(enabledBoards.begin(), enabledBoards.end(), b_id) == enabledBoards.end())
             {
                 isBoardEnabled = false;
             }
@@ -155,18 +150,12 @@ ROOT::RDF::RNode Reader::GetEstimators()
         // Time cuts on ToA and ToT
         df_geo = df_geo.Define(toa_tmp,
             [=](const RVecD &toa, const RVecUS &tot)
-            {
-                return toa[(toa > tMin) && (toa < tMax) && (tot > totMin)
-                    && (tot < totMax)];
-            },
+            { return toa[(toa > tMin) && (toa < tMax) && (tot > totMin) && (tot < totMax)]; },
             { "FD" + id + "_corrToA", "FD" + id + "_ToT" });
 
         df_geo = df_geo.Define(tot_tmp,
             [=](const RVecD &toa, const RVecUS &tot)
-            {
-                return tot[(toa > tMin) && (toa < tMax) && (tot > totMin)
-                    && (tot < totMax)];
-            },
+            { return tot[(toa > tMin) && (toa < tMax) && (tot > totMin) && (tot < totMax)]; },
             { "FD" + id + "_corrToA", "FD" + id + "_ToT" });
 
         // Bundle ID Calculation (Geometry)
@@ -174,8 +163,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
             [=](const RVecD &toa, const RVecUS &tot, const RVecUC &chans)
             {
                 RVecI bunds;
-                auto mask = (toa > tMin) && (toa < tMax) && (tot > totMin)
-                    && (tot < totMax);
+                auto mask = (toa > tMin) && (toa < tMax) && (tot > totMin) && (tot < totMax);
                 auto sel_chans = chans[mask];
                 for(auto c : sel_chans)
                 {
@@ -184,8 +172,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
                 }
                 return bunds;
             },
-            { "FD" + id + "_corrToA", "FD" + id + "_ToT",
-                "FD" + id + "_channel" });
+            { "FD" + id + "_corrToA", "FD" + id + "_ToT", "FD" + id + "_channel" });
 
         // Derive Cylinder and Layer from Global IDs
         df_geo = df_geo.Define(cyl_tmp,
@@ -193,9 +180,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
             {
                 RVecI cyls;
                 for(auto b : bunds)
-                    cyls.push_back((b >= 0)
-                            ? CHeT::Config::GetFiberProp(b).cylinderId
-                            : -1);
+                    cyls.push_back((b >= 0) ? CHeT::Config::GetFiberProp(b).cylinderId : -1);
                 return cyls;
             },
             { bund_tmp });
@@ -205,8 +190,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
             {
                 RVecI lays;
                 for(auto b : bunds)
-                    lays.push_back(
-                        (b >= 0) ? CHeT::Config::GetFiberProp(b).layerId : -1);
+                    lays.push_back((b >= 0) ? CHeT::Config::GetFiberProp(b).layerId : -1);
                 return lays;
             },
             { bund_tmp });
@@ -221,8 +205,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
                 RVec<int> mask(cyls.size(), 1);
 
                 // If no filters are set, return all 1s
-                if(enabledCylinders.empty() && enabledLayers.empty()
-                    && enabledGeometries.empty())
+                if(enabledCylinders.empty() && enabledLayers.empty() && enabledGeometries.empty())
                 {
                     return mask;
                 }
@@ -283,20 +266,15 @@ ROOT::RDF::RNode Reader::GetEstimators()
         // Apply Mask to final columns
         // We use explicit lambdas to ensure type correctness
         df_geo = df_geo
-                     .Define(toa_n,
-                         [](const RVecD &v, const RVecI &m) { return v[m]; },
+                     .Define(toa_n, [](const RVecD &v, const RVecI &m) { return v[m]; },
                          { toa_tmp, mask_n })
-                     .Define(tot_n,
-                         [](const RVecUS &v, const RVecI &m) { return v[m]; },
+                     .Define(tot_n, [](const RVecUS &v, const RVecI &m) { return v[m]; },
                          { tot_tmp, mask_n })
-                     .Define(cyl_n,
-                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                     .Define(cyl_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
                          { cyl_tmp, mask_n })
-                     .Define(lay_n,
-                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                     .Define(lay_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
                          { lay_tmp, mask_n })
-                     .Define(bund_n,
-                         [](const RVecI &v, const RVecI &m) { return v[m]; },
+                     .Define(bund_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
                          { bund_tmp, mask_n });
     }
 
@@ -305,27 +283,18 @@ ROOT::RDF::RNode Reader::GetEstimators()
         = df_geo
               .Define(
                   "All_Cyl",
-                  [](const RVecI &c0, const RVecI &c1, const RVecI &c2,
-                      const RVecI &c3) {
-                      return Concatenate(
-                          c0, Concatenate(c1, Concatenate(c2, c3)));
-                  },
+                  [](const RVecI &c0, const RVecI &c1, const RVecI &c2, const RVecI &c3)
+                  { return Concatenate(c0, Concatenate(c1, Concatenate(c2, c3))); },
                   cyl_cols)
               .Define(
                   "All_Lay",
-                  [](const RVecI &l0, const RVecI &l1, const RVecI &l2,
-                      const RVecI &l3) {
-                      return Concatenate(
-                          l0, Concatenate(l1, Concatenate(l2, l3)));
-                  },
+                  [](const RVecI &l0, const RVecI &l1, const RVecI &l2, const RVecI &l3)
+                  { return Concatenate(l0, Concatenate(l1, Concatenate(l2, l3))); },
                   lay_cols)
               .Define(
                   "All_Bundle",
-                  [](const RVecI &b0, const RVecI &b1, const RVecI &b2,
-                      const RVecI &b3) {
-                      return Concatenate(
-                          b0, Concatenate(b1, Concatenate(b2, b3)));
-                  },
+                  [](const RVecI &b0, const RVecI &b1, const RVecI &b2, const RVecI &b3)
+                  { return Concatenate(b0, Concatenate(b1, Concatenate(b2, b3))); },
                   bund_cols)
 
               // Counts and Event-Level variables
@@ -338,23 +307,17 @@ ROOT::RDF::RNode Reader::GetEstimators()
               .Define("nHits_Cyl1_Outer", "Sum(All_Cyl == 1 && All_Lay == 1)")
               .Define(
                   "FirstToA",
-                  [](const RVecD &t0, const RVecD &t1, const RVecD &t2,
-                      const RVecD &t3)
+                  [](const RVecD &t0, const RVecD &t1, const RVecD &t2, const RVecD &t3)
                   {
-                      auto all = Concatenate(
-                          t0, Concatenate(t1, Concatenate(t2, t3)));
-                      return all.empty()
-                          ? std::numeric_limits<Double_t>::infinity()
-                          : Min(all);
+                      auto all = Concatenate(t0, Concatenate(t1, Concatenate(t2, t3)));
+                      return all.empty() ? std::numeric_limits<Double_t>::infinity() : Min(all);
                   },
                   toa_cols)
               .Define(
                   "SumToT",
-                  [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2,
-                      const RVecUS &t3)
+                  [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2, const RVecUS &t3)
                   {
-                      auto all = Concatenate(
-                          t0, Concatenate(t1, Concatenate(t2, t3)));
+                      auto all = Concatenate(t0, Concatenate(t1, Concatenate(t2, t3)));
                       return (Double_t)Sum(all);
                   },
                   tot_cols);

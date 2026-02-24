@@ -244,8 +244,7 @@ int GetGlobalBundleId(int board_id, int channel_id);
  * @param hit_ids Vector of global bundle IDs that fired.
  * @return Vector of intersection points.
  */
-std::vector<BundlesIntersection> FindIntersections(
-    const std::vector<int> &hit_ids);
+std::vector<BundlesIntersection> FindIntersections(const std::vector<int> &hit_ids);
 
 // --- Debug / Helper Functions ---
 

@@ -56,9 +56,8 @@ struct VisLineTrack
      * @brief Construct a new VisLineTrack.
      * Automatically normalizes the direction vector (dx, dy, dz).
      */
-    VisLineTrack(double _x, double _y, double _z, double _dx, double _dy,
-        double _dz, int _col = kYellow, int _w = 2, int _s = 1,
-        bool _isLocal = false)
+    VisLineTrack(double _x, double _y, double _z, double _dx, double _dy, double _dz,
+        int _col = kYellow, int _w = 2, int _s = 1, bool _isLocal = false)
         : x0(_x)
         , y0(_y)
         , z0(_z)
@@ -113,8 +112,8 @@ struct VisPoint3D
     double size; ///< Marker size
     bool isLocalFrame; ///< If true, coordinates are in Detector Local Frame
 
-    VisPoint3D(double _x, double _y, double _z, int _col = kRed, int _mst = 20,
-        double _sz = 1.0, bool _isLocal = false)
+    VisPoint3D(double _x, double _y, double _z, int _col = kRed, int _mst = 20, double _sz = 1.0,
+        bool _isLocal = false)
         : x(_x)
         , y(_y)
         , z(_z)
@@ -138,9 +137,7 @@ struct VisPoint3D
  * @param tracks Optional list of tracks to overlay.
  * @param extraPoints Optional list of extra 2D points to draw on the XY plane.
  */
-void Draw2D(const std::vector<int> &bundle_ids,
-    const std::vector<CHeT::Config::BundlesIntersection> &inters,
-    const std::vector<VisLineTrack> &tracks = {},
+void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> &tracks = {},
     const std::vector<VisPoint2D> &extraPoints = {});
 
 /**
@@ -152,8 +149,7 @@ void Draw2D(const std::vector<int> &bundle_ids,
  * @param drawSkeleton If true, draws all inactive fibers as faint transparent
  * lines (computationally heavy).
  */
-void Draw3D(const std::vector<int> &hit_ids,
-    const std::vector<VisLineTrack> &tracks = {},
+void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tracks = {},
     const std::vector<VisPoint3D> &points = {}, bool drawSkeleton = true);
 
 } // namespace Vis

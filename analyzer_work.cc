@@ -80,8 +80,7 @@ constexpr bool DEBUG_RUN = false;
 void SetOptimalConfig()
 {
     // Config::SetOffsetExp(29. * TMath::DegToRad()); // 29 optimal
-    Config::SetDelta2(
-        Config::GetDelta2() + 4.5 * TMath::DegToRad()); // 4.5 optimal
+    Config::SetDelta2(Config::GetDelta2() + 4.5 * TMath::DegToRad()); // 4.5 optimal
 }
 
 // ==============================================================================
@@ -150,8 +149,8 @@ void SetGlobalStyle()
     isStyleSet = true;
 }
 
-void PrintSummary(long long total, long long passed, Double_t t0, Double_t t1,
-    UInt_t tot0, UInt_t tot1)
+void PrintSummary(
+    long long total, long long passed, Double_t t0, Double_t t1, UInt_t tot0, UInt_t tot1)
 {
     double efficiency = (total > 0) ? (100.0 * passed / total) : 0;
     cout << "\n" << string(60, '=') << endl;
@@ -185,8 +184,7 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
     printf("************************************************************\n");
     printf("               DEBUG EFFICIENCY LOGIC                       \n");
     printf("************************************************************\n");
-    printf("Track Params: x0=%.2f, z0=%.2f, sx=%.4f, sz=%.4f\n", tr.x0, tr.z0,
-        tr.sx, tr.sz);
+    printf("Track Params: x0=%.2f, z0=%.2f, sx=%.4f, sz=%.4f\n", tr.x0, tr.z0, tr.sx, tr.sz);
 
     const double L_SAFE = Config::L_HALF; // - 5.0;
     const double TOL_BUNDLE = 1.5;
@@ -208,8 +206,7 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
 
             printf("  > Layer %s [Global Index: %d] (R=%.1f mm, Global "
                    "Offset=%d)\n",
-                (lay_local_idx == 0 ? "Inner" : "Outer"), lay_global_idx, R,
-                global_bundle_offset);
+                (lay_local_idx == 0 ? "Inner" : "Outer"), lay_global_idx, R, global_bundle_offset);
 
             // Intersezione Retta-Cerchio
             double A = tr.sx * tr.sx + 1.0;
@@ -223,8 +220,7 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
             }
             else
             {
-                double y_sol[2] = { (-B + sqrt(delta)) / (2 * A),
-                    (-B - sqrt(delta)) / (2 * A) };
+                double y_sol[2] = { (-B + sqrt(delta)) / (2 * A), (-B - sqrt(delta)) / (2 * A) };
 
                 for(int sol_i = 0; sol_i < 2; ++sol_i)
                 {
@@ -232,14 +228,11 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
                     double z = tr.z0 + tr.sz * y;
                     double x = tr.x0 + tr.sx * y;
 
-                    printf(
-                        "    * Intersection %d at (x=%.1f, y=%.1f, z=%.1f): ",
-                        sol_i, x, y, z);
+                    printf("    * Intersection %d at (x=%.1f, y=%.1f, z=%.1f): ", sol_i, x, y, z);
 
                     if(abs(z) > L_SAFE)
                     {
-                        printf("[SKIP] Z out of bounds (safe limit %.1f)\n",
-                            L_SAFE);
+                        printf("[SKIP] Z out of bounds (safe limit %.1f)\n", L_SAFE);
                         continue;
                     }
                     printf("[OK] Inside volume.\n");
@@ -255,12 +248,10 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
                     {
                         int gid = global_bundle_offset + b;
                         auto prop = Config::GetFiberProp(gid);
-                        double alpha
-                            = (z + Config::L_HALF) / (2.0 * Config::L_HALF);
+                        double alpha = (z + Config::L_HALF) / (2.0 * Config::L_HALF);
                         double phi_fib = prop.phi0 + prop.dir * alpha * M_PI;
 
-                        double dphi = abs(Config::wrap0_2pi(phi_hit)
-                            - Config::wrap0_2pi(phi_fib));
+                        double dphi = abs(Config::wrap0_2pi(phi_hit) - Config::wrap0_2pi(phi_fib));
                         if(dphi > M_PI)
                             dphi = 2.0 * M_PI - dphi;
 
@@ -272,8 +263,8 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
                         }
                     }
 
-                    printf("      -> Best Bundle: ID %d (Dist Norm: %.3f)\n",
-                        best_bundle_id, min_dist_norm);
+                    printf("      -> Best Bundle: ID %d (Dist Norm: %.3f)\n", best_bundle_id,
+                        min_dist_norm);
 
                     if(best_bundle_id >= 0 && min_dist_norm < TOL_BUNDLE)
                     {
@@ -287,14 +278,12 @@ void DebugEfficiencyCalculation(const RecoTrack &tr, const vector<int> &hit_ids)
                         for(int h : hit_ids)
                         {
                             int diff = abs(h - best_bundle_id);
-                            bool is_neighbour
-                                = (diff <= 1) || (diff == L.nBundles - 1);
+                            bool is_neighbour = (diff <= 1) || (diff == L.nBundles - 1);
 
                             // Controllo extra: deve essere dello stesso layer
                             if(is_neighbour
                                 && Config::GetFiberProp(h).layerId
-                                    == Config::GetFiberProp(best_bundle_id)
-                                           .layerId)
+                                    == Config::GetFiberProp(best_bundle_id).layerId)
                             {
                                 hit_bundle = true;
                                 found_id = h;
@@ -359,16 +348,14 @@ void InspectEventImpl(bool condition, const vector<int> &hit_ids,
         timeout.tv_sec = 0;
         timeout.tv_usec = 50000; // 50ms
 
-        int ready
-            = select(STDIN_FILENO + 1, &readfds, nullptr, nullptr, &timeout);
+        int ready = select(STDIN_FILENO + 1, &readfds, nullptr, nullptr, &timeout);
         if(ready > 0)
         {
             char c = cin.get();
             if(c == 'q' || c == 'Q')
             {
                 stop_debug = true;
-                cout << "Debugging stopped. Processing remaining events..."
-                     << endl;
+                cout << "Debugging stopped. Processing remaining events..." << endl;
                 break;
             }
             if(c == '\n')
@@ -398,16 +385,14 @@ void InspectEvent(bool condition, const vector<int> &hit_ids, Args &&...args)
         if constexpr(is_same_v<T, CosmicTrack>)
         {
             // True Track: Yellow, Solid
-            tracks.emplace_back(
-                arg.x0, arg.y0, arg.z0, arg.ux, arg.uy, arg.uz, kYellow + 1, 3);
+            tracks.emplace_back(arg.x0, arg.y0, arg.z0, arg.ux, arg.uy, arg.uz, kYellow + 1, 3);
         }
         else if constexpr(is_same_v<T, RecoTrack>)
         {
             // Reco Track: Red, Dashed
             if(arg.converged)
             {
-                tracks.emplace_back(
-                    arg.x0, 0.0, arg.z0, arg.sx, 1.0, arg.sz, kRed, 2, 7, true);
+                tracks.emplace_back(arg.x0, 0.0, arg.z0, arg.sx, 1.0, arg.sz, kRed, 2, 7, true);
             }
             else
             {
@@ -432,8 +417,7 @@ void InspectEvent(bool condition, const vector<int> &hit_ids, Args &&...args)
 // ==============================================================================
 
 // Da lavorare
-double Track3DNeg2LogL_DOCA(
-    const double *par, const FitData &data, bool usePrior)
+double Track3DNeg2LogL_DOCA(const double *par, const FitData &data, bool usePrior)
 {
     // Parametri della traccia
     const double x0 = par[0];
@@ -446,8 +430,7 @@ double Track3DNeg2LogL_DOCA(
     const double vx = sx;
     const double vy = 1.0;
     const double vz = sz;
-    const double v2
-        = vx * vx + vy * vy + vz * vz; // Norma quadra del vettore direzione
+    const double v2 = vx * vx + vy * vy + vz * vz; // Norma quadra del vettore direzione
 
     const double sigma2 = 0.3;
     const double sigmaL2 = 1e-6;
@@ -533,8 +516,7 @@ double Track3DNeg2LogL(const double *par, const FitData &data, bool usePrior)
         // Residui (distanza nel piano XZ locale tangente + distanza lungo la
         // fibra) Nota: approssimazione, trattiamo residui su coordinate
         // cartesiane
-        n2ll += ((x_f - x_trk) * (x_f - x_trk) + (zi - z_trk) * (zi - z_trk))
-            / sigma2;
+        n2ll += ((x_f - x_trk) * (x_f - x_trk) + (zi - z_trk) * (zi - z_trk)) / sigma2;
 
         // Penalty se il punto fittato esce dalla fibra
         if(abs(zi) > Config::L_HALF)
@@ -558,8 +540,7 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
         ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad"));
     min->SetPrintLevel(0); // 0 = Silent
 
-    auto chi2_func = [&](const double *par)
-    { return Track3DNeg2LogL(par, data, usePrior); };
+    auto chi2_func = [&](const double *par) { return Track3DNeg2LogL(par, data, usePrior); };
     ROOT::Math::Functor f(chi2_func, 4 + n_hits);
     min->SetFunction(f);
 
@@ -571,13 +552,11 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
 
     // Variabili hit: z_locale per ogni fibra
     for(int i = 0; i < n_hits; ++i)
-        min->SetVariable(
-            4 + i, Form("z_hit_%d", i), 0, 5.0); // Step iniziale 5mm
+        min->SetVariable(4 + i, Form("z_hit_%d", i), 0, 5.0); // Step iniziale 5mm
 
     bool conv = min->Minimize();
     const double *res = min->X();
-    double chi2
-        = (n_hits * 2 > 4) ? min->MinValue() / (double)(n_hits * 2 - 4) : 0.0;
+    double chi2 = (n_hits * 2 > 4) ? min->MinValue() / (double)(n_hits * 2 - 4) : 0.0;
 
     FitOutput output;
     output.track = { res[0], res[2], res[1], res[3], chi2, conv };
@@ -601,13 +580,11 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
             std::vector<double> y_coords(n_points);
 
             // Minuit2 esegue lo scan
-            bool scan_ok = min->Scan(
-                0, n_points, x_coords.data(), y_coords.data(), -30, 30);
+            bool scan_ok = min->Scan(0, n_points, x_coords.data(), y_coords.data(), -30, 30);
 
             if(scan_ok)
             {
-                auto gScan
-                    = new TGraph(n_points, x_coords.data(), y_coords.data());
+                auto gScan = new TGraph(n_points, x_coords.data(), y_coords.data());
                 gScan->SetTitle("Scan of parameter x0;x0;-2logL");
                 gScan->SetMarkerStyle(20);
 
@@ -658,25 +635,22 @@ FitOutput Do3DFit(const vector<int> &hit_ids, bool usePrior = false)
             double y_fit = p.r * sin(phi);
 
             // Visualizzazione: punti neri cerchiati
-            output.fittedPoints.emplace_back(
-                x_fit, y_fit, z_fit, kBlack, 24, 1.0, true);
+            output.fittedPoints.emplace_back(x_fit, y_fit, z_fit, kBlack, 24, 1.0, true);
         }
     }
     return output;
 }
 
 // Trasformata di Hough (XY polare)
-vector<HoughResult> DoHoughTransform(
-    const vector<Int_t> &hit_ids, int nCandidates = 2)
+vector<HoughResult> DoHoughTransform(const vector<Int_t> &hit_ids, int nCandidates = 2)
 {
     Int_t nBinsTheta = 80;
     Double_t thetaMin = 0.0, thetaMax = TMath::Pi();
     Int_t nBinsRho = 40;
     Double_t rhoMin = -30.0, rhoMax = 30.0;
 
-    auto h_pol = make_unique<TH2D>("h_xy_pol",
-        "Hough Polare XY;#theta [rad];#rho [mm]", nBinsTheta, thetaMin,
-        thetaMax, nBinsRho, rhoMin, rhoMax);
+    auto h_pol = make_unique<TH2D>("h_xy_pol", "Hough Polare XY;#theta [rad];#rho [mm]", nBinsTheta,
+        thetaMin, thetaMax, nBinsRho, rhoMin, rhoMax);
     h_pol->SetDirectory(nullptr);
 
     auto inters = Config::FindIntersections(hit_ids);
@@ -747,8 +721,8 @@ vector<HoughResult> DoHoughTransform(
 // 4. SIMULATION ENGINE (Generator & Digitizer)
 // ==============================================================================
 
-CosmicTrack GenerateCosmic(double xC_up = 0., double zC_up = 0.,
-    double xC_down = 0., double zC_down = 0.)
+CosmicTrack GenerateCosmic(
+    double xC_up = 0., double zC_up = 0., double xC_down = 0., double zC_down = 0.)
 {
     static TRandom3 rnd(0);
     CosmicTrack track;
@@ -781,15 +755,13 @@ CosmicTrack GenerateCosmic(double xC_up = 0., double zC_up = 0.,
         Double_t x_proj = track.x0 + track.ux * t;
         Double_t z_proj = track.z0 + track.uz * t;
 
-        if(abs(x_proj - xC_down) <= halfX_down
-            && abs(z_proj - zC_down) <= halfZ_down)
+        if(abs(x_proj - xC_down) <= halfX_down && abs(z_proj - zC_down) <= halfZ_down)
             accepted = true;
     }
     return track;
 }
 
-vector<Int_t> FindHitBundles(
-    const CosmicTrack &track_in, double efficiency = 1.0)
+vector<Int_t> FindHitBundles(const CosmicTrack &track_in, double efficiency = 1.0)
 {
     // Convert Global Track to Local Frame for simulation
     CosmicTrack track = track_in;
@@ -816,8 +788,7 @@ vector<Int_t> FindHitBundles(
 
             if(delta >= 0)
             {
-                Double_t t_sol[2] = { (-B + sqrt(delta)) / (2 * A),
-                    (-B - sqrt(delta)) / (2 * A) };
+                Double_t t_sol[2] = { (-B + sqrt(delta)) / (2 * A), (-B - sqrt(delta)) / (2 * A) };
                 for(int i = 0; i < 2; ++i)
                 {
                     Double_t t = t_sol[i];
@@ -835,18 +806,16 @@ vector<Int_t> FindHitBundles(
                             int b_id = current_global_offset + b;
                             Config::FiberProp p = Config::GetFiberProp(b_id);
 
-                            Double_t alpha = (zi + Config::L_HALF)
-                                / (2.0 * Config::L_HALF);
+                            Double_t alpha = (zi + Config::L_HALF) / (2.0 * Config::L_HALF);
                             Double_t phi_f = p.phi0 + p.dir * alpha * M_PI;
 
-                            Double_t dphi = abs(Config::wrap0_2pi(phi_track)
-                                - Config::wrap0_2pi(phi_f));
+                            Double_t dphi
+                                = abs(Config::wrap0_2pi(phi_track) - Config::wrap0_2pi(phi_f));
                             if(dphi > M_PI)
                                 dphi = 2.0 * M_PI - dphi;
 
                             // Condition di hit
-                            if(dphi < (M_PI / lay.nBundles)
-                                && gRandom->Rndm() <= efficiency)
+                            if(dphi < (M_PI / lay.nBundles) && gRandom->Rndm() <= efficiency)
                                 hits.push_back(b_id);
                         }
                     }
@@ -880,8 +849,7 @@ bool IsGeometricIntersection(const CosmicTrack &tr_in)
             Double_t delta = B * B - 4 * A * C;
             if(delta >= 0)
             {
-                Double_t t_sol[2] = { (-B + sqrt(delta)) / (2 * A),
-                    (-B - sqrt(delta)) / (2 * A) };
+                Double_t t_sol[2] = { (-B + sqrt(delta)) / (2 * A), (-B - sqrt(delta)) / (2 * A) };
                 for(int i = 0; i < 2; ++i)
                     if(abs(tr.z0 + tr.uz * t_sol[i]) <= Config::L_HALF)
                         return true;
@@ -895,8 +863,8 @@ bool IsGeometricIntersection(const CosmicTrack &tr_in)
 // 5. DATA PROCESSING HELPERS (RDataFrame)
 // ==============================================================================
 
-void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
-    EffMap &bundleMap, EffMap &layerMap, EffMap &cylMap)
+void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids, EffMap &bundleMap,
+    EffMap &layerMap, EffMap &cylMap)
 {
     const double L_SAFE = Config::L_HALF - 5.0;
     const double TOL_BUNDLE = 1.5;
@@ -928,8 +896,7 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
 
             if(delta >= 0)
             {
-                double y_sol[2] = { (-B + sqrt(delta)) / (2 * A),
-                    (-B - sqrt(delta)) / (2 * A) };
+                double y_sol[2] = { (-B + sqrt(delta)) / (2 * A), (-B - sqrt(delta)) / (2 * A) };
                 for(double y : y_sol)
                 {
                     double z = tr.z0 + tr.sz * y;
@@ -951,13 +918,11 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
                             // sequenziale
                             auto prop = Config::GetFiberProp(gid);
 
-                            double alpha
-                                = (z + Config::L_HALF) / (2.0 * Config::L_HALF);
-                            double phi_fib
-                                = prop.phi0 + prop.dir * alpha * M_PI;
+                            double alpha = (z + Config::L_HALF) / (2.0 * Config::L_HALF);
+                            double phi_fib = prop.phi0 + prop.dir * alpha * M_PI;
 
-                            double dphi = abs(Config::wrap0_2pi(phi_hit)
-                                - Config::wrap0_2pi(phi_fib));
+                            double dphi
+                                = abs(Config::wrap0_2pi(phi_hit) - Config::wrap0_2pi(phi_fib));
                             if(dphi > M_PI)
                                 dphi = 2.0 * M_PI - dphi;
 
@@ -988,8 +953,7 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
                             {
                                 // Recuperiamo le proprietà del 'best' per
                                 // sapere chi siamo
-                                auto best_prop
-                                    = Config::GetFiberProp(best_bundle_id);
+                                auto best_prop = Config::GetFiberProp(best_bundle_id);
 
                                 for(int h : hit_ids)
                                 {
@@ -997,8 +961,7 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
 
                                     // --- FILTRO CRUCIALE ---
                                     // 1. Deve essere lo stesso CILINDRO
-                                    if(hit_prop.cylinderId
-                                        != best_prop.cylinderId)
+                                    if(hit_prop.cylinderId != best_prop.cylinderId)
                                         continue;
 
                                     // 2. Deve essere lo stesso LAYER
@@ -1029,9 +992,7 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
                             // Se abbiamo trovato un hit (esatto o vicino),
                             // usiamo quello. Altrimenti usiamo il best match
                             // teorico (che sarà contato come MISS).
-                            int id_to_fill = (hit_bundle_id != -1)
-                                ? hit_bundle_id
-                                : best_bundle_id;
+                            int id_to_fill = (hit_bundle_id != -1) ? hit_bundle_id : best_bundle_id;
 
                             bundleMap[id_to_fill].total++;
                             layerMap[lay_global_idx].total++;
@@ -1058,15 +1019,15 @@ void AccumulateEfficiency(const RecoTrack &tr, const vector<int> &hit_ids,
 // 6. PLOTTING FUNCTIONS (Data)
 // ==============================================================================
 
-void DrawEvent(Int_t eventID, Int_t runID, Double_t toaMin, Double_t toaMax,
-    UInt_t totMin, UInt_t totMax)
+void DrawEvent(
+    Int_t eventID, Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     if(ROOT::IsImplicitMTEnabled())
         ROOT::DisableImplicitMT();
 
     SetGlobalStyle();
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     if(gSystem->AccessPathName(filename.c_str()))
     {
@@ -1093,8 +1054,7 @@ void DrawEvent(Int_t eventID, Int_t runID, Double_t toaMin, Double_t toaMax,
 
     if(hitsResult->empty())
     {
-        cerr << "[Warning] Event " << eventID << " seems empty or out of range."
-             << endl;
+        cerr << "[Warning] Event " << eventID << " seems empty or out of range." << endl;
         return;
     }
 
@@ -1102,26 +1062,23 @@ void DrawEvent(Int_t eventID, Int_t runID, Double_t toaMin, Double_t toaMax,
     const auto &rvec = hitsResult->at(0);
     vector<int> hit_ids(rvec.begin(), rvec.end());
 
-    auto intersections = Config::FindIntersections(hit_ids);
-
     cout << "Displaying Run " << runID << " - Event " << eventID << endl;
     cout << "Selected Hits : " << hit_ids.size() << endl;
-    cout << "Intersections : " << intersections.size() << endl;
+    cout << "Intersections : " << Config::FindIntersections(hit_ids).size() << endl;
 
     // Call Visualizer
-    Vis::Draw2D(hit_ids, intersections);
+    Vis::Draw2D(hit_ids);
     Vis::Draw3D(hit_ids);
 }
 
-void PlotRawCorrelation(
-    Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
+void PlotRawCorrelation(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     SetGlobalStyle();
     if(!ROOT::IsImplicitMTEnabled())
         ROOT::EnableImplicitMT(16);
 
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     Data::Reader reader(filename);
     // Explicitly set cuts even though we define our own filtered vars below
@@ -1132,42 +1089,31 @@ void PlotRawCorrelation(
 
     auto df_all_hits
         = df.Define("All_ToA_raw",
-                [](const RVecD &t0, const RVecD &t1, const RVecD &t2,
-                    const RVecD &t3) {
-                    return Concatenate(
-                        t0, Concatenate(t1, Concatenate(t2, t3)));
-                },
-                { "FD00_corrToA", "FD01_corrToA", "FD02_corrToA",
-                    "FD03_corrToA" })
+                [](const RVecD &t0, const RVecD &t1, const RVecD &t2, const RVecD &t3)
+                { return Concatenate(t0, Concatenate(t1, Concatenate(t2, t3))); },
+                { "FD00_corrToA", "FD01_corrToA", "FD02_corrToA", "FD03_corrToA" })
               .Define("All_ToT_raw",
-                  [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2,
-                      const RVecUS &t3) {
-                      return RVecD(Concatenate(
-                          t0, Concatenate(t1, Concatenate(t2, t3))));
-                  },
+                  [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2, const RVecUS &t3)
+                  { return RVecD(Concatenate(t0, Concatenate(t1, Concatenate(t2, t3)))); },
                   { "FD00_ToT", "FD01_ToT", "FD02_ToT", "FD03_ToT" })
               .Define("All_ToA",
-                  [=](const RVecD &toa, const RVecD &tot)
-                  {
-                      return toa[(toa > toaMin) && (toa < toaMax)
-                          && (tot > totMin) && (tot < totMax)];
+                  [=](const RVecD &toa, const RVecD &tot) {
+                      return toa[(toa > toaMin) && (toa < toaMax) && (tot > totMin)
+                          && (tot < totMax)];
                   },
                   { "All_ToA_raw", "All_ToT_raw" })
               .Define("All_ToT",
-                  [=](const RVecD &toa, const RVecD &tot)
-                  {
-                      return tot[(toa > toaMin) && (toa < toaMax)
-                          && (tot > totMin) && (tot < totMax)];
+                  [=](const RVecD &toa, const RVecD &tot) {
+                      return tot[(toa > toaMin) && (toa < toaMax) && (tot > totMin)
+                          && (tot < totMax)];
                   },
                   { "All_ToA_raw", "All_ToT_raw" });
 
     auto nPassed = df_all_hits.Filter("All_ToA.size() > 0").Count();
     auto h_raw_corr = df_all_hits.Histo2D(
-        { "h_raw_corr",
-            Form("Raw Correlation Run %d;ToA [ns];ToT [LSB]", runID),
+        { "h_raw_corr", Form("Raw Correlation Run %d;ToA [ns];ToT [LSB]", runID),
             static_cast<int>((toaMax - toaMin) / 4), toaMin, toaMax,
-            static_cast<int>((totMax - totMin) / 4), (double)totMin,
-            (double)totMax },
+            static_cast<int>((totMax - totMin) / 4), (double)totMin, (double)totMax },
         "All_ToA", "All_ToT");
 
     TCanvas *cRaw = (TCanvas *)gROOT->FindObject("cRaw");
@@ -1179,18 +1125,16 @@ void PlotRawCorrelation(
     cRaw->cd();
     cRaw->SetLogz();
     h_raw_corr->DrawCopy("COLZ");
-    PrintSummary(rawCount.GetValue(), nPassed.GetValue(), toaMin, toaMax,
-        totMin, totMax);
+    PrintSummary(rawCount.GetValue(), nPassed.GetValue(), toaMin, toaMax, totMin, totMax);
 }
 
-void PlotMultiplicity(
-    Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
+void PlotMultiplicity(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     SetGlobalStyle();
 
     // --- Setup Dati ---
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     Data::Reader reader(filename);
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
@@ -1232,45 +1176,38 @@ void PlotMultiplicity(
     // 2. Definizione Istogrammi
     // ------------------------------------------
     auto h_total = df.Histo1D(
-        { "h_total", "Total Multiplicity;n Hits;Events", 201, -0.5, 200.5 },
-        "nHits_Total");
+        { "h_total", "Total Multiplicity;n Hits;Events", 201, -0.5, 200.5 }, "nHits_Total");
     auto h_c0 = df.Histo1D(
-        { "h_c0", "Cylinders Multiplicity;n Hits;Events", 121, -0.5, 120.5 },
-        "nHits_Cyl0");
+        { "h_c0", "Cylinders Multiplicity;n Hits;Events", 121, -0.5, 120.5 }, "nHits_Cyl0");
     auto h_c1 = df.Histo1D({ "h_c1", "", 121, -0.5, 120.5 }, "nHits_Cyl1");
     auto h_l1 = df.Histo1D(
-        { "h_l1", "Layers Multiplicity;n Hits;Events", 81, -0.5, 80.5 },
-        "nHits_Cyl0_Inner");
+        { "h_l1", "Layers Multiplicity;n Hits;Events", 81, -0.5, 80.5 }, "nHits_Cyl0_Inner");
     auto h_l2 = df.Histo1D({ "h_l2", "", 81, -0.5, 80.5 }, "nHits_Cyl0_Outer");
     auto h_l3 = df.Histo1D({ "h_l3", "", 81, -0.5, 80.5 }, "nHits_Cyl1_Inner");
     auto h_l4 = df.Histo1D({ "h_l4", "", 81, -0.5, 80.5 }, "nHits_Cyl1_Outer");
 
     // Occupancy
-    auto df_occ = df.Define("Bundles_Cyl0_Lay0",
-                        "All_Bundle[All_Cyl == 0 && All_Lay == 0]")
-                      .Define("Bundles_Cyl0_Lay1",
-                          "All_Bundle[All_Cyl == 0 && All_Lay == 1]")
-                      .Define("Bundles_Cyl1_Lay0",
-                          "All_Bundle[All_Cyl == 1 && All_Lay == 0]")
-                      .Define("Bundles_Cyl1_Lay1",
-                          "All_Bundle[All_Cyl == 1 && All_Lay == 1]");
+    auto df_occ = df.Define("Bundles_Cyl0_Lay0", "All_Bundle[All_Cyl == 0 && All_Lay == 0]")
+                      .Define("Bundles_Cyl0_Lay1", "All_Bundle[All_Cyl == 0 && All_Lay == 1]")
+                      .Define("Bundles_Cyl1_Lay0", "All_Bundle[All_Cyl == 1 && All_Lay == 0]")
+                      .Define("Bundles_Cyl1_Lay1", "All_Bundle[All_Cyl == 1 && All_Lay == 1]");
 
-    auto h_occ_c0l0 = df_occ.Histo1D(
-        { "h_occ_c0l0", "Occupancy Cyl 0 - Inner;Global Bundle ID;Hits",
-            nBins[0], binEdges[0], binEdges[1] },
-        "Bundles_Cyl0_Lay0");
-    auto h_occ_c0l1 = df_occ.Histo1D(
-        { "h_occ_c0l1", "Occupancy Cyl 0 - Outer;Global Bundle ID;Hits",
-            nBins[1], binEdges[1], binEdges[2] },
-        "Bundles_Cyl0_Lay1");
-    auto h_occ_c1l0 = df_occ.Histo1D(
-        { "h_occ_c1l0", "Occupancy Cyl 1 - Inner;Global Bundle ID;Hits",
-            nBins[2], binEdges[2], binEdges[3] },
-        "Bundles_Cyl1_Lay0");
-    auto h_occ_c1l1 = df_occ.Histo1D(
-        { "h_occ_c1l1", "Occupancy Cyl 1 - Outer;Global Bundle ID;Hits",
-            nBins[3], binEdges[3], binEdges[4] },
-        "Bundles_Cyl1_Lay1");
+    auto h_occ_c0l0
+        = df_occ.Histo1D({ "h_occ_c0l0", "Occupancy Cyl 0 - Inner;Global Bundle ID;Hits", nBins[0],
+                             binEdges[0], binEdges[1] },
+            "Bundles_Cyl0_Lay0");
+    auto h_occ_c0l1
+        = df_occ.Histo1D({ "h_occ_c0l1", "Occupancy Cyl 0 - Outer;Global Bundle ID;Hits", nBins[1],
+                             binEdges[1], binEdges[2] },
+            "Bundles_Cyl0_Lay1");
+    auto h_occ_c1l0
+        = df_occ.Histo1D({ "h_occ_c1l0", "Occupancy Cyl 1 - Inner;Global Bundle ID;Hits", nBins[2],
+                             binEdges[2], binEdges[3] },
+            "Bundles_Cyl1_Lay0");
+    auto h_occ_c1l1
+        = df_occ.Histo1D({ "h_occ_c1l1", "Occupancy Cyl 1 - Outer;Global Bundle ID;Hits", nBins[3],
+                             binEdges[3], binEdges[4] },
+            "Bundles_Cyl1_Lay1");
 
     // ------------------------------------------
     // 3. Disegno
@@ -1279,8 +1216,7 @@ void PlotMultiplicity(
     // Canvas 1: Multiplicity (Stile Classico)
     TCanvas *cMult = (TCanvas *)gROOT->FindObject("cMult");
     if(!cMult)
-        cMult = new TCanvas(
-            "cMult", Form("Multiplicity - Run %d", runID), 1200, 800);
+        cMult = new TCanvas("cMult", Form("Multiplicity - Run %d", runID), 1200, 800);
     else
         cMult->Clear();
     cMult->Divide(1, 2);
@@ -1339,8 +1275,7 @@ void PlotMultiplicity(
     // --- Canvas 2: Occupancy (Stile a Barre Separate) ---
     TCanvas *cOcc = (TCanvas *)gROOT->FindObject("cOcc");
     if(!cOcc)
-        cOcc = new TCanvas(
-            "cOcc", Form("Bundle Occupancy - Run %d", runID), 1200, 800);
+        cOcc = new TCanvas("cOcc", Form("Bundle Occupancy - Run %d", runID), 1200, 800);
     else
         cOcc->Clear();
     cOcc->Divide(2, 2);
@@ -1369,12 +1304,11 @@ void PlotMultiplicity(
     PrintSummary(nRaw, nPassed.GetValue(), toaMin, toaMax, totMin, totMax);
 }
 
-void PlotEstimators(
-    Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
+void PlotEstimators(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     SetGlobalStyle();
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     Data::Reader reader(filename);
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
@@ -1384,20 +1318,16 @@ void PlotEstimators(
     auto nPassed = df.Count();
 
     auto h_toa = df.Histo1D(
-        { "h_toa", "First ToA;First ToA [ns];Events", 150, toaMin, toaMax },
-        "FirstToA");
-    auto h_tot = df.Histo1D(
-        { "h_tot", "Sum of ToT;Sum ToT [LSB];Events", 100, 0, 5000 }, "SumToT");
-    auto h_corr = df.Histo2D(
-        { "h_corr",
-            "Correlation First ToA vs Sum ToT;First ToA [ns];Sum ToT [LSB]",
-            100, toaMin, toaMax, 100, 0, 5000 },
-        "FirstToA", "SumToT");
+        { "h_toa", "First ToA;First ToA [ns];Events", 150, toaMin, toaMax }, "FirstToA");
+    auto h_tot = df.Histo1D({ "h_tot", "Sum of ToT;Sum ToT [LSB];Events", 100, 0, 5000 }, "SumToT");
+    auto h_corr
+        = df.Histo2D({ "h_corr", "Correlation First ToA vs Sum ToT;First ToA [ns];Sum ToT [LSB]",
+                         100, toaMin, toaMax, 100, 0, 5000 },
+            "FirstToA", "SumToT");
 
     TCanvas *cEst = (TCanvas *)gROOT->FindObject("cEst");
     if(!cEst)
-        cEst = new TCanvas(
-            "cEst", Form("Estimators - Run %d", runID), 1200, 800);
+        cEst = new TCanvas("cEst", Form("Estimators - Run %d", runID), 1200, 800);
     else
         cEst->Clear();
     cEst->Divide(2, 2);
@@ -1417,8 +1347,8 @@ void PlotMultiplicityCorrelations(
     Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     SetGlobalStyle();
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     Data::Reader reader(filename);
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
@@ -1427,13 +1357,11 @@ void PlotMultiplicityCorrelations(
     auto df = reader.GetEstimators().Filter("nHits_Total > 0");
     auto nPassed = df.Count();
 
-    auto h_hits_toa = df.Histo2D(
-        { "h_hits_toa", "Multiplicity vs First ToA;n Hits;First ToA [ns]", 101,
-            -0.5, 100.5, 150, toaMin, toaMax },
+    auto h_hits_toa = df.Histo2D({ "h_hits_toa", "Multiplicity vs First ToA;n Hits;First ToA [ns]",
+                                     101, -0.5, 100.5, 150, toaMin, toaMax },
         "nHits_Total", "FirstToA");
-    auto h_hits_tot = df.Histo2D(
-        { "h_hits_tot", "Multiplicity vs Sum ToT;n Hits;Sum ToT [LSB]", 101,
-            -0.5, 100.5, 200, 0, 10000 },
+    auto h_hits_tot = df.Histo2D({ "h_hits_tot", "Multiplicity vs Sum ToT;n Hits;Sum ToT [LSB]",
+                                     101, -0.5, 100.5, 200, 0, 10000 },
         "nHits_Total", "SumToT");
 
     TCanvas *cMultCorr = (TCanvas *)gROOT->FindObject("cMultCorr");
@@ -1454,13 +1382,12 @@ void PlotMultiplicityCorrelations(
     PrintSummary(nRaw, nPassed.GetValue(), toaMin, toaMax, totMin, totMax);
 }
 
-void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
-    const EffMap &cMap, const map<int, int> &occMap)
+void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap, const EffMap &cMap,
+    const map<int, int> &occMap)
 {
     // --- Configurazione Stili ---
     const int col_lay[] = { kRed, kOrange + 1, kBlue, kCyan + 1 };
-    const char *lab_lay[]
-        = { "Cyl 0 - In", "Cyl 0 - Out", "Cyl 1 - In", "Cyl 1 - Out" };
+    const char *lab_lay[] = { "Cyl 0 - In", "Cyl 0 - Out", "Cyl 1 - In", "Cyl 1 - Out" };
 
     const int col_cyl[] = { kRed, kBlue };
     const char *lab_cyl[] = { "Cylinder 0", "Cylinder 1" };
@@ -1480,11 +1407,9 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
         max_id = max(max_id, occMap.rbegin()->first);
 
     // Istogrammi per Stack
-    TH1D *h_all = new TH1D("h_all",
-        "Hit Occupancy (Signal vs Noise);Global Bundle ID;Counts", max_id + 1,
-        -0.5, max_id + 0.5);
-    TH1D *h_match = new TH1D(
-        "h_match", "Matched", max_id + 1, -0.5, max_id + 0.5); // Verde
+    TH1D *h_all = new TH1D("h_all", "Hit Occupancy (Signal vs Noise);Global Bundle ID;Counts",
+        max_id + 1, -0.5, max_id + 0.5);
+    TH1D *h_match = new TH1D("h_match", "Matched", max_id + 1, -0.5, max_id + 0.5); // Verde
     TH1D *h_noise = new TH1D("h_noise", "Unassigned", max_id + 1, -0.5,
         max_id + 0.5); // Rosso
 
@@ -1562,8 +1487,7 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
     // ---------------------------------------------------------
     // Canvas Efficiencies
     // ---------------------------------------------------------
-    TCanvas *cEff
-        = new TCanvas("cEff", Form("Efficiencies Run %d", runID), 900, 1200);
+    TCanvas *cEff = new TCanvas("cEff", Form("Efficiencies Run %d", runID), 900, 1200);
     cEff->Divide(1, 3);
 
     // ---------------------------------------------------------
@@ -1572,8 +1496,7 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
     cEff->cd(1);
     gPad->SetGridy();
 
-    TH1D *h_frame_cyl = new TH1D(
-        "h_frame_cyl", "Cylinder Efficiency;;Efficiency", 2, -0.5, 1.5);
+    TH1D *h_frame_cyl = new TH1D("h_frame_cyl", "Cylinder Efficiency;;Efficiency", 2, -0.5, 1.5);
     h_frame_cyl->SetMinimum(0.5);
     h_frame_cyl->SetMaximum(1.05);
     h_frame_cyl->SetStats(0);
@@ -1607,11 +1530,9 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
         tG.SetNDC();
         tG.SetTextSize(0.08);
         tG.SetTextColor(kBlack);
-        tG.DrawLatex(
-            0.60, 0.75, Form("Global Efficiency: %.2f%%", g_eff * 100));
+        tG.DrawLatex(0.60, 0.75, Form("Global Efficiency: %.2f%%", g_eff * 100));
 
-        printf("\n--- GLOBAL EFFICIENCY ---\n %.2f%% (%ld/%ld)\n", g_eff * 100,
-            g_passed, g_total);
+        printf("\n--- GLOBAL EFFICIENCY ---\n %.2f%% (%ld/%ld)\n", g_eff * 100, g_passed, g_total);
     }
 
     printf("\n--- CYLINDER EFFICIENCY ---\n");
@@ -1632,9 +1553,8 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
             g_err_cyl[i]->SetPoint(0, (double)i, eff);
             g_err_cyl[i]->SetPointError(0, 0.5, 0.5, errs.first, errs.second);
 
-            printf("%-15s: %.2f +%.2f/-%.2f %% (%ld/%ld)\n", lab_cyl[i],
-                eff * 100, errs.second * 100, errs.first * 100,
-                it->second.passed, it->second.total);
+            printf("%-15s: %.2f +%.2f/-%.2f %% (%ld/%ld)\n", lab_cyl[i], eff * 100,
+                errs.second * 100, errs.first * 100, it->second.passed, it->second.total);
         }
 
         h_cyls[i]->SetFillColorAlpha(col_cyl[i], 0.35);
@@ -1657,8 +1577,7 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
     cEff->cd(2);
     gPad->SetGridy();
 
-    TH1D *h_frame_lay = new TH1D(
-        "h_frame_lay", "Sub-Layer Efficiency;;Efficiency", 4, -0.5, 3.5);
+    TH1D *h_frame_lay = new TH1D("h_frame_lay", "Sub-Layer Efficiency;;Efficiency", 4, -0.5, 3.5);
     h_frame_lay->SetMinimum(0.5);
     h_frame_lay->SetMaximum(1.05);
     h_frame_lay->SetStats(0);
@@ -1693,9 +1612,8 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
             g_err_lay[i]->SetPoint(0, (double)i, eff);
             g_err_lay[i]->SetPointError(0, 0.5, 0.5, errs.first, errs.second);
 
-            printf("%-15s: %.2f +%.2f/-%.2f %% (%ld/%ld)\n", lab_lay[i],
-                eff * 100, errs.second * 100, errs.first * 100,
-                it->second.passed, it->second.total);
+            printf("%-15s: %.2f +%.2f/-%.2f %% (%ld/%ld)\n", lab_lay[i], eff * 100,
+                errs.second * 100, errs.first * 100, it->second.passed, it->second.total);
         }
 
         h_layers[i]->SetFillColorAlpha(col_lay[i], 0.3);
@@ -1734,9 +1652,8 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
         }
     }
 
-    TH1D *h_frame_bund = new TH1D("h_frame_bund",
-        "Bundle Efficiency;Global Bundle ID;Efficiency", max_id + 1, -0.5,
-        max_id + 0.5);
+    TH1D *h_frame_bund = new TH1D("h_frame_bund", "Bundle Efficiency;Global Bundle ID;Efficiency",
+        max_id + 1, -0.5, max_id + 0.5);
     h_frame_bund->SetMinimum(0.0);
     h_frame_bund->SetMaximum(1.15);
     h_frame_bund->SetStats(0);
@@ -1786,15 +1703,15 @@ void PlotEfficiencyResults(int runID, const EffMap &bMap, const EffMap &lMap,
 
 // --- REAL DATA ANALYSIS ---
 
-void FitCosmicEvent(Int_t eventID, Int_t runID, Double_t toaMin,
-    Double_t toaMax, UInt_t totMin, UInt_t totMax)
+void FitCosmicEvent(
+    Int_t eventID, Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax)
 {
     if(ROOT::IsImplicitMTEnabled())
         ROOT::DisableImplicitMT();
 
     // --- 1. Preparazione Dati (Lettura evento singolo) ---
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
     Data::Reader reader(filename);
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
 
@@ -1812,8 +1729,7 @@ void FitCosmicEvent(Int_t eventID, Int_t runID, Double_t toaMin,
     auto hits_ptr = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
     if(hits_ptr->empty() || hits_ptr->at(0).empty())
     {
-        cout << "[WARNING] Evento " << eventID << " vuoto o non trovato."
-             << endl;
+        cout << "[WARNING] Evento " << eventID << " vuoto o non trovato." << endl;
         return;
     }
     const auto &rvec = hits_ptr->at(0);
@@ -1824,8 +1740,7 @@ void FitCosmicEvent(Int_t eventID, Int_t runID, Double_t toaMin,
     hit_ids.erase(unique(hit_ids.begin(), hit_ids.end()), hit_ids.end());
 
     // --- 2. Esecuzione del Fit ---
-    cout << "\n=== Analysis Run " << runID << " Event " << eventID
-         << " ===" << endl;
+    cout << "\n=== Analysis Run " << runID << " Event " << eventID << " ===" << endl;
     cout << "Hits found: " << hit_ids.size() << endl;
 
     FitOutput fitOut = Do3DFit(hit_ids, false);
@@ -1856,14 +1771,13 @@ void FitCosmicEvent(Int_t eventID, Int_t runID, Double_t toaMin,
         );
 
     // Disegna (Hit + Traccia Fit)
-    Vis::Draw2D(hit_ids, Config::FindIntersections(hit_ids), visTracks);
+    Vis::Draw2D(hit_ids, visTracks);
 
     Vis::Draw3D(hit_ids, visTracks, fitOut.fittedPoints);
 }
 
-void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
-    UInt_t totMin, UInt_t totMax, Double_t minPValue = 0.,
-    Bool_t doEfficiency = true)
+void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin, UInt_t totMax,
+    Double_t minPValue = 0., Bool_t doEfficiency = true)
 {
     // Disabilitiamo MT implicito per evitare conflitti con Minuit nel loop
     // manuale
@@ -1879,30 +1793,23 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
 
     // --- 1. Definizione Istogrammi ---
     TDirectory::AddDirectory(false);
-    auto h_chi2 = make_unique<TH1D>(
-        "h_chi2", "Normalized #chi^{2};#chi^{2} / ndf;Events", 100, 0, 20);
-    auto h_prob
-        = make_unique<TH1D>("h_prob", "Prob(#chi^{2});Prob;Events", 50, 0, 1);
-    auto h_nhits = make_unique<TH1D>(
-        "h_nhits", "Hits per Track;N Hits;Events", 15, -0.5, 50.5);
+    auto h_chi2
+        = make_unique<TH1D>("h_chi2", "Normalized #chi^{2};#chi^{2} / ndf;Events", 100, 0, 20);
+    auto h_prob = make_unique<TH1D>("h_prob", "Prob(#chi^{2});Prob;Events", 50, 0, 1);
+    auto h_nhits = make_unique<TH1D>("h_nhits", "Hits per Track;N Hits;Events", 15, -0.5, 50.5);
 
-    auto h_x0 = make_unique<TH1D>(
-        "h_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
-    auto h_z0 = make_unique<TH1D>(
-        "h_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
-    auto h_sx = make_unique<TH1D>(
-        "h_sx", "Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
-    auto h_sz = make_unique<TH1D>(
-        "h_sz", "Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
-    auto h_phi
-        = make_unique<TH1D>("h_phi", "Azimuthal Angle #phi; #phi [rad];Events",
-            100, -TMath::Pi(), TMath::Pi());
-    auto h_cosTheta = make_unique<TH1D>("h_cosTheta",
-        "Polar Angle cos(#theta); cos(#theta); Events", 100, -1.0, 0.0);
+    auto h_x0 = make_unique<TH1D>("h_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
+    auto h_z0 = make_unique<TH1D>("h_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
+    auto h_sx = make_unique<TH1D>("h_sx", "Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
+    auto h_sz = make_unique<TH1D>("h_sz", "Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
+    auto h_phi = make_unique<TH1D>(
+        "h_phi", "Azimuthal Angle #phi; #phi [rad];Events", 100, -TMath::Pi(), TMath::Pi());
+    auto h_cosTheta = make_unique<TH1D>(
+        "h_cosTheta", "Polar Angle cos(#theta); cos(#theta); Events", 100, -1.0, 0.0);
 
     // --- 2. Estrazione Dati con RDataFrame ---
-    string filename = "/home/lorenzo/muEDM_Project/Data/RootData/run00"
-        + to_string(runID) + ".root";
+    string filename
+        = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
     // Geometry test
     // Config::SetOffsetExp(29. * TMath::DegToRad()); // 29 optimal
@@ -1990,13 +1897,12 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
                 for(int h : hits)
                     occupancyMap[h]++;
 
-                AccumulateEfficiency(
-                    out.track, hits, bundleStats, layerStats, cylStats);
+                AccumulateEfficiency(out.track, hits, bundleStats, layerStats, cylStats);
             }
         }
     }
-    printf("\nAnalysis Complete. Fitted %d / %d events (%.1f%%)\n", nFitted,
-        nEvents, 100.0 * nFitted / nEvents);
+    printf("\nAnalysis Complete. Fitted %d / %d events (%.1f%%)\n", nFitted, nEvents,
+        100.0 * nFitted / nEvents);
 
     // --- 4. Plotting ---
     TCanvas *cAn1 = (TCanvas *)gROOT->FindObject("cAn1");
@@ -2049,8 +1955,7 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax,
     // h_cosTheta->DrawCopy();
 
     if(doEfficiency)
-        PlotEfficiencyResults(
-            runID, bundleStats, layerStats, cylStats, occupancyMap);
+        PlotEfficiencyResults(runID, bundleStats, layerStats, cylStats, occupancyMap);
 }
 
 // --- MONTE CARLO SIMULATION ---
@@ -2059,22 +1964,20 @@ void RunSingleHough()
 {
     CosmicTrack tr = GenerateCosmic();
     vector<Int_t> hit_ids = FindHitBundles(tr);
-    auto inters = Config::FindIntersections(hit_ids);
     vector<HoughResult> results = DoHoughTransform(hit_ids, 2);
 
     printf("\n--- RISULTATI HOUGH POLARE XY ---\n");
     for(size_t i = 0; i < results.size(); ++i)
     {
-        printf("Candidato %lu: Rho=%.2f mm, Theta=%.2f rad (Peso: %.1f)\n",
-            i + 1, results[i].rho, results[i].theta, results[i].weight);
+        printf("Candidato %lu: Rho=%.2f mm, Theta=%.2f rad (Peso: %.1f)\n", i + 1, results[i].rho,
+            results[i].theta, results[i].weight);
     }
 
     // --- PREPARAZIONE VISUALIZZAZIONE ---
     vector<Vis::VisLineTrack> visTracks;
 
     // 1. Traccia Vera (Gialla)
-    visTracks.emplace_back(
-        tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz, kYellow, 3);
+    visTracks.emplace_back(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz, kYellow, 3);
 
     // 2. Candidati Hough (convertiamo Rho/Theta in Linee 2D)
     int colors[2] = { kViolet - 9, kGreen + 2 };
@@ -2097,7 +2000,7 @@ void RunSingleHough()
     }
 
     // Disegno
-    Vis::Draw2D(hit_ids, inters, visTracks);
+    Vis::Draw2D(hit_ids, visTracks);
 }
 
 void RunSingleMC(double efficiency = 1.0)
@@ -2118,8 +2021,7 @@ void RunSingleMC(double efficiency = 1.0)
         // Convertiamo la traccia VERA (Globale) nel sistema LOCALE per il
         // confronto
         CosmicTrack trTrueLoc = trTrue;
-        Config::ApplyInverseTransformation(
-            trTrueLoc.x0, trTrueLoc.y0, trTrueLoc.z0);
+        Config::ApplyInverseTransformation(trTrueLoc.x0, trTrueLoc.y0, trTrueLoc.z0);
         Config::ApplyInverseRotation(trTrueLoc.ux, trTrueLoc.uy, trTrueLoc.uz);
 
         double t_to_y0 = -trTrueLoc.y0 / trTrueLoc.uy;
@@ -2154,26 +2056,25 @@ void RunSingleMC(double efficiency = 1.0)
                "\n");
         printf("==============================================================="
                "\n");
-        printf(" %-10s | %12s | %12s | %12s \n", "Param", "True", "Fitted",
-            "Residual");
+        printf(" %-10s | %12s | %12s | %12s \n", "Param", "True", "Fitted", "Residual");
         printf("---------------------------------------------------------------"
                "\n");
         // Parametri Spaziali
-        printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "x0 [mm]", true_x0,
-            trFit.x0, trFit.x0 - true_x0);
-        printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "z0 [mm]", true_z0,
-            trFit.z0, trFit.z0 - true_z0);
-        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sx (dx/dy)", true_sx,
-            trFit.sx, trFit.sx - true_sx);
-        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sz (dz/dy)", true_sz,
-            trFit.sz, trFit.sz - true_sz);
+        printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "x0 [mm]", true_x0, trFit.x0,
+            trFit.x0 - true_x0);
+        printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "z0 [mm]", true_z0, trFit.z0,
+            trFit.z0 - true_z0);
+        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sx (dx/dy)", true_sx, trFit.sx,
+            trFit.sx - true_sx);
+        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sz (dz/dy)", true_sz, trFit.sz,
+            trFit.sz - true_sz);
         printf("---------------------------------------------------------------"
                "\n");
         // Parametri Angolari
-        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "cos(theta)",
-            true_cosTheta, fit_cosTheta, fit_cosTheta - true_cosTheta);
-        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "phi [rad]", true_phi,
-            fit_phi, fit_phi - true_phi);
+        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "cos(theta)", true_cosTheta, fit_cosTheta,
+            fit_cosTheta - true_cosTheta);
+        printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "phi [rad]", true_phi, fit_phi,
+            fit_phi - true_phi);
         printf("---------------------------------------------------------------"
                "\n");
         printf(" Chi2/ndf  : %.4f\n", trFit.chi2);
@@ -2192,8 +2093,8 @@ void RunSingleMC(double efficiency = 1.0)
     vector<Vis::VisLineTrack> visTracks;
 
     // 1. Traccia Vera
-    visTracks.emplace_back(trTrue.x0, trTrue.y0, trTrue.z0, trTrue.ux,
-        trTrue.uy, trTrue.uz, kYellow, 3);
+    visTracks.emplace_back(
+        trTrue.x0, trTrue.y0, trTrue.z0, trTrue.ux, trTrue.uy, trTrue.uz, kYellow, 3);
 
     // 2. Traccia Fit
     if(trFit.converged)
@@ -2203,67 +2104,64 @@ void RunSingleMC(double efficiency = 1.0)
             kBlack, 2, 7, true // Tratteggiato, isLocal
         );
 
-    Vis::Draw2D(hit_ids, Config::FindIntersections(hit_ids), visTracks);
+    Vis::Draw2D(hit_ids, visTracks);
 
     Vis::Draw3D(hit_ids, visTracks, fitRes.fittedPoints);
 }
 
-void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
-    Double_t minPValue = 0., Bool_t doEfficiency = true,
-    bool doDoubleFit = true)
+void RunToyMC(int nEvents = 10000, double efficiency = 1.0, Double_t minPValue = 0.,
+    Bool_t doEfficiency = true, bool doDoubleFit = true)
 {
     // --- 1. Definizione Istogrammi ---
     TDirectory::AddDirectory(false);
 
     // a. Istogrammi Residui (Bias)
-    auto h_res_x0 = make_unique<TH1D>("h_res_x0",
-        "X0 Position Bias (Fit - True); #DeltaX0 [mm]; Counts", 100,
-        -1 / efficiency, 1 / efficiency);
-    auto h_res_z0 = make_unique<TH1D>("h_res_z0",
-        "Z0 Position Bias (Fit - True); #DeltaZ0 [mm]; Counts", 100,
-        -5 / efficiency, 5 / efficiency);
+    auto h_res_x0
+        = make_unique<TH1D>("h_res_x0", "X0 Position Bias (Fit - True); #DeltaX0 [mm]; Counts", 100,
+            -1 / efficiency, 1 / efficiency);
+    auto h_res_z0
+        = make_unique<TH1D>("h_res_z0", "Z0 Position Bias (Fit - True); #DeltaZ0 [mm]; Counts", 100,
+            -5 / efficiency, 5 / efficiency);
     auto h_res_sx = make_unique<TH1D>("h_res_sx",
-        "X Slope Bias (sx_{fit} - sx_{true}); #Deltasx [rad]; Counts", 100,
-        -0.1 / efficiency, 0.1 / efficiency);
+        "X Slope Bias (sx_{fit} - sx_{true}); #Deltasx [rad]; Counts", 100, -0.1 / efficiency,
+        0.1 / efficiency);
     auto h_res_sz = make_unique<TH1D>("h_res_sz",
-        "Z Slope Bias (sz_{fit} - sz_{true}); #Deltasz [rad]; Counts", 100,
-        -0.5 / efficiency, 0.5 / efficiency);
-    auto h_res_phi = make_unique<TH1D>("h_res_phi",
-        "Bias Phi (Fit - True); #Delta #phi [rad]; Counts", 100, -3, 3);
-    auto h_res_cosTheta = make_unique<TH1D>("h_res_cosTheta",
-        "Bias CosTheta (Fit - True); #Delta cos#theta; Counts", 100, -0.02,
-        0.02);
-    auto h_res_z_hit = make_unique<TH1D>("h_res_z_hit",
-        "Z Hit Residuals (Fit - True); #Delta z_{hit} [mm]; Counts", 100, -10,
-        10);
+        "Z Slope Bias (sz_{fit} - sz_{true}); #Deltasz [rad]; Counts", 100, -0.5 / efficiency,
+        0.5 / efficiency);
+    auto h_res_phi = make_unique<TH1D>(
+        "h_res_phi", "Bias Phi (Fit - True); #Delta #phi [rad]; Counts", 100, -3, 3);
+    auto h_res_cosTheta = make_unique<TH1D>(
+        "h_res_cosTheta", "Bias CosTheta (Fit - True); #Delta cos#theta; Counts", 100, -0.02, 0.02);
+    auto h_res_z_hit = make_unique<TH1D>(
+        "h_res_z_hit", "Z Hit Residuals (Fit - True); #Delta z_{hit} [mm]; Counts", 100, -10, 10);
 
     // b. Istogrammi Variabili Fittate (Distribution)
-    auto h_fit_x0 = make_unique<TH1D>(
-        "h_fit_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
-    auto h_fit_z0 = make_unique<TH1D>(
-        "h_fit_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
-    auto h_fit_sx = make_unique<TH1D>("h_fit_sx",
-        "Reconstructed Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
-    auto h_fit_sz = make_unique<TH1D>(
-        "h_fit_sz", "Reconstructed Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
-    auto h_fit_phi = make_unique<TH1D>("h_fit_phi",
-        "Reco #phi; #phi [rad]; Events", 100, -TMath::Pi(), TMath::Pi());
-    auto h_fit_cosTheta = make_unique<TH1D>("h_fit_cosTheta",
-        "Reco cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
+    auto h_fit_x0
+        = make_unique<TH1D>("h_fit_x0", "Reconstructed X0;x_{0} [mm];Events", 80, -40, 40);
+    auto h_fit_z0
+        = make_unique<TH1D>("h_fit_z0", "Reconstructed Z0;z_{0} [mm];Events", 100, -150, 150);
+    auto h_fit_sx = make_unique<TH1D>(
+        "h_fit_sx", "Reconstructed Slope X (sx);sx = dx/dy;Events", 100, -1.2, 1.2);
+    auto h_fit_sz
+        = make_unique<TH1D>("h_fit_sz", "Reconstructed Slope Z (sz);sz = dz/dy;Events", 100, -2, 2);
+    auto h_fit_phi = make_unique<TH1D>(
+        "h_fit_phi", "Reco #phi; #phi [rad]; Events", 100, -TMath::Pi(), TMath::Pi());
+    auto h_fit_cosTheta = make_unique<TH1D>(
+        "h_fit_cosTheta", "Reco cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
 
     // c. Istogrammi Variabili True (Distribution)
-    auto h_true_x0 = make_unique<TH1D>("h_true_x0",
-        "True X0 Distribution;x_{0}^{true} [mm];Events", 80, -40, 40);
-    auto h_true_z0 = make_unique<TH1D>("h_true_z0",
-        "True Z0 Distribution;z_{0}^{true} [mm];Events", 100, -150, 150);
-    auto h_true_sx = make_unique<TH1D>(
-        "h_true_sx", "True Slope X (sx);sx^{true};Events", 100, -1.2, 1.2);
-    auto h_true_sz = make_unique<TH1D>(
-        "h_true_sz", "True Slope Z (sz);sz^{true};Events", 100, -2, 2);
-    auto h_true_phi = make_unique<TH1D>("h_true_phi",
-        "True #phi; #phi [rad];Events", 100, -TMath::Pi(), TMath::Pi());
-    auto h_true_cosTheta = make_unique<TH1D>("h_true_cosTheta",
-        "True cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
+    auto h_true_x0 = make_unique<TH1D>(
+        "h_true_x0", "True X0 Distribution;x_{0}^{true} [mm];Events", 80, -40, 40);
+    auto h_true_z0 = make_unique<TH1D>(
+        "h_true_z0", "True Z0 Distribution;z_{0}^{true} [mm];Events", 100, -150, 150);
+    auto h_true_sx
+        = make_unique<TH1D>("h_true_sx", "True Slope X (sx);sx^{true};Events", 100, -1.2, 1.2);
+    auto h_true_sz
+        = make_unique<TH1D>("h_true_sz", "True Slope Z (sz);sz^{true};Events", 100, -2, 2);
+    auto h_true_phi = make_unique<TH1D>(
+        "h_true_phi", "True #phi; #phi [rad];Events", 100, -TMath::Pi(), TMath::Pi());
+    auto h_true_cosTheta = make_unique<TH1D>(
+        "h_true_cosTheta", "True cos(#theta); cos(#theta); Events", 100, -1.0, 1.0);
 
     // Debug
     // TH2D *hDebug = new TH2D("", "", 100, -3, 3, 100, -3, 3);
@@ -2318,8 +2216,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         // Debug
         if(DEBUG_TOY)
         {
-            bool condition = hit_ids.size() != 8 && hit_ids.size() != 4
-                && hit_ids.size() != 0;
+            bool condition = hit_ids.size() != 8 && hit_ids.size() != 4 && hit_ids.size() != 0;
             Bool_t condition2 = fitTr.x0 >= -17 && fitTr.x0 <= -16;
             InspectEvent(condition2, hit_ids, trueTr, fitTr);
         }
@@ -2340,8 +2237,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
         // x(y=0) = x_gen + ux * t_0  dove t_0 porta a y=0 => t_0 = -y_gen/uy
         // USIAMO LA TRACCIA RUOTATA (LOCALE) PER IL CONFRONTO
         CosmicTrack trueTrLoc = trueTr;
-        Config::ApplyInverseTransformation(
-            trueTrLoc.x0, trueTrLoc.y0, trueTrLoc.z0);
+        Config::ApplyInverseTransformation(trueTrLoc.x0, trueTrLoc.y0, trueTrLoc.z0);
         Config::ApplyInverseRotation(trueTrLoc.ux, trueTrLoc.uy, trueTrLoc.uz);
 
         double t_to_y0 = -trueTrLoc.y0 / trueTrLoc.uy;
@@ -2384,12 +2280,9 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
             double R = prop.r;
 
             // Intersection trueTrLoc with cylinder R (Local Frame)
-            double A
-                = trueTrLoc.ux * trueTrLoc.ux + trueTrLoc.uy * trueTrLoc.uy;
-            double B = 2
-                * (trueTrLoc.x0 * trueTrLoc.ux + trueTrLoc.y0 * trueTrLoc.uy);
-            double C = trueTrLoc.x0 * trueTrLoc.x0 + trueTrLoc.y0 * trueTrLoc.y0
-                - R * R;
+            double A = trueTrLoc.ux * trueTrLoc.ux + trueTrLoc.uy * trueTrLoc.uy;
+            double B = 2 * (trueTrLoc.x0 * trueTrLoc.ux + trueTrLoc.y0 * trueTrLoc.uy);
+            double C = trueTrLoc.x0 * trueTrLoc.x0 + trueTrLoc.y0 * trueTrLoc.y0 - R * R;
             double delta = B * B - 4 * A * C;
 
             if(delta >= 0)
@@ -2410,15 +2303,13 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
 
                 double alpha1 = (z1 + Config::L_HALF) / (2.0 * Config::L_HALF);
                 double phi_f1 = prop.phi0 + prop.dir * alpha1 * M_PI;
-                double dphi1
-                    = abs(Config::wrap0_2pi(phi1) - Config::wrap0_2pi(phi_f1));
+                double dphi1 = abs(Config::wrap0_2pi(phi1) - Config::wrap0_2pi(phi_f1));
                 if(dphi1 > M_PI)
                     dphi1 = 2.0 * M_PI - dphi1;
 
                 double alpha2 = (z2 + Config::L_HALF) / (2.0 * Config::L_HALF);
                 double phi_f2 = prop.phi0 + prop.dir * alpha2 * M_PI;
-                double dphi2
-                    = abs(Config::wrap0_2pi(phi2) - Config::wrap0_2pi(phi_f2));
+                double dphi2 = abs(Config::wrap0_2pi(phi2) - Config::wrap0_2pi(phi_f2));
                 if(dphi2 > M_PI)
                     dphi2 = 2.0 * M_PI - dphi2;
 
@@ -2456,8 +2347,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
             for(int h : hit_ids)
                 occupancyMap[h]++;
 
-            AccumulateEfficiency(
-                fitTr, hit_ids, bundleStats, layerStats, cylStats);
+            AccumulateEfficiency(fitTr, hit_ids, bundleStats, layerStats, cylStats);
         }
     }
     printf("\n\n");
@@ -2470,10 +2360,9 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
 
     printf("\n=== ACCEPTANCE RESULTS ===\n");
     printf("Total Triggers (Scintillators):       %d\n", n_triggers);
-    printf("CHeT Geometric Acceptance:            %d (%.2f%%)\n",
-        n_geo_accepted, acc_geo);
-    printf("Events with Hits >= 3:                %d (%.2f%% of Geom. Acc.)\n",
-        n_reconstructible, eff_rec);
+    printf("CHeT Geometric Acceptance:            %d (%.2f%%)\n", n_geo_accepted, acc_geo);
+    printf("Events with Hits >= 3:                %d (%.2f%% of Geom. Acc.)\n", n_reconstructible,
+        eff_rec);
     printf("Fit Converged:                        %d\n", n_good_fit);
     printf("=================================\n");
 
@@ -2509,8 +2398,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
             double rms = h->GetRMS();
             double peak = h->GetMaximum();
 
-            f2->SetParNames(
-                "A_Core", "Mean", "Sigma_Core", "A_Tail", "Sigma_Tail");
+            f2->SetParNames("A_Core", "Mean", "Sigma_Core", "A_Tail", "Sigma_Tail");
             f2->SetParameter(0, peak);
             f2->SetParameter(1, mean);
             f2->SetParameter(2, rms * 0.5);
@@ -2529,18 +2417,16 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
 
             if(fitptr->IsValid())
             {
-                auto fCore = make_unique<TF1>("fCore", "gaus",
-                    h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
-                fCore->SetParameters(f2->GetParameter(0), f2->GetParameter(1),
-                    f2->GetParameter(2));
+                auto fCore = make_unique<TF1>(
+                    "fCore", "gaus", h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
+                fCore->SetParameters(f2->GetParameter(0), f2->GetParameter(1), f2->GetParameter(2));
                 fCore->SetLineColor(kGreen + 2);
                 fCore->SetLineStyle(2);
                 fCore->DrawCopy("same");
 
-                auto fTail = make_unique<TF1>("fTail", "gaus",
-                    h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
-                fTail->SetParameters(f2->GetParameter(3), f2->GetParameter(1),
-                    f2->GetParameter(4));
+                auto fTail = make_unique<TF1>(
+                    "fTail", "gaus", h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
+                fTail->SetParameters(f2->GetParameter(3), f2->GetParameter(1), f2->GetParameter(4));
                 fTail->SetLineColor(kMagenta);
                 fTail->SetLineStyle(2);
                 fTail->DrawCopy("same");
@@ -2574,8 +2460,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     // --- Plotting Parametri Fittati (Canvas 2) ---
     TCanvas *c_pars = (TCanvas *)gROOT->FindObject("c_pars");
     if(!c_pars)
-        c_pars = new TCanvas(
-            "c_pars", "Fitted Parameters Distribution", 1200, 800);
+        c_pars = new TCanvas("c_pars", "Fitted Parameters Distribution", 1200, 800);
     else
         c_pars->Clear();
     c_pars->Divide(2, 2);
@@ -2603,8 +2488,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     // --- Plotting Parametri True (Canvas 3) ---
     TCanvas *c_true = (TCanvas *)gROOT->FindObject("c_true");
     if(!c_true)
-        c_true = new TCanvas("c_true",
-            "True Parameters Distribution (Reconstructed)", 1200, 800);
+        c_true = new TCanvas("c_true", "True Parameters Distribution (Reconstructed)", 1200, 800);
     else
         c_true->Clear();
     c_true->Divide(2, 2);
@@ -2642,8 +2526,7 @@ void RunToyMC(int nEvents = 10000, double efficiency = 1.0,
     // hDebug->Draw();
 
     if(doEfficiency)
-        PlotEfficiencyResults(
-            -1, bundleStats, layerStats, cylStats, occupancyMap);
+        PlotEfficiencyResults(-1, bundleStats, layerStats, cylStats, occupancyMap);
 
     return;
 }
@@ -2683,8 +2566,8 @@ struct SysParams
 // ------------------------------------------------------------------------------
 // (Identico a prima, ma pulito per usare la struct semplificata)
 
-SysParams RunSystematicToy(int nEvents, double efficiency, double shearX = 0.,
-    double shearZ = 0., bool useResiduals = false)
+SysParams RunSystematicToy(int nEvents, double efficiency, double shearX = 0., double shearZ = 0.,
+    bool useResiduals = false)
 {
     // Snapshot geometria corrente
     double tx, ty, tz, rx, ry, rz;
@@ -2766,27 +2649,24 @@ SysParams RunSystematicToy(int nEvents, double efficiency, double shearX = 0.,
  * @param nSteps Numero di punti per ogni scan (es. 5)
  * @param nEventsPerPoint Precisione statistica per ogni punto (es. 5000)
  */
-void StudySystematicSensitivityGrid(Double_t efficiency,
-    Double_t rangePos = 2.0, double rangeRot = 0.005, Double_t rangeShear = 20.,
-    int nSteps = 5, int nEventsPerPoint = 5000, bool useResiduals = false)
+void StudySystematicSensitivityGrid(Double_t efficiency, Double_t rangePos = 2.0,
+    double rangeRot = 0.005, Double_t rangeShear = 20., int nSteps = 5, int nEventsPerPoint = 5000,
+    bool useResiduals = false)
 {
     if(ROOT::IsImplicitMTEnabled())
         ROOT::DisableImplicitMT();
 
     // Etichette
-    const char *sysLabs[]
-        = { "Shift X", "Shift Z", "Rot X", "Rot Z", "Shear X", "Shear Z" };
+    const char *sysLabs[] = { "Shift X", "Shift Z", "Rot X", "Rot Z", "Shear X", "Shear Z" };
     const char *parLabs[] = { "x0 [mm]", "z0 [mm]", "sx [mrad]", "sz [mrad]" };
-    const char *units[]
-        = { "mm", "mm", "mrad", "mrad", "mm", "mm" }; // Unità dei sistematici
+    const char *units[] = { "mm", "mm", "mrad", "mrad", "mm", "mm" }; // Unità dei sistematici
 
     // Matrice per salvare le pendenze (Sensitivity Coefficients)
     // sensitivity[syst][param]
     double sensitivity[6][4];
 
     // Canvas gigante per i plot di linearità (4x6)
-    TCanvas *cGrid
-        = new TCanvas("cSensGrid", "Systematic Sensitivity Grid", 1200, 1500);
+    TCanvas *cGrid = new TCanvas("cSensGrid", "Systematic Sensitivity Grid", 1200, 1500);
     cGrid->Divide(4, 6, 0.001,
         0.001); // 4 colonne (params), 6 righe (systematics)
 
@@ -2794,8 +2674,7 @@ void StudySystematicSensitivityGrid(Double_t efficiency,
     printf("Calculating Baseline...\n");
     Config::SetTranslation(0, 0, 0);
     Config::SetRotation(0, 0, 0);
-    SysParams baseline
-        = RunSystematicToy(nEventsPerPoint, efficiency, 0, 0, useResiduals);
+    SysParams baseline = RunSystematicToy(nEventsPerPoint, efficiency, 0, 0, useResiduals);
 
     // Loop sui 6 Sistematici (Righe della matrice)
     for(int iSys = 0; iSys < 6; ++iSys)
@@ -2853,8 +2732,7 @@ void StudySystematicSensitivityGrid(Double_t efficiency,
                 sZ = val;
 
             // Run Toy
-            SysParams res = RunSystematicToy(
-                nEventsPerPoint, efficiency, sX, sZ, useResiduals);
+            SysParams res = RunSystematicToy(nEventsPerPoint, efficiency, sX, sZ, useResiduals);
 
             // Qui calcoliamo la differenza delle medie:
             // (Media Ricostruita con Sistematica) - (Media Ricostruita
@@ -2890,8 +2768,7 @@ void StudySystematicSensitivityGrid(Double_t efficiency,
             graphs[iPar]->SetMarkerStyle(20);
             graphs[iPar]->SetMarkerSize(0.8);
             if(std::abs(slope) > 0.1)
-                graphs[iPar]->SetMarkerColor(
-                    kRed); // Evidenzia correlazioni forti
+                graphs[iPar]->SetMarkerColor(kRed); // Evidenzia correlazioni forti
             else
                 graphs[iPar]->SetMarkerColor(kBlue);
 
@@ -2919,8 +2796,8 @@ void StudySystematicSensitivityGrid(Double_t efficiency,
     printf("Values represent the slope: (Delta Param) / (Delta Syst)\n");
     printf("-------------------------------------------------------------------"
            "---------------\n");
-    printf("Source (Unit)     | %12s | %12s | %12s | %12s |\n", "x0 [mm]",
-        "z0 [mm]", "sx [mrad]", "sz [mrad]");
+    printf("Source (Unit)     | %12s | %12s | %12s | %12s |\n", "x0 [mm]", "z0 [mm]", "sx [mrad]",
+        "sz [mrad]");
     printf("-------------------------------------------------------------------"
            "---------------\n");
 
@@ -2944,16 +2821,13 @@ void StudySystematicSensitivityGrid(Double_t efficiency,
     // --------------------------------------------------------------------------
     // OUTPUT: HEATMAP GRAFICA (Matrice Colorata)
     // --------------------------------------------------------------------------
-    TCanvas *cMat
-        = new TCanvas("cSensMat", "Sensitivity Matrix Heatmap", 800, 600);
+    TCanvas *cMat = new TCanvas("cSensMat", "Sensitivity Matrix Heatmap", 800, 600);
     cMat->cd();
     gStyle->SetPaintTextFormat("5.3f");
-    gStyle->SetPalette(
-        kTemperatureMap); // Palette Divergente (Blu negativo, Rosso positivo)
+    gStyle->SetPalette(kTemperatureMap); // Palette Divergente (Blu negativo, Rosso positivo)
 
     TH2D *hMat = new TH2D("hSensMat",
-        "Sensitivity Coefficients (Slope);Fitted Parameter;Systematic Source",
-        4, 0, 4, 6, 0, 6);
+        "Sensitivity Coefficients (Slope);Fitted Parameter;Systematic Source", 4, 0, 4, 6, 0, 6);
 
     // Riempimento (Attenzione: TH2D ha (x,y), noi vogliamo (Col, Row))
     for(int r = 0; r < 6; ++r)
@@ -3010,8 +2884,8 @@ struct SystematicCalculator
      * @param shearX [mm]
      * @param shearZ [mm]
      */
-    static void Predict(double shiftX, double shiftZ, double rotX, double rotZ,
-        double shearX, double shearZ)
+    static void Predict(
+        double shiftX, double shiftZ, double rotX, double rotZ, double shearX, double shearZ)
     {
         double S[6] = { shiftX, shiftZ, rotX, rotZ, shearX, shearZ };
         double P[4] = { 0, 0, 0, 0 }; // x0, z0, sx, sz
@@ -3054,8 +2928,7 @@ struct SystematicCalculator
      * Essendo il sistema sottodeterminato (4 equazioni, 6 incognite),
      * SVD fornisce la soluzione a norma minima (Minimum Norm Solution).
      */
-    static void CalculateAlignment(
-        double dx0, double dz0, double dsx, double dsz)
+    static void CalculateAlignment(double dx0, double dz0, double dsx, double dsz)
     {
         // Costruzione matrice A (4x6)
         TMatrixD A(4, 6);
@@ -3075,8 +2948,7 @@ struct SystematicCalculator
         b[3] = dsz;
 
         printf("\n=== ALIGNMENT CALCULATION (SVD - Underdetermined) ===\n");
-        printf("Target Residuals: dx0=%.3f, dz0=%.3f, dsx=%.3f, dsz=%.3f\n",
-            dx0, dz0, dsx, dsz);
+        printf("Target Residuals: dx0=%.3f, dz0=%.3f, dsx=%.3f, dsz=%.3f\n", dx0, dz0, dsx, dsz);
 
         // --- SOLUZIONE DEL SISTEMA SOTTODETERMINATO ---
 
@@ -3126,8 +2998,8 @@ struct SystematicCalculator
     }
 };
 
-void SolveSystematics(double sX = 0, double sZ = 0, double rX = 0,
-    double rZ = 0, double shX = 0, double shZ = 0)
+void SolveSystematics(
+    double sX = 0, double sZ = 0, double rX = 0, double rZ = 0, double shX = 0, double shZ = 0)
 {
     SystematicCalculator::Predict(sX, sZ, rX, rZ, shX, shZ);
 }

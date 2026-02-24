@@ -44,51 +44,41 @@ static const std::map<int, int> BOARD_OFFSETS = {
 // Huge map for channel mapping. Defined here to keep header clean.
 static const std::map<int, std::map<int, int>> BOARD_MAPS = {
     { 0,
-        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },
-            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },
-            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },
-            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },
-            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },
-            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 32, 32 },
-            { 36, 33 }, { 40, 34 }, { 44, 35 }, { 48, 36 }, { 52, 37 },
-            { 56, 38 }, { 60, 39 }, { 34, 40 }, { 38, 41 }, { 42, 42 },
+        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 }, { 7, 6 }, { 3, 7 },
+            { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 }, { 13, 12 }, { 9, 13 }, { 5, 14 },
+            { 1, 15 }, { 0, 16 }, { 4, 17 }, { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 },
+            { 24, 22 }, { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 }, { 18, 28 },
+            { 22, 29 }, { 26, 30 }, { 30, 31 }, { 32, 32 }, { 36, 33 }, { 40, 34 }, { 44, 35 },
+            { 48, 36 }, { 52, 37 }, { 56, 38 }, { 60, 39 }, { 34, 40 }, { 38, 41 }, { 42, 42 },
             { 46, 43 }, { 50, 44 }, { 54, 45 }, { 58, 46 }, { 62, 47 } } },
     { 1,
-        { { 31, 48 }, { 27, 49 }, { 23, 50 }, { 19, 51 }, { 15, 52 },
-            { 11, 53 }, { 7, 54 }, { 3, 55 }, { 29, 56 }, { 25, 57 },
-            { 21, 58 }, { 17, 59 }, { 13, 60 }, { 9, 61 }, { 5, 62 }, { 1, 63 },
-            { 0, 64 }, { 4, 65 }, { 8, 66 }, { 12, 67 }, { 16, 68 }, { 20, 69 },
-            { 24, 70 }, { 28, 71 }, { 2, 72 }, { 6, 73 }, { 10, 74 },
-            { 14, 75 }, { 18, 76 }, { 22, 77 }, { 26, 78 }, { 30, 79 },
-            { 32, 80 }, { 36, 81 }, { 40, 82 }, { 44, 83 }, { 48, 84 },
-            { 52, 85 }, { 56, 86 }, { 60, 87 }, { 34, 88 }, { 38, 89 },
+        { { 31, 48 }, { 27, 49 }, { 23, 50 }, { 19, 51 }, { 15, 52 }, { 11, 53 }, { 7, 54 },
+            { 3, 55 }, { 29, 56 }, { 25, 57 }, { 21, 58 }, { 17, 59 }, { 13, 60 }, { 9, 61 },
+            { 5, 62 }, { 1, 63 }, { 0, 64 }, { 4, 65 }, { 8, 66 }, { 12, 67 }, { 16, 68 },
+            { 20, 69 }, { 24, 70 }, { 28, 71 }, { 2, 72 }, { 6, 73 }, { 10, 74 }, { 14, 75 },
+            { 18, 76 }, { 22, 77 }, { 26, 78 }, { 30, 79 }, { 32, 80 }, { 36, 81 }, { 40, 82 },
+            { 44, 83 }, { 48, 84 }, { 52, 85 }, { 56, 86 }, { 60, 87 }, { 34, 88 }, { 38, 89 },
             { 42, 90 }, { 46, 91 }, { 50, 92 }, { 54, 93 } } },
     { 2,
-        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 },
-            { 7, 6 }, { 3, 7 }, { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 },
-            { 13, 12 }, { 9, 13 }, { 5, 14 }, { 1, 15 }, { 0, 16 }, { 4, 17 },
-            { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 }, { 24, 22 },
-            { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 },
-            { 18, 28 }, { 22, 29 }, { 26, 30 }, { 30, 31 }, { 63, 32 },
-            { 59, 33 }, { 55, 34 }, { 51, 35 }, { 47, 36 }, { 43, 37 },
-            { 39, 38 }, { 35, 39 }, { 61, 40 }, { 57, 41 }, { 53, 42 },
-            { 49, 43 }, { 45, 44 }, { 41, 45 }, { 37, 46 }, { 33, 47 },
-            { 32, 48 }, { 36, 49 }, { 40, 50 }, { 44, 51 }, { 48, 52 },
-            { 52, 53 }, { 56, 54 }, { 60, 55 }, { 34, 56 }, { 38, 57 },
-            { 42, 58 }, { 46, 59 }, { 50, 60 }, { 54, 61 }, { 58, 62 },
-            { 62, 63 } } },
+        { { 31, 0 }, { 27, 1 }, { 23, 2 }, { 19, 3 }, { 15, 4 }, { 11, 5 }, { 7, 6 }, { 3, 7 },
+            { 29, 8 }, { 25, 9 }, { 21, 10 }, { 17, 11 }, { 13, 12 }, { 9, 13 }, { 5, 14 },
+            { 1, 15 }, { 0, 16 }, { 4, 17 }, { 8, 18 }, { 12, 19 }, { 16, 20 }, { 20, 21 },
+            { 24, 22 }, { 28, 23 }, { 2, 24 }, { 6, 25 }, { 10, 26 }, { 14, 27 }, { 18, 28 },
+            { 22, 29 }, { 26, 30 }, { 30, 31 }, { 63, 32 }, { 59, 33 }, { 55, 34 }, { 51, 35 },
+            { 47, 36 }, { 43, 37 }, { 39, 38 }, { 35, 39 }, { 61, 40 }, { 57, 41 }, { 53, 42 },
+            { 49, 43 }, { 45, 44 }, { 41, 45 }, { 37, 46 }, { 33, 47 }, { 32, 48 }, { 36, 49 },
+            { 40, 50 }, { 44, 51 }, { 48, 52 }, { 52, 53 }, { 56, 54 }, { 60, 55 }, { 34, 56 },
+            { 38, 57 }, { 42, 58 }, { 46, 59 }, { 50, 60 }, { 54, 61 }, { 58, 62 }, { 62, 63 } } },
     { 3,
-        { { 31, 64 }, { 27, 65 }, { 23, 66 }, { 19, 67 }, { 15, 68 },
-            { 11, 69 }, { 7, 70 }, { 3, 71 }, { 29, 72 }, { 25, 73 },
-            { 21, 74 }, { 17, 75 }, { 13, 76 }, { 9, 77 }, { 5, 78 }, { 1, 79 },
-            { 0, 80 }, { 4, 81 }, { 8, 82 }, { 12, 83 }, { 16, 84 }, { 20, 85 },
-            { 24, 86 }, { 28, 87 }, { 2, 88 }, { 6, 89 }, { 10, 90 },
-            { 14, 91 }, { 18, 92 }, { 22, 93 }, { 26, 94 }, { 30, 95 },
-            { 63, 96 }, { 59, 97 }, { 55, 98 }, { 51, 99 }, { 47, 100 },
-            { 43, 101 }, { 39, 102 }, { 35, 103 }, { 61, 104 }, { 57, 105 },
-            { 53, 106 }, { 49, 107 }, { 45, 108 }, { 41, 109 }, { 37, 110 },
-            { 33, 111 }, { 32, 112 }, { 36, 113 }, { 40, 114 }, { 44, 115 },
-            { 48, 116 }, { 52, 117 }, { 56, 118 } } }
+        { { 31, 64 }, { 27, 65 }, { 23, 66 }, { 19, 67 }, { 15, 68 }, { 11, 69 }, { 7, 70 },
+            { 3, 71 }, { 29, 72 }, { 25, 73 }, { 21, 74 }, { 17, 75 }, { 13, 76 }, { 9, 77 },
+            { 5, 78 }, { 1, 79 }, { 0, 80 }, { 4, 81 }, { 8, 82 }, { 12, 83 }, { 16, 84 },
+            { 20, 85 }, { 24, 86 }, { 28, 87 }, { 2, 88 }, { 6, 89 }, { 10, 90 }, { 14, 91 },
+            { 18, 92 }, { 22, 93 }, { 26, 94 }, { 30, 95 }, { 63, 96 }, { 59, 97 }, { 55, 98 },
+            { 51, 99 }, { 47, 100 }, { 43, 101 }, { 39, 102 }, { 35, 103 }, { 61, 104 },
+            { 57, 105 }, { 53, 106 }, { 49, 107 }, { 45, 108 }, { 41, 109 }, { 37, 110 },
+            { 33, 111 }, { 32, 112 }, { 36, 113 }, { 40, 114 }, { 44, 115 }, { 48, 116 },
+            { 52, 117 }, { 56, 118 } } }
 };
 
 // --- Implementation ---
@@ -128,8 +118,7 @@ void SetRotation(double rx, double ry, double rz)
     g_RotX = rx;
     g_RotY = ry;
     g_RotZ = rz;
-    g_IsRotated
-        = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
+    g_IsRotated = (std::abs(rx) > 1e-9 || std::abs(ry) > 1e-9 || std::abs(rz) > 1e-9);
 
     if(g_IsRotated)
     {
@@ -138,8 +127,7 @@ void SetRotation(double rx, double ry, double rz)
         double cz = std::cos(rz), sz = std::sin(rz);
 
         // Calculate Rotation Matrix Columns by transforming basis vectors
-        auto rotate = [&](double x, double y, double z, double &ox, double &oy,
-                          double &oz)
+        auto rotate = [&](double x, double y, double z, double &ox, double &oy, double &oz)
         {
             // Rx
             double y1 = y * cx - z * sx;
@@ -264,17 +252,13 @@ const std::vector<CylinderConfig> &GetCylinders()
     {
         g_Cylinders = { {
                             0, // Cylinder 1
-                            { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1,
-                                632 }, // Inner (Red)
-                            { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1,
-                                807 } // Outer (Orange)
+                            { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1, 632 }, // Inner (Red)
+                            { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1, 807 } // Outer (Orange)
                         },
             {
                 1, // Cylinder 2
-                { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1,
-                    600 }, // Inner (Blue)
-                { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1,
-                    432 } // Outer (Cyan)
+                { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1, 600 }, // Inner (Blue)
+                { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1, 432 } // Outer (Cyan)
             } };
         g_GeometryDirty = false;
     }
@@ -301,8 +285,7 @@ FiberProp GetFiberProp(int b_id)
         {
             int b_loc = b_id - offset;
             return { cyl.id, 0, cyl.inner.radius,
-                wrap0_2pi(2.0 * M_PI * (-b_loc) / cyl.inner.nBundles
-                    + cyl.inner.phiOffset),
+                wrap0_2pi(2.0 * M_PI * (-b_loc) / cyl.inner.nBundles + cyl.inner.phiOffset),
                 cyl.inner.direction, cyl.inner.color };
         }
         offset += cyl.inner.nBundles;
@@ -312,8 +295,7 @@ FiberProp GetFiberProp(int b_id)
         {
             int b_loc = b_id - offset;
             return { cyl.id, 1, cyl.outer.radius,
-                wrap0_2pi(2.0 * M_PI * (b_loc) / cyl.outer.nBundles
-                    + cyl.outer.phiOffset),
+                wrap0_2pi(2.0 * M_PI * (b_loc) / cyl.outer.nBundles + cyl.outer.phiOffset),
                 cyl.outer.direction, cyl.outer.color };
         }
         offset += cyl.outer.nBundles;
@@ -342,8 +324,7 @@ int GetGlobalBundleId(int board_id, int channel_id)
     return local_val + boardOffset;
 }
 
-std::vector<BundlesIntersection> FindIntersections(
-    const std::vector<int> &hit_ids)
+std::vector<BundlesIntersection> FindIntersections(const std::vector<int> &hit_ids)
 {
     std::vector<BundlesIntersection> out;
     // Optimization: reserve memory if hits are many, though tricky to guess how
@@ -357,8 +338,7 @@ std::vector<BundlesIntersection> FindIntersections(
             FiberProp p2 = GetFiberProp(hit_ids[j]);
 
             // Intersection logic: Same cylinder, different layers
-            if(p1.cylinderId == p2.cylinderId && p1.cylinderId != -1
-                && p1.layerId != p2.layerId)
+            if(p1.cylinderId == p2.cylinderId && p1.cylinderId != -1 && p1.layerId != p2.layerId)
             {
                 double dphi0 = p2.phi0 - p1.phi0;
                 double ddir = p1.dir - p2.dir;
@@ -393,8 +373,8 @@ std::vector<BundlesIntersection> FindIntersections(
                         double z_rot = z_loc;
                         ApplyTransformation(x_rot, y_rot, z_rot);
 
-                        out.push_back({ z_rot, x_rot, y_rot, z_loc, x_loc,
-                            y_loc, p1.cylinderId, deltaZ });
+                        out.push_back(
+                            { z_rot, x_rot, y_rot, z_loc, x_loc, y_loc, p1.cylinderId, deltaZ });
                     }
                 }
             }
@@ -415,14 +395,12 @@ int GetGlobalIdFromGeometry(int cyl_id, int layer_id, int layer_idx)
         if(cyl.id == cyl_id)
         {
             // Check limits
-            int limit
-                = (layer_id == 0) ? cyl.inner.nBundles : cyl.outer.nBundles;
+            int limit = (layer_id == 0) ? cyl.inner.nBundles : cyl.outer.nBundles;
 
             if(layer_idx < 0 || layer_idx >= limit)
             {
-                std::cerr << " [ERROR] Index " << layer_idx
-                          << " out of range for Cylinder " << cyl_id
-                          << " Layer " << layer_id << "!\n";
+                std::cerr << " [ERROR] Index " << layer_idx << " out of range for Cylinder "
+                          << cyl_id << " Layer " << layer_id << "!\n";
                 return -1;
             }
 
@@ -458,8 +436,7 @@ void PrintBundleMapping(int global_id)
         {
             if(val == target_local)
             {
-                std::cout << " [HARDWARE] Board: " << board
-                          << " | Channel: " << chan << "\n";
+                std::cout << " [HARDWARE] Board: " << board << " | Channel: " << chan << "\n";
                 found_hw = true;
                 break;
             }
@@ -485,8 +462,8 @@ void PrintBundleMapping(int global_id)
             int layerIdx = isInner ? local : (local - cyl.inner.nBundles);
 
             std::cout << " [GEOMETRY] Cylinder: " << cyl.id
-                      << " | Layer: " << (isInner ? "INNER" : "OUTER")
-                      << " | Index: " << layerIdx << "\n";
+                      << " | Layer: " << (isInner ? "INNER" : "OUTER") << " | Index: " << layerIdx
+                      << "\n";
             found_geo = true;
             break;
         }
@@ -506,13 +483,12 @@ void MapExplorer()
         std::cout << " 1. Info from Global ID\n";
         std::cout << " 2. Info from Board/Channel\n";
         std::cout << " 3. Info from Geometry (Cyl, Lay, Idx)\n";
-        std::cout
-            << " 4. First bundle of Cylinder (N/A in this version)\n"; // Placeholder
-                                                                       // based
-                                                                       // on
-                                                                       // original
-                                                                       // menu
-                                                                       // logic
+        std::cout << " 4. First bundle of Cylinder (N/A in this version)\n"; // Placeholder
+                                                                             // based
+                                                                             // on
+                                                                             // original
+                                                                             // menu
+                                                                             // logic
         std::cout << " 5. First bundle of Layer\n";
         std::cout << " 0. Quit\n";
         std::cout << "Choice: ";
