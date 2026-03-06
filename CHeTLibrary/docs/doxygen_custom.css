@@ -1,0 +1,58 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+
+/* Apply Open Sans to body text */
+body, table, div, p, dl {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Apply Montserrat to headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+/* Custom Title Styling */
+.title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #2c3e50; /* Dark blue-grey */
+}
+
+/* Navbar customization */
+#projectname {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 180%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+#projectbrief {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Force the logo to fit within the header bar */
+#projectlogo img {
+    max-height: 55px; /* Restrict height to standard navbar size */
+    width: auto;      /* Maintain aspect ratio */
+    vertical-align: middle;
+}
+
+/* Links */
+a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #3498db;
+    text-decoration: underline;
+}
+
+/* Button styling */
+.sm-dox a, .tablist li a, .tablist li.current a {
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: none;
+}
