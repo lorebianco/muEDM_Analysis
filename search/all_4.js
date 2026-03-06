@@ -1,17 +1,18 @@
 var searchData=
 [
-  ['fdf_0',['fDF',['../classCHeT_1_1Data_1_1Reader.html#a580598eef6c1c20e9343743c93a50f5c',1,'CHeT::Data::Reader']]],
-  ['fenabledboards_1',['fEnabledBoards',['../classCHeT_1_1Data_1_1Reader.html#a6cdcf99b3167215c57f99364c8215e24',1,'CHeT::Data::Reader']]],
-  ['fenabledcylinders_2',['fEnabledCylinders',['../classCHeT_1_1Data_1_1Reader.html#a8a139e48a077e9685646f9f6eec4eb61',1,'CHeT::Data::Reader']]],
-  ['fenabledgeometries_3',['fEnabledGeometries',['../classCHeT_1_1Data_1_1Reader.html#af74dd451ba83cc665f48155b0d124ba2',1,'CHeT::Data::Reader']]],
-  ['fenabledlayers_4',['fEnabledLayers',['../classCHeT_1_1Data_1_1Reader.html#a5fd2e54e289f91c2ef96d9784679c261',1,'CHeT::Data::Reader']]],
-  ['ffilename_5',['fFilename',['../classCHeT_1_1Data_1_1Reader.html#a2268ffea5f1d9afc548f3ed6dd9d0456',1,'CHeT::Data::Reader']]],
-  ['fheadnode_6',['fHeadNode',['../classCHeT_1_1Data_1_1Reader.html#a169e5c397f7051d8e8573e22ea27bd24',1,'CHeT::Data::Reader']]],
-  ['fiberprop_7',['FiberProp',['../structCHeT_1_1Config_1_1FiberProp.html',1,'CHeT::Config']]],
-  ['findintersections_8',['FindIntersections',['../namespaceCHeT_1_1Config.html#a4c1c72a1efea202187c7759e7b137914',1,'CHeT::Config']]],
-  ['ftoamax_9',['fToaMax',['../classCHeT_1_1Data_1_1Reader.html#a8f18b31495d53e14adf9b7f4278d89b2',1,'CHeT::Data::Reader']]],
-  ['ftoamin_10',['fToaMin',['../classCHeT_1_1Data_1_1Reader.html#a76e1e68072ea48ad672887408bce7fdd',1,'CHeT::Data::Reader']]],
-  ['ftotmax_11',['fTotMax',['../classCHeT_1_1Data_1_1Reader.html#ad0a65e22c7c76e963a8bc1b99e9a5bee',1,'CHeT::Data::Reader']]],
-  ['ftotmin_12',['fTotMin',['../classCHeT_1_1Data_1_1Reader.html#aaba93ac7511e9b7c736856761f33b775',1,'CHeT::Data::Reader']]],
-  ['ftreename_13',['fTreeName',['../classCHeT_1_1Data_1_1Reader.html#af68c3d03414d28c79c8c81ef2b79b01d',1,'CHeT::Data::Reader']]]
+  ['chet_0',['CHeT',['../namespaceCHeT.html',1,'']]],
+  ['chet_20analysis_20library_20documentation_1',['CHeT Analysis Library - Documentation',['../index.html',1,'']]],
+  ['chet_3a_3aconfig_2',['Config',['../namespaceCHeT_1_1Config.html',1,'CHeT']]],
+  ['chet_3a_3adata_3',['Data',['../namespaceCHeT_1_1Data.html',1,'CHeT']]],
+  ['chet_3a_3avis_4',['Vis',['../namespaceCHeT_1_1Vis.html',1,'CHeT']]],
+  ['chetglobalsettings_2ecc_5',['CHeTGlobalSettings.cc',['../CHeTGlobalSettings_8cc.html',1,'']]],
+  ['chetglobalsettings_2ehh_6',['CHeTGlobalSettings.hh',['../CHeTGlobalSettings_8hh.html',1,'']]],
+  ['chetreader_2ecc_7',['CHeTReader.cc',['../CHeTReader_8cc.html',1,'']]],
+  ['chetreader_2ehh_8',['CHeTReader.hh',['../CHeTReader_8hh.html',1,'']]],
+  ['chetvisualizer_2ecc_9',['CHeTVisualizer.cc',['../CHeTVisualizer_8cc.html',1,'']]],
+  ['chetvisualizer_2ehh_10',['CHeTVisualizer.hh',['../CHeTVisualizer_8hh.html',1,'']]],
+  ['color_11',['color',['../structCHeT_1_1Config_1_1LayerConfig.html#a47bbd0b59e3982280a7343838465b4b5',1,'CHeT::Config::LayerConfig::color'],['../structCHeT_1_1Config_1_1FiberProp.html#af9ceb03da146056a8def5eb7335fed48',1,'CHeT::Config::FiberProp::color'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#aef81c3124bd874ff4303f1d4fc8a2334',1,'CHeT::Vis::VisLineTrack::color'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#a3551290c3a3f35362d3c15abdd05ece8',1,'CHeT::Vis::VisPoint2D::color'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#a5098f0b2ec079ca80b16c3fefe90ca7f',1,'CHeT::Vis::VisPoint3D::color']]],
+  ['core_20modules_12',['Core Modules',['../index.html#modules_sec',1,'']]],
+  ['cylinderconfig_13',['CylinderConfig',['../structCHeT_1_1Config_1_1CylinderConfig.html',1,'CHeT::Config']]],
+  ['cylinderid_14',['cylinderid',['../structCHeT_1_1Config_1_1FiberProp.html#adec9b2a644015952cd06eb033db20083',1,'CHeT::Config::FiberProp::cylinderId'],['../structCHeT_1_1Config_1_1BundlesIntersection.html#a09c5bf17758079158fda602c29312c33',1,'CHeT::Config::BundlesIntersection::cylinderId']]]
 ];

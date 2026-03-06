@@ -1,16 +1,8 @@
 var searchData=
 [
-  ['chet_0',['CHeT',['../namespaceCHeT.html',1,'']]],
-  ['chet_3a_3aconfig_1',['Config',['../namespaceCHeT_1_1Config.html',1,'CHeT']]],
-  ['chet_3a_3adata_2',['Data',['../namespaceCHeT_1_1Data.html',1,'CHeT']]],
-  ['chet_3a_3avis_3',['Vis',['../namespaceCHeT_1_1Vis.html',1,'CHeT']]],
-  ['chetglobalsettings_2ecc_4',['CHeTGlobalSettings.cc',['../CHeTGlobalSettings_8cc.html',1,'']]],
-  ['chetglobalsettings_2ehh_5',['CHeTGlobalSettings.hh',['../CHeTGlobalSettings_8hh.html',1,'']]],
-  ['chetreader_2ecc_6',['CHeTReader.cc',['../CHeTReader_8cc.html',1,'']]],
-  ['chetreader_2ehh_7',['CHeTReader.hh',['../CHeTReader_8hh.html',1,'']]],
-  ['chetvisualizer_2ecc_8',['CHeTVisualizer.cc',['../CHeTVisualizer_8cc.html',1,'']]],
-  ['chetvisualizer_2ehh_9',['CHeTVisualizer.hh',['../CHeTVisualizer_8hh.html',1,'']]],
-  ['color_10',['color',['../structCHeT_1_1Config_1_1LayerConfig.html#a47bbd0b59e3982280a7343838465b4b5',1,'CHeT::Config::LayerConfig::color'],['../structCHeT_1_1Config_1_1FiberProp.html#af9ceb03da146056a8def5eb7335fed48',1,'CHeT::Config::FiberProp::color'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#aef81c3124bd874ff4303f1d4fc8a2334',1,'CHeT::Vis::VisLineTrack::color'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#a3551290c3a3f35362d3c15abdd05ece8',1,'CHeT::Vis::VisPoint2D::color'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#a5098f0b2ec079ca80b16c3fefe90ca7f',1,'CHeT::Vis::VisPoint3D::color']]],
-  ['cylinderconfig_11',['CylinderConfig',['../structCHeT_1_1Config_1_1CylinderConfig.html',1,'CHeT::Config']]],
-  ['cylinderid_12',['cylinderid',['../structCHeT_1_1Config_1_1FiberProp.html#adec9b2a644015952cd06eb033db20083',1,'CHeT::Config::FiberProp::cylinderId'],['../structCHeT_1_1Config_1_1BundlesIntersection.html#a09c5bf17758079158fda602c29312c33',1,'CHeT::Config::BundlesIntersection::cylinderId']]]
+  ['analysis_20library_20documentation_0',['CHeT Analysis Library - Documentation',['../index.html',1,'']]],
+  ['applyinverserotation_1',['ApplyInverseRotation',['../namespaceCHeT_1_1Config.html#add3079d32cd6f8ea4a476178dbf56428',1,'CHeT::Config']]],
+  ['applyinversetransformation_2',['ApplyInverseTransformation',['../namespaceCHeT_1_1Config.html#a321bf15b23a052690e3698a59b5a6c7b',1,'CHeT::Config']]],
+  ['applyrotation_3',['ApplyRotation',['../namespaceCHeT_1_1Config.html#a40eccadf0381feb16885513e96aae234',1,'CHeT::Config']]],
+  ['applytransformation_4',['ApplyTransformation',['../namespaceCHeT_1_1Config.html#a671e06f534a46fe00d83fd1a3383e3d8',1,'CHeT::Config']]]
 ];

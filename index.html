@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CHeT Library: Main Page</title>
+<title>CHeT Library: CHeT Analysis Library - Documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -75,10 +75,73 @@ $(function() {
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">CHeT Library Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title"><a class="el" href="namespaceCHeT.html" title="Root namespace for the Cylindrical Helix Tracker (CHeT) project.">CHeT</a> Analysis Library - Documentation </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><div class="image">
+<img src="cosmic3D.png" alt="" width="600px"/>
+</div>
+<h1><a class="anchor" id="intro_sec"></a>
+Introduction</h1>
+<p>Welcome to the official documentation of the <b><a class="el" href="namespaceCHeT.html" title="Root namespace for the Cylindrical Helix Tracker (CHeT) project.">CHeT</a> Analysis Library</b>. This software framework is developed for the simulation, reconstruction, and data analysis of the <b>Cylindrical Helix Tracker (muEDM)</b>.</p>
+<p>The library provides comprehensive tools to:</p><ul>
+<li>Define detector geometry (cylinders, layers, fibers).</li>
+<li>Handle coordinate transformations (Local &lt;-&gt; Global frames).</li>
+<li>Visualize events in 2D and 3D using ROOT.</li>
+<li>Read and filter raw data efficiently via RDataFrame.</li>
+</ul>
+<h1><a class="anchor" id="visuals_sec"></a>
+Visualization</h1>
+<p>The library includes visualization tools for event debugging and analysis.</p>
+<h2><a class="anchor" id="vis_3d"></a>
+3D Visualization</h2>
+<p>Full view of the detector showing reconstructed tracks and active cylinders.</p>
+<h2><a class="anchor" id="vis_2d"></a>
+2D Projections</h2>
+<p>Unrolled maps (Phi-Z) and transverse projections for intersection analysis.</p>
+<h1><a class="anchor" id="modules_sec"></a>
+Core Modules</h1>
+<p>The codebase is organized into the following namespaces:</p>
+<ul>
+<li><b><a class="el" href="namespaceCHeT_1_1Config.html" title="Global Settings namespace containing configuration structures, physical constants,...">CHeT::Config</a></b> (<a class="el" href="namespaceCHeT_1_1Config.html">CHeT::Config</a>) <br  />
+Manages the geometric configuration and mapping ("Global Settings"). It contains definitions for <code>CylinderConfig</code>, <code>LayerConfig</code>, and coordinate transformation functions.</li>
+<li><b><a class="el" href="namespaceCHeT_1_1Vis.html" title="CHeT Visualization namespace. Contains tools for 2D and 3D visualization of the detector,...">CHeT::Vis</a></b> (<a class="el" href="namespaceCHeT_1_1Vis.html">CHeT::Vis</a>) <br  />
+ROOT-based visualization engine. Provides <code>Draw3D</code> for spatial viewing and <code>Draw2D</code> for projections and unrolled maps.</li>
+<li><b><a class="el" href="namespaceCHeT_1_1Data.html" title="Data processing namespace. Contains the Reader class and data structures for analyzing CHeT data.">CHeT::Data</a></b> (<a class="el" href="namespaceCHeT_1_1Data.html">CHeT::Data</a>) <br  />
+I/O Interface. The <code>Reader</code> class wraps <code>ROOT::RDataFrame</code> to enable efficient loading, filtering (time cuts, board selection), and creation of high-level estimators.</li>
+</ul>
+<h1><a class="anchor" id="usage_sec"></a>
+Quick Example</h1>
+<p>Here is a minimal example of how to initialize the geometry and visualize an event:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="CHeTGlobalSettings_8hh.html">CHeT/CHeTGlobalSettings.hh</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="CHeTVisualizer_8hh.html">CHeT/CHeTVisualizer.hh</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> AnalyzeEvent() {</div>
+<div class="line">    <span class="comment">// 1. Geometry Configuration</span></div>
+<div class="line">    <a class="code hl_function" href="namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd">CHeT::Config::SetRotation</a>(0.1, 0.0, 0.0); <span class="comment">// Example rotation</span></div>
+<div class="line">    std::vector&lt;int&gt; active_cyls = {0, 1};</div>
+<div class="line">    <a class="code hl_function" href="namespaceCHeT_1_1Config.html#a85c38200ec4f7c7767b7113c488d240e">CHeT::Config::SetActiveCylinders</a>(active_cyls);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. Data Simulation (or reading from Reader)</span></div>
+<div class="line">    std::vector&lt;int&gt; hits = {100, 105, 200}; <span class="comment">// Global fiber IDs</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 3. Visualization</span></div>
+<div class="line">    <a class="code hl_function" href="namespaceCHeT_1_1Vis.html#a3a534d4ffb8316a00bc9b1855a792d30">CHeT::Vis::Draw3D</a>(hits, {}, {}, <span class="keyword">true</span>); <span class="comment">// Draw hits and skeleton</span></div>
+<div class="line">    <a class="code hl_function" href="namespaceCHeT_1_1Vis.html#a034a249ab0741851256fc6b7d4ce6657">CHeT::Vis::Draw2D</a>(hits);               <span class="comment">// Draw projections</span></div>
+<div class="line">}</div>
+<div class="ttc" id="aCHeTGlobalSettings_8hh_html"><div class="ttname"><a href="CHeTGlobalSettings_8hh.html">CHeTGlobalSettings.hh</a></div></div>
+<div class="ttc" id="aCHeTVisualizer_8hh_html"><div class="ttname"><a href="CHeTVisualizer_8hh.html">CHeTVisualizer.hh</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_a85c38200ec4f7c7767b7113c488d240e"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#a85c38200ec4f7c7767b7113c488d240e">CHeT::Config::SetActiveCylinders</a></div><div class="ttdeci">void SetActiveCylinders(const std::vector&lt; int &gt; &amp;active_ids)</div><div class="ttdoc">Sets the list of active cylinder IDs. This defines the physical composition of the detector for the c...</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00260">CHeTGlobalSettings.cc:260</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Config_html_ae0d17c6e8eb64bfc9ab9baf1054d5dbd"><div class="ttname"><a href="namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd">CHeT::Config::SetRotation</a></div><div class="ttdeci">void SetRotation(double rx, double ry, double rz)</div><div class="ttdoc">Sets the global rotation of the detector using Euler angles. Rotations are applied in order: X,...</div><div class="ttdef"><b>Definition</b> <a href="CHeTGlobalSettings_8cc_source.html#l00118">CHeTGlobalSettings.cc:118</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Vis_html_a034a249ab0741851256fc6b7d4ce6657"><div class="ttname"><a href="namespaceCHeT_1_1Vis.html#a034a249ab0741851256fc6b7d4ce6657">CHeT::Vis::Draw2D</a></div><div class="ttdeci">void Draw2D(const std::vector&lt; int &gt; &amp;bundle_ids, const std::vector&lt; VisLineTrack &gt; &amp;tracks={}, const std::vector&lt; VisPoint2D &gt; &amp;extraPoints={})</div><div class="ttdoc">Draws 2D projections: Phi-Z Unrolled Map, ZX/ZY Side views, and XY Transverse view.</div><div class="ttdef"><b>Definition</b> <a href="CHeTVisualizer_8cc_source.html#l00047">CHeTVisualizer.cc:47</a></div></div>
+<div class="ttc" id="anamespaceCHeT_1_1Vis_html_a3a534d4ffb8316a00bc9b1855a792d30"><div class="ttname"><a href="namespaceCHeT_1_1Vis.html#a3a534d4ffb8316a00bc9b1855a792d30">CHeT::Vis::Draw3D</a></div><div class="ttdeci">void Draw3D(const std::vector&lt; int &gt; &amp;hit_ids, const std::vector&lt; VisLineTrack &gt; &amp;tracks={}, const std::vector&lt; VisPoint3D &gt; &amp;points={}, bool drawSkeleton=true)</div><div class="ttdoc">Draws the full 3D detector view.</div><div class="ttdef"><b>Definition</b> <a href="CHeTVisualizer_8cc_source.html#l00312">CHeTVisualizer.cc:312</a></div></div>
+</div><!-- fragment --><h1><a class="anchor" id="install_sec"></a>
+Installation</h1>
+<p>Ensure that <b>ROOT 6</b> is installed and configured in your <code>CMAKE_PREFIX_PATH</code>. The library relies on ROOT for both I/O and graphical rendering.</p>
+<dl class="section author"><dt>Author</dt><dd>Lorenzo </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>06/03/2024 </dd></dl>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
