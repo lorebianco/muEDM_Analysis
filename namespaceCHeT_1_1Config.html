@@ -153,8 +153,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a31aae658900b9d336ce1430dd92bd01b" id="r_a31aae658900b9d336ce1430dd92bd01b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a31aae658900b9d336ce1430dd92bd01b">GetBoardGlobalOffset</a> (int board_id)</td></tr>
 <tr class="memdesc:a31aae658900b9d336ce1430dd92bd01b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the global offset (bundle count) for a specific board.  <br /></td></tr>
 <tr class="separator:a31aae658900b9d336ce1430dd92bd01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85c38200ec4f7c7767b7113c488d240e" id="r_a85c38200ec4f7c7767b7113c488d240e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a85c38200ec4f7c7767b7113c488d240e">SetActiveCylinders</a> (const std::vector&lt; int &gt; &amp;active_ids)</td></tr>
+<tr class="memdesc:a85c38200ec4f7c7767b7113c488d240e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the list of active cylinder IDs. This defines the physical composition of the detector for the current run/simulation. Only these cylinders will be returned by <a class="el" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e" title="Retrieves the configuration for all active cylinders.">GetCylinders()</a>.  <br /></td></tr>
+<tr class="separator:a85c38200ec4f7c7767b7113c488d240e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598b60f6282368fd8b80e7362ba06c70" id="r_a598b60f6282368fd8b80e7362ba06c70"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a598b60f6282368fd8b80e7362ba06c70">GetActiveCylinders</a> ()</td></tr>
+<tr class="memdesc:a598b60f6282368fd8b80e7362ba06c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the list of currently active cylinder IDs.  <br /></td></tr>
+<tr class="separator:a598b60f6282368fd8b80e7362ba06c70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab595b71f5e0a8af04fc3a372bd66210e" id="r_ab595b71f5e0a8af04fc3a372bd66210e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structCHeT_1_1Config_1_1CylinderConfig.html">CylinderConfig</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e">GetCylinders</a> ()</td></tr>
-<tr class="memdesc:ab595b71f5e0a8af04fc3a372bd66210e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the configuration for all cylinders.  <br /></td></tr>
+<tr class="memdesc:ab595b71f5e0a8af04fc3a372bd66210e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the configuration for all active cylinders.  <br /></td></tr>
 <tr class="separator:ab595b71f5e0a8af04fc3a372bd66210e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ee050b0cfdeb6c81dbf62c26f56eb9d" id="r_a9ee050b0cfdeb6c81dbf62c26f56eb9d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a9ee050b0cfdeb6c81dbf62c26f56eb9d">wrap0_2pi</a> (double angle)</td></tr>
 <tr class="memdesc:a9ee050b0cfdeb6c81dbf62c26f56eb9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps an angle into the [0, 2*PI) range.  <br /></td></tr>
@@ -232,7 +238,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00206">206</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00208">208</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -278,7 +284,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00232">232</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00234">234</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -324,7 +330,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00192">192</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00194">194</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -370,7 +376,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00221">221</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00223">223</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -399,7 +405,29 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Vector of intersection points. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00327">327</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00404">404</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+
+</div>
+</div>
+<a id="a598b60f6282368fd8b80e7362ba06c70" name="a598b60f6282368fd8b80e7362ba06c70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a598b60f6282368fd8b80e7362ba06c70">&#9670;&#160;</a></span>GetActiveCylinders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; int &gt; CHeT::Config::GetActiveCylinders </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the list of currently active cylinder IDs. </p>
+<dl class="section return"><dt>Returns</dt><dd>Vector of active cylinder IDs. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00266">266</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -428,7 +456,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The offset in bundle index, or -1 if invalid. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00243">243</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00245">245</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -447,10 +475,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Retrieves the configuration for all cylinders. </p>
+<p>Retrieves the configuration for all active cylinders. </p>
 <dl class="section return"><dt>Returns</dt><dd>A constant reference to the vector of cylinder configurations. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00249">249</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00273">273</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -472,7 +500,7 @@ Variables</h2></td></tr>
 <p>Retrieves the current experimental parameter DELTA1. Used in the configuration of Cylinder 1. </p>
 <dl class="section return"><dt>Returns</dt><dd>The value of DELTA1. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00096">96</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00098">98</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -494,7 +522,7 @@ Variables</h2></td></tr>
 <p>Retrieves the current experimental parameter DELTA2. Used in the configuration of Cylinder 2. </p>
 <dl class="section return"><dt>Returns</dt><dd>The value of DELTA2. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00106">106</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00108">108</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -523,7 +551,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structCHeT_1_1Config_1_1FiberProp.html" title="Properties of a specific reconstructed fiber.">FiberProp</a> structure containing geometry info. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00276">276</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00342">342</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -563,7 +591,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Global Bundle ID, or -1 if mapping not found. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00307">307</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00373">373</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -601,7 +629,7 @@ Variables</h2></td></tr>
 
 <p>Helper: Converts Geometry (Cyl, Layer, Index) to Global ID. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00388">388</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00465">465</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -623,7 +651,7 @@ Variables</h2></td></tr>
 <p>Retrieves the current experimental angular offset (OFFSET_EXP). </p>
 <dl class="section return"><dt>Returns</dt><dd>The offset value in radians. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00086">86</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00088">88</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -669,7 +697,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00171">171</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00173">173</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -715,7 +743,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00185">185</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00187">187</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -736,7 +764,7 @@ Variables</h2></td></tr>
 
 <p>Interactive CLI menu to explore the mapping. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00477">477</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00554">554</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -758,7 +786,35 @@ Variables</h2></td></tr>
 
 <p>Helper: Prints mapping details for a given Global ID to stdout. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00417">417</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00494">494</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+
+</div>
+</div>
+<a id="a85c38200ec4f7c7767b7113c488d240e" name="a85c38200ec4f7c7767b7113c488d240e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85c38200ec4f7c7767b7113c488d240e">&#9670;&#160;</a></span>SetActiveCylinders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Config::SetActiveCylinders </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>active_ids</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the list of active cylinder IDs. This defines the physical composition of the detector for the current run/simulation. Only these cylinders will be returned by <a class="el" href="namespaceCHeT_1_1Config.html#ab595b71f5e0a8af04fc3a372bd66210e" title="Retrieves the configuration for all active cylinders.">GetCylinders()</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">active_ids</td><td>Vector of cylinder IDs. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00260">260</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -787,7 +843,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00100">100</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00102">102</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -816,7 +872,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00110">110</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00112">112</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -845,7 +901,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00090">90</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00092">92</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -891,7 +947,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00116">116</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00118">118</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -937,7 +993,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00178">178</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00180">180</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -966,7 +1022,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Wrapped angle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00268">268</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00334">334</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
