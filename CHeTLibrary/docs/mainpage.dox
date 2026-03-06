@@ -1,0 +1,75 @@
+/**
+ * @mainpage CHeT Analysis Library - Documentation
+ *
+ * \image html cosmic3D.png width=600px
+ *
+ * @section intro_sec Introduction
+ *
+ * Welcome to the official documentation of the **CHeT Analysis Library**.
+ * This software framework is developed for the simulation, reconstruction, and data analysis
+ * of the <b>Cylindrical Helix Tracker (muEDM)</b>.
+ *
+ * The library provides comprehensive tools to:
+ * - Define detector geometry (cylinders, layers, fibers).
+ * - Handle coordinate transformations (Local <-> Global frames).
+ * - Visualize events in 2D and 3D using ROOT.
+ * - Read and filter raw data efficiently via RDataFrame.
+ *
+ * @section visuals_sec Visualization
+ *
+ * The library includes visualization tools for event debugging and analysis.
+ *
+ * @subsection vis_3d 3D Visualization
+ * Full view of the detector showing reconstructed tracks and active cylinders.
+ *
+ * @subsection vis_2d 2D Projections
+ * Unrolled maps (Phi-Z) and transverse projections for intersection analysis.
+ *
+ * @section modules_sec Core Modules
+ *
+ * The codebase is organized into the following namespaces:
+ *
+ * - **CHeT::Config** (@ref CHeT::Config)
+ *   <br>Manages the geometric configuration and mapping ("Global Settings"). It contains definitions
+ *   for `CylinderConfig`, `LayerConfig`, and coordinate transformation functions.
+ *
+ * - **CHeT::Vis** (@ref CHeT::Vis)
+ *   <br>ROOT-based visualization engine. Provides `Draw3D` for spatial viewing
+ *   and `Draw2D` for projections and unrolled maps.
+ *
+ * - **CHeT::Data** (@ref CHeT::Data)
+ *   <br>I/O Interface. The `Reader` class wraps `ROOT::RDataFrame` to enable
+ *   efficient loading, filtering (time cuts, board selection), and creation of
+ *   high-level estimators.
+ *
+ * @section usage_sec Quick Example
+ *
+ * Here is a minimal example of how to initialize the geometry and visualize an event:
+ *
+ * @code{.cpp}
+ * #include "CHeT/CHeTGlobalSettings.hh"
+ * #include "CHeT/CHeTVisualizer.hh"
+ *
+ * void AnalyzeEvent() {
+ *     // 1. Geometry Configuration
+ *     CHeT::Config::SetRotation(0.1, 0.0, 0.0); // Example rotation
+ *     std::vector<int> active_cyls = {0, 1};
+ *     CHeT::Config::SetActiveCylinders(active_cyls);
+ *
+ *     // 2. Data Simulation (or reading from Reader)
+ *     std::vector<int> hits = {100, 105, 200}; // Global fiber IDs
+ *
+ *     // 3. Visualization
+ *     CHeT::Vis::Draw3D(hits, {}, {}, true); // Draw hits and skeleton
+ *     CHeT::Vis::Draw2D(hits);               // Draw projections
+ * }
+ * @endcode
+ *
+ * @section install_sec Installation
+ *
+ * Ensure that **ROOT 6** is installed and configured in your `CMAKE_PREFIX_PATH`.
+ * The library relies on ROOT for both I/O and graphical rendering.
+ *
+ * @author Lorenzo
+ * @date 06/03/2024
+ */

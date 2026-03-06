@@ -29,7 +29,7 @@ Thumbs.db
 *.tmp
 
 # --- Documentation directory ---
-docs/
+# docs/
 
 # --- Optional: Data and Output ---
 # Often you don't want to push heavy data files or plots to Git

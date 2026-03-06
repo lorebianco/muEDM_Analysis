@@ -212,7 +212,21 @@ void ApplyInverseTransformation(double &x, double &y, double &z);
 int GetBoardGlobalOffset(int board_id);
 
 /**
- * @brief Retrieves the configuration for all cylinders.
+ * @brief Sets the list of active cylinder IDs.
+ * This defines the physical composition of the detector for the current run/simulation.
+ * Only these cylinders will be returned by GetCylinders().
+ * @param active_ids Vector of cylinder IDs.
+ */
+void SetActiveCylinders(const std::vector<int> &active_ids);
+
+/**
+ * @brief Retrieves the list of currently active cylinder IDs.
+ * @return Vector of active cylinder IDs.
+ */
+std::vector<int> GetActiveCylinders();
+
+/**
+ * @brief Retrieves the configuration for all active cylinders.
  * @return A constant reference to the vector of cylinder configurations.
  */
 const std::vector<CylinderConfig> &GetCylinders();

@@ -33,6 +33,8 @@ static double g_TransY = 0.0;
 static double g_TransZ = 0.0;
 
 // Static map for board offsets
+static std::vector<int> g_ActiveCylinders;
+
 static const std::map<int, int> BOARD_OFFSETS = {
     { 0, 0 }, // Board 0: Cylinder 0 (Inner)
     { 1, 0 }, // Board 1: Cylinder 0 (Outer)
@@ -243,23 +245,87 @@ void ApplyInverseTransformation(double &x, double &y, double &z)
 int GetBoardGlobalOffset(int board_id)
 {
     auto it = BOARD_OFFSETS.find(board_id);
-    return (it != BOARD_OFFSETS.end()) ? it->second : -1;
+    if(it != BOARD_OFFSETS.end())
+        return it->second;
+
+    // Placeholder for new cylinders (approximate continuation)
+    // Cylinder 0+1 end at 94 + 119 = 213
+    if(board_id >= 4)
+    {
+        return 213 + (board_id - 4) * 64;
+    }
+    return -1;
+}
+
+void SetActiveCylinders(const std::vector<int> &active_ids)
+{
+    g_ActiveCylinders = active_ids;
+    g_GeometryDirty = true;
+}
+
+std::vector<int> GetActiveCylinders()
+{
+    if(g_ActiveCylinders.empty())
+        return { 0, 1, 2, 3, 4, 5 };
+    return g_ActiveCylinders;
 }
 
 const std::vector<CylinderConfig> &GetCylinders()
 {
     if(g_GeometryDirty || g_Cylinders.empty())
     {
-        g_Cylinders = { {
-                            0, // Cylinder 1
-                            { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1, 632 }, // Inner (Red)
-                            { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1, 807 } // Outer (Orange)
-                        },
+        g_Cylinders.clear();
+
+        // Check which cylinders are active (empty means all)
+        auto &active = g_ActiveCylinders;
+        auto isActive = [&](int id)
+        {
+            if(active.empty())
+                return true;
+            return std::find(active.begin(), active.end(), id) != active.end();
+        };
+
+        // Full definition
+        std::vector<CylinderConfig> all
+            = { {
+                    0, // Cylinder 1
+                    { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1, 632 }, // Inner (Red)
+                    { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1, 807 } // Outer (Orange)
+                },
+                  {
+                      1, // Cylinder 2
+                      { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1, 600 }, // Inner (Blue)
+                      { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1, 432 } // Outer (Cyan)
+                  },
+                  {
+                      2, // Cylinder 3
+                      { 96, 37.0, g_OFFSET_EXP, -1, 418 }, // Inner (Dark Green)
+                      { 96, 37.0, g_OFFSET_EXP, 1, 817 } // Outer (Light Green)
+                  },
+                  {
+                      3, // Cylinder 4
+                      { 151, 65.0, g_OFFSET_EXP, -1, 882 }, // Inner (Dark Violet)
+                      { 152, 65.0, g_OFFSET_EXP, 1, 609 } // Outer (Pink)
+                  },
+                  {
+                      4, // Cylinder 5
+                      { 160, 69.0, g_OFFSET_EXP, -1, 803 }, // Inner (Brown)
+                      { 162, 69.0, g_OFFSET_EXP, 1, 805 } // Outer (Light Brown)
+                  },
+                  {
+                      5, // Cylinder 6
+                      { 170, 73.0, g_OFFSET_EXP, -1, 923 }, // Inner (Dark Gray)
+                      { 171, 73.0, g_OFFSET_EXP, 1, 921 } // Outer (Silver)
+                  } };
+
+        // Filter active cylinders
+        for(const auto &c : all)
+        {
+            if(isActive(c.id))
             {
-                1, // Cylinder 2
-                { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1, 600 }, // Inner (Blue)
-                { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1, 432 } // Outer (Cyan)
-            } };
+                g_Cylinders.push_back(c);
+            }
+        }
         g_GeometryDirty = false;
     }
     return g_Cylinders;
@@ -306,16 +372,27 @@ FiberProp GetFiberProp(int b_id)
 
 int GetGlobalBundleId(int board_id, int channel_id)
 {
+    int local_val = -1;
+
     auto boardMapIt = BOARD_MAPS.find(board_id);
-    if(boardMapIt == BOARD_MAPS.end())
+    if(boardMapIt != BOARD_MAPS.end())
+    {
+        auto chanIt = boardMapIt->second.find(channel_id);
+        if(chanIt != boardMapIt->second.end())
+        {
+            local_val = chanIt->second;
+        }
+    }
+    else
+    {
+        // Placeholder 1-1 mapping for future boards
+        local_val = channel_id;
+    }
+
+    if(local_val == -1)
         return -1;
 
-    auto chanIt = boardMapIt->second.find(channel_id);
-    if(chanIt == boardMapIt->second.end())
-        return -1;
-
-    int local_val = chanIt->second;
-
+    // Get board offset
     // Apply offset
     int boardOffset = GetBoardGlobalOffset(board_id);
     if(boardOffset == -1)

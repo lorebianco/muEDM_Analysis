@@ -249,11 +249,23 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
     // 2. ZX and ZY
     auto cyls = CHeT::Config::GetCylinders();
 
+    double max_R = 0;
+    for(const auto &cyl : cyls)
+    {
+        if(cyl.outer.radius > max_R)
+            max_R = cyl.outer.radius;
+    }
+    if(max_R < 30.0)
+        max_R = 30.0;
+
+    double margin = 10.0;
+    double limit = max_R + margin;
+
     pad_zx->cd();
     pad_zx->SetGrid();
     mg_zx->Draw("A");
     mg_zx->SetTitle("Top View ZX; x [mm]; z [mm]");
-    mg_zx->GetXaxis()->SetLimits(-40, 40);
+    mg_zx->GetXaxis()->SetLimits(-limit, limit);
     mg_zx->GetYaxis()->SetRangeUser(-CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
     for(auto &c : cyls)
     {
@@ -269,7 +281,7 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
     mg_zy->Draw("A");
     mg_zy->SetTitle("Lateral View ZY; z [mm]; y [mm]");
     mg_zy->GetXaxis()->SetLimits(-CHeT::Config::L_HALF - 20, CHeT::Config::L_HALF + 20);
-    mg_zy->GetYaxis()->SetRangeUser(-40, 40);
+    mg_zy->GetYaxis()->SetRangeUser(-limit, limit);
     for(auto &c : cyls)
     {
         TBox *b = new TBox(
@@ -283,8 +295,8 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
     c_xy->cd();
     mg_xy->Draw("A");
     mg_xy->SetTitle("XY View; x [mm]; y [mm]");
-    mg_xy->GetXaxis()->SetLimits(-30, 30);
-    mg_xy->GetYaxis()->SetRangeUser(-30, 30);
+    mg_xy->GetXaxis()->SetLimits(-limit, limit);
+    mg_xy->GetYaxis()->SetRangeUser(-limit, limit);
     for(auto &c : cyls)
     {
         TEllipse *e = new TEllipse(0, 0, c.inner.radius);
@@ -396,8 +408,6 @@ void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tr
     if(drawSkeleton)
     {
         auto cylinders = CHeT::Config::GetCylinders();
-        int b_global_idx = 0;
-
         for(const auto &cyl : cylinders)
         {
             const CHeT::Config::LayerConfig *layers[2] = { &cyl.inner, &cyl.outer };
@@ -405,7 +415,8 @@ void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tr
             {
                 for(int b = 0; b < layers[l]->nBundles; ++b)
                 {
-                    CHeT::Config::FiberProp p = CHeT::Config::GetFiberProp(b_global_idx + b);
+                    int global_id = CHeT::Config::GetGlobalIdFromGeometry(cyl.id, l, b);
+                    CHeT::Config::FiberProp p = CHeT::Config::GetFiberProp(global_id);
 
                     // Ghost fiber
                     TPolyLine3D *bg_f = new TPolyLine3D(10);
@@ -426,7 +437,6 @@ void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tr
                     bg_f->SetLineColorAlpha(p.color, 0.1); // Very transparent
                     bg_f->Draw("same");
                 }
-                b_global_idx += layers[l]->nBundles;
             }
         }
     }

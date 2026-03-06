@@ -29,6 +29,8 @@
 #pragma link C++ function CHeT::Config::ApplyTransformation;
 #pragma link C++ function CHeT::Config::ApplyInverseTransformation;
 #pragma link C++ function CHeT::Config::GetBoardGlobalOffset;
+#pragma link C++ function CHeT::Config::SetActiveCylinders;
+#pragma link C++ function CHeT::Config::GetActiveCylinders;
 #pragma link C++ function CHeT::Config::GetCylinders;
 #pragma link C++ function CHeT::Config::wrap0_2pi;
 #pragma link C++ function CHeT::Config::GetFiberProp;
