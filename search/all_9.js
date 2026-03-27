@@ -4,5 +4,5 @@ var searchData=
   ['inner_1',['inner',['../structCHeT_1_1Config_1_1CylinderConfig.html#a5867ba78d19624823f9fc0e0e6bbd662',1,'CHeT::Config::CylinderConfig']]],
   ['installation_2',['Installation',['../index.html#install_sec',1,'']]],
   ['introduction_3',['Introduction',['../index.html#intro_sec',1,'']]],
-  ['islocalframe_4',['islocalframe',['../structCHeT_1_1Vis_1_1VisLineTrack.html#ae2120a8a7b1d6a11a00e5eee7dc18bb7',1,'CHeT::Vis::VisLineTrack::isLocalFrame'],['../structCHeT_1_1Vis_1_1VisPoint3D.html#a8b856e22db624c2cdd53532a0bef9e02',1,'CHeT::Vis::VisPoint3D::isLocalFrame']]]
+  ['islocalframe_4',['islocalframe',['../structCHeT_1_1Vis_1_1VisPoint3D.html#a8b856e22db624c2cdd53532a0bef9e02',1,'CHeT::Vis::VisPoint3D::isLocalFrame'],['../structCHeT_1_1Vis_1_1VisGenericTrack.html#a5bf17ec2865628e998b189832e6b900b',1,'CHeT::Vis::VisGenericTrack::isLocalFrame'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#ae2120a8a7b1d6a11a00e5eee7dc18bb7',1,'CHeT::Vis::VisLineTrack::isLocalFrame'],['../structCHeT_1_1Vis_1_1VisHelixTrack.html#aa7ebac1710691a2c49e3256e605cb0c6',1,'CHeT::Vis::VisHelixTrack::isLocalFrame']]]
 ];

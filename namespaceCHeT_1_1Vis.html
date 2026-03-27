@@ -94,8 +94,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D generic track for visualization.  <a href="structCHeT_1_1Vis_1_1VisGenericTrack.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D helix track for visualization.  <a href="structCHeT_1_1Vis_1_1VisHelixTrack.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D track for visualization.  <a href="structCHeT_1_1Vis_1_1VisLineTrack.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a reconstructed 3D line track for visualization.  <a href="structCHeT_1_1Vis_1_1VisLineTrack.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure representing a 2D point (e.g., for Hough space or transverse projection).  <a href="structCHeT_1_1Vis_1_1VisPoint2D.html#details">More...</a><br /></td></tr>
@@ -106,21 +112,59 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a034a249ab0741851256fc6b7d4ce6657" id="r_a034a249ab0741851256fc6b7d4ce6657"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a034a249ab0741851256fc6b7d4ce6657">Draw2D</a> (const std::vector&lt; int &gt; &amp;bundle_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;extraPoints={})</td></tr>
-<tr class="memdesc:a034a249ab0741851256fc6b7d4ce6657"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws 2D projections: Phi-Z Unrolled Map, ZX/ZY Side views, and XY Transverse view.  <br /></td></tr>
-<tr class="separator:a034a249ab0741851256fc6b7d4ce6657"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a534d4ffb8316a00bc9b1855a792d30" id="r_a3a534d4ffb8316a00bc9b1855a792d30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a3a534d4ffb8316a00bc9b1855a792d30">Draw3D</a> (const std::vector&lt; int &gt; &amp;hit_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;points={}, bool drawSkeleton=true)</td></tr>
-<tr class="memdesc:a3a534d4ffb8316a00bc9b1855a792d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the full 3D detector view.  <br /></td></tr>
-<tr class="separator:a3a534d4ffb8316a00bc9b1855a792d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdf948b55d7b576a16129bb39c5f6d91" id="r_afdf948b55d7b576a16129bb39c5f6d91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#afdf948b55d7b576a16129bb39c5f6d91">Draw2DCore</a> (const std::vector&lt; int &gt; &amp;bundle_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;extraPoints, const std::function&lt; void(TMultiGraph *, TMultiGraph *, TMultiGraph *, TMultiGraph *)&gt; &amp;trackDrawer, bool wrap_phi=true)</td></tr>
+<tr class="separator:afdf948b55d7b576a16129bb39c5f6d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a552fc93c9fde7a183de408be3555a654" id="r_a552fc93c9fde7a183de408be3555a654"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a552fc93c9fde7a183de408be3555a654">Draw3DCore</a> (const std::vector&lt; int &gt; &amp;hit_ids, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;points, bool drawSkeleton, const std::function&lt; void(double[6])&gt; &amp;trackDrawer)</td></tr>
+<tr class="separator:a552fc93c9fde7a183de408be3555a654"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40c28e5755d69dc94fc7713a2c310c38" id="r_a40c28e5755d69dc94fc7713a2c310c38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a40c28e5755d69dc94fc7713a2c310c38">RenderTrack2D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;tr, TMultiGraph *mg_xy)</td></tr>
+<tr class="separator:a40c28e5755d69dc94fc7713a2c310c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a430a8e5932ee1a5fefac51c1f8c5e2f4" id="r_a430a8e5932ee1a5fefac51c1f8c5e2f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a430a8e5932ee1a5fefac51c1f8c5e2f4">RenderTrack2D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;tr, TMultiGraph *mg_xy)</td></tr>
+<tr class="separator:a430a8e5932ee1a5fefac51c1f8c5e2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab975ea28c3712c2866d79786c8e7c9dc" id="r_ab975ea28c3712c2866d79786c8e7c9dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ab975ea28c3712c2866d79786c8e7c9dc">RenderTrack2D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;tr, TMultiGraph *mg_xy)</td></tr>
+<tr class="separator:ab975ea28c3712c2866d79786c8e7c9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48028fec68277d6b3244f1af4eefb8f7" id="r_a48028fec68277d6b3244f1af4eefb8f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a48028fec68277d6b3244f1af4eefb8f7">RenderTrackZX</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;tr, TMultiGraph *mg_zx)</td></tr>
+<tr class="separator:a48028fec68277d6b3244f1af4eefb8f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaa0cb7f33e10938bcd4d6816d8ddb4c" id="r_abaa0cb7f33e10938bcd4d6816d8ddb4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#abaa0cb7f33e10938bcd4d6816d8ddb4c">RenderTrackZX</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;tr, TMultiGraph *mg_zx)</td></tr>
+<tr class="separator:abaa0cb7f33e10938bcd4d6816d8ddb4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf478ef241e73551650d17228cf12332" id="r_acf478ef241e73551650d17228cf12332"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#acf478ef241e73551650d17228cf12332">RenderTrackZX</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;tr, TMultiGraph *mg_zx)</td></tr>
+<tr class="separator:acf478ef241e73551650d17228cf12332"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae758e8462673773dca017e3a2ff75b09" id="r_ae758e8462673773dca017e3a2ff75b09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ae758e8462673773dca017e3a2ff75b09">RenderTrackZY</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;tr, TMultiGraph *mg_zy)</td></tr>
+<tr class="separator:ae758e8462673773dca017e3a2ff75b09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace979759fd686a3012db2bff9623ae5b" id="r_ace979759fd686a3012db2bff9623ae5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ace979759fd686a3012db2bff9623ae5b">RenderTrackZY</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;tr, TMultiGraph *mg_zy)</td></tr>
+<tr class="separator:ace979759fd686a3012db2bff9623ae5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade27be32bbf235b7e339d4c7d4096877" id="r_ade27be32bbf235b7e339d4c7d4096877"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ade27be32bbf235b7e339d4c7d4096877">RenderTrackZY</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;tr, TMultiGraph *mg_zy)</td></tr>
+<tr class="separator:ade27be32bbf235b7e339d4c7d4096877"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a937df5b56ab2e388d64e059a3a0da8d9" id="r_a937df5b56ab2e388d64e059a3a0da8d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a937df5b56ab2e388d64e059a3a0da8d9">RenderTrackPhiZ</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;tr, TMultiGraph *mg_phiz, bool wrap_phi=true)</td></tr>
+<tr class="separator:a937df5b56ab2e388d64e059a3a0da8d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad39994cf6e00070f47161cff294cc382" id="r_ad39994cf6e00070f47161cff294cc382"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ad39994cf6e00070f47161cff294cc382">RenderTrackPhiZ</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;tr, TMultiGraph *mg_phiz, bool wrap_phi=true)</td></tr>
+<tr class="separator:ad39994cf6e00070f47161cff294cc382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81b54299b09146d613504306b45f08aa" id="r_a81b54299b09146d613504306b45f08aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a81b54299b09146d613504306b45f08aa">RenderTrackPhiZ</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;tr, TMultiGraph *mg_phiz, bool wrap_phi=true)</td></tr>
+<tr class="separator:a81b54299b09146d613504306b45f08aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c72de2dcd3a76407c7173bb96f93939" id="r_a1c72de2dcd3a76407c7173bb96f93939"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a1c72de2dcd3a76407c7173bb96f93939">RenderTrack3D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;tr, double bounds[6])</td></tr>
+<tr class="separator:a1c72de2dcd3a76407c7173bb96f93939"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79d5579ce935a5fd1ba5194a18180ced" id="r_a79d5579ce935a5fd1ba5194a18180ced"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a79d5579ce935a5fd1ba5194a18180ced">RenderTrack3D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;tr, double bounds[6])</td></tr>
+<tr class="separator:a79d5579ce935a5fd1ba5194a18180ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1de915a59f9f9ac73ba1dab202680cf8" id="r_a1de915a59f9f9ac73ba1dab202680cf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#a1de915a59f9f9ac73ba1dab202680cf8">RenderTrack3D</a> (const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;tr, double bounds[6])</td></tr>
+<tr class="separator:a1de915a59f9f9ac73ba1dab202680cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0f7a0c94a878587dca6819f0779eaa5" id="r_ad0f7a0c94a878587dca6819f0779eaa5"><td class="memTemplParams" colspan="2">template&lt;typename TrackContainer  = std::vector&lt;VisGenericTrack&gt;&gt; </td></tr>
+<tr class="memitem:ad0f7a0c94a878587dca6819f0779eaa5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#ad0f7a0c94a878587dca6819f0779eaa5">Draw2D</a> (const std::vector&lt; int &gt; &amp;bundle_ids, const TrackContainer &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;extraPoints={}, bool wrap_phi=true)</td></tr>
+<tr class="memdesc:ad0f7a0c94a878587dca6819f0779eaa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws 2D projections: Phi-Z Unrolled Map, ZX/ZY Side views, and XY Transverse view.  <br /></td></tr>
+<tr class="separator:ad0f7a0c94a878587dca6819f0779eaa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa97780e0ee8fdceadb0a8a68aca6b942" id="r_aa97780e0ee8fdceadb0a8a68aca6b942"><td class="memTemplParams" colspan="2">template&lt;typename TrackContainer  = std::vector&lt;VisGenericTrack&gt;&gt; </td></tr>
+<tr class="memitem:aa97780e0ee8fdceadb0a8a68aca6b942"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Vis.html#aa97780e0ee8fdceadb0a8a68aca6b942">Draw3D</a> (const std::vector&lt; int &gt; &amp;hit_ids, const TrackContainer &amp;tracks={}, const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;points={}, bool drawSkeleton=true)</td></tr>
+<tr class="memdesc:aa97780e0ee8fdceadb0a8a68aca6b942"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the full 3D detector view.  <br /></td></tr>
+<tr class="separator:aa97780e0ee8fdceadb0a8a68aca6b942"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespaceCHeT.html" title="Root namespace for the Cylindrical Helix Tracker (CHeT) project.">CHeT</a> Visualization namespace. Contains tools for 2D and 3D visualization of the detector, tracks, and hits using ROOT. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a034a249ab0741851256fc6b7d4ce6657" name="a034a249ab0741851256fc6b7d4ce6657"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a034a249ab0741851256fc6b7d4ce6657">&#9670;&#160;</a></span>Draw2D()</h2>
+<a id="ad0f7a0c94a878587dca6819f0779eaa5" name="ad0f7a0c94a878587dca6819f0779eaa5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0f7a0c94a878587dca6819f0779eaa5">&#9670;&#160;</a></span>Draw2D()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename TrackContainer  = std::vector&lt;VisGenericTrack&gt;&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void CHeT::Vis::Draw2D </td>
@@ -131,14 +175,20 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const TrackContainer &amp;&#160;</td>
           <td class="paramname"><em>tracks</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>extraPoints</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>extraPoints</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>wrap_phi</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -159,15 +209,59 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00047">47</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00240">240</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
 
 </div>
 </div>
-<a id="a3a534d4ffb8316a00bc9b1855a792d30" name="a3a534d4ffb8316a00bc9b1855a792d30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a534d4ffb8316a00bc9b1855a792d30">&#9670;&#160;</a></span>Draw3D()</h2>
+<a id="afdf948b55d7b576a16129bb39c5f6d91" name="afdf948b55d7b576a16129bb39c5f6d91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdf948b55d7b576a16129bb39c5f6d91">&#9670;&#160;</a></span>Draw2DCore()</h2>
 
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::Draw2DCore </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>bundle_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint2D.html">VisPoint2D</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>extraPoints</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::function&lt; void(TMultiGraph *, TMultiGraph *, TMultiGraph *, TMultiGraph *)&gt; &amp;&#160;</td>
+          <td class="paramname"><em>trackDrawer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>wrap_phi</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00369">369</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="aa97780e0ee8fdceadb0a8a68aca6b942" name="aa97780e0ee8fdceadb0a8a68aca6b942"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa97780e0ee8fdceadb0a8a68aca6b942">&#9670;&#160;</a></span>Draw3D()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TrackContainer  = std::vector&lt;VisGenericTrack&gt;&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void CHeT::Vis::Draw3D </td>
@@ -178,7 +272,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">const TrackContainer &amp;&#160;</td>
           <td class="paramname"><em>tracks</em> = <code>{}</code>, </td>
         </tr>
         <tr>
@@ -212,7 +306,517 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00312">312</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8hh_source.html#l00269">269</a> of file <a class="el" href="CHeTVisualizer_8hh_source.html">CHeTVisualizer.hh</a>.</p>
+
+</div>
+</div>
+<a id="a552fc93c9fde7a183de408be3555a654" name="a552fc93c9fde7a183de408be3555a654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a552fc93c9fde7a183de408be3555a654">&#9670;&#160;</a></span>Draw3DCore()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::Draw3DCore </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>hit_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCHeT_1_1Vis_1_1VisPoint3D.html">VisPoint3D</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>points</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>drawSkeleton</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::function&lt; void(double[6])&gt; &amp;&#160;</td>
+          <td class="paramname"><em>trackDrawer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00651">651</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="ab975ea28c3712c2866d79786c8e7c9dc" name="ab975ea28c3712c2866d79786c8e7c9dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab975ea28c3712c2866d79786c8e7c9dc">&#9670;&#160;</a></span>RenderTrack2D() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack2D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_xy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00091">91</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a430a8e5932ee1a5fefac51c1f8c5e2f4" name="a430a8e5932ee1a5fefac51c1f8c5e2f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a430a8e5932ee1a5fefac51c1f8c5e2f4">&#9670;&#160;</a></span>RenderTrack2D() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack2D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_xy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00075">75</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a40c28e5755d69dc94fc7713a2c310c38" name="a40c28e5755d69dc94fc7713a2c310c38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40c28e5755d69dc94fc7713a2c310c38">&#9670;&#160;</a></span>RenderTrack2D() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack2D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_xy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00048">48</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a1de915a59f9f9ac73ba1dab202680cf8" name="a1de915a59f9f9ac73ba1dab202680cf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1de915a59f9f9ac73ba1dab202680cf8">&#9670;&#160;</a></span>RenderTrack3D() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack3D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>bounds</em>[6]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00343">343</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a79d5579ce935a5fd1ba5194a18180ced" name="a79d5579ce935a5fd1ba5194a18180ced"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79d5579ce935a5fd1ba5194a18180ced">&#9670;&#160;</a></span>RenderTrack3D() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack3D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>bounds</em>[6]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00317">317</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a1c72de2dcd3a76407c7173bb96f93939" name="a1c72de2dcd3a76407c7173bb96f93939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c72de2dcd3a76407c7173bb96f93939">&#9670;&#160;</a></span>RenderTrack3D() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrack3D </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>bounds</em>[6]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00292">292</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a81b54299b09146d613504306b45f08aa" name="a81b54299b09146d613504306b45f08aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81b54299b09146d613504306b45f08aa">&#9670;&#160;</a></span>RenderTrackPhiZ() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackPhiZ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_phiz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>wrap_phi</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00272">272</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="ad39994cf6e00070f47161cff294cc382" name="ad39994cf6e00070f47161cff294cc382"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad39994cf6e00070f47161cff294cc382">&#9670;&#160;</a></span>RenderTrackPhiZ() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackPhiZ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_phiz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>wrap_phi</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00248">248</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a937df5b56ab2e388d64e059a3a0da8d9" name="a937df5b56ab2e388d64e059a3a0da8d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a937df5b56ab2e388d64e059a3a0da8d9">&#9670;&#160;</a></span>RenderTrackPhiZ() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackPhiZ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_phiz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>wrap_phi</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00221">221</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="acf478ef241e73551650d17228cf12332" name="acf478ef241e73551650d17228cf12332"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf478ef241e73551650d17228cf12332">&#9670;&#160;</a></span>RenderTrackZX() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZX </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00150">150</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="abaa0cb7f33e10938bcd4d6816d8ddb4c" name="abaa0cb7f33e10938bcd4d6816d8ddb4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abaa0cb7f33e10938bcd4d6816d8ddb4c">&#9670;&#160;</a></span>RenderTrackZX() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZX </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00132">132</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="a48028fec68277d6b3244f1af4eefb8f7" name="a48028fec68277d6b3244f1af4eefb8f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48028fec68277d6b3244f1af4eefb8f7">&#9670;&#160;</a></span>RenderTrackZX() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZX </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00107">107</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="ade27be32bbf235b7e339d4c7d4096877" name="ade27be32bbf235b7e339d4c7d4096877"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade27be32bbf235b7e339d4c7d4096877">&#9670;&#160;</a></span>RenderTrackZY() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZY </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisGenericTrack.html">VisGenericTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00207">207</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="ace979759fd686a3012db2bff9623ae5b" name="ace979759fd686a3012db2bff9623ae5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace979759fd686a3012db2bff9623ae5b">&#9670;&#160;</a></span>RenderTrackZY() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZY </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisHelixTrack.html">VisHelixTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00189">189</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
+
+</div>
+</div>
+<a id="ae758e8462673773dca017e3a2ff75b09" name="ae758e8462673773dca017e3a2ff75b09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae758e8462673773dca017e3a2ff75b09">&#9670;&#160;</a></span>RenderTrackZY() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Vis::RenderTrackZY </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCHeT_1_1Vis_1_1VisLineTrack.html">VisLineTrack</a> &amp;&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TMultiGraph *&#160;</td>
+          <td class="paramname"><em>mg_zy</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="CHeTVisualizer_8cc_source.html#l00164">164</a> of file <a class="el" href="CHeTVisualizer_8cc_source.html">CHeTVisualizer.cc</a>.</p>
 
 </div>
 </div>
