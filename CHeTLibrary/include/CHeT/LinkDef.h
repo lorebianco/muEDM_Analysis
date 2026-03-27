@@ -43,10 +43,18 @@
 // Activates namespace CHeT::Vis (ex CV)
 #pragma link C++ namespace CHeT::Vis;
 #pragma link C++ class CHeT::Vis::VisLineTrack + ;
+#pragma link C++ class CHeT::Vis::VisHelixTrack + ;
+#pragma link C++ class CHeT::Vis::VisGenericTrack + ;
 #pragma link C++ class CHeT::Vis::VisPoint2D + ;
 #pragma link C++ class CHeT::Vis::VisPoint3D + ;
-#pragma link C++ function CHeT::Vis::Draw2D;
-#pragma link C++ function CHeT::Vis::Draw3D;
+
+#pragma link C++ function CHeT::Vis::Draw2D < std::vector < CHeT::Vis::VisLineTrack>>;
+#pragma link C++ function CHeT::Vis::Draw2D < std::vector < CHeT::Vis::VisHelixTrack>>;
+#pragma link C++ function CHeT::Vis::Draw2D < std::vector < CHeT::Vis::VisGenericTrack>>;
+
+#pragma link C++ function CHeT::Vis::Draw3D < std::vector < CHeT::Vis::VisLineTrack>>;
+#pragma link C++ function CHeT::Vis::Draw3D < std::vector < CHeT::Vis::VisHelixTrack>>;
+#pragma link C++ function CHeT::Vis::Draw3D < std::vector < CHeT::Vis::VisGenericTrack>>;
 
 // Activates namespace CHeT::Data (contains Reader)
 #pragma link C++ namespace CHeT::Data;

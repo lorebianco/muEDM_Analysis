@@ -10,8 +10,7 @@ namespace
 bool ClipLineToBox(double x0, double y0, double z0, double ux, double uy, double uz, double xmin,
     double xmax, double ymin, double ymax, double zmin, double zmax, double &tmin, double &tmax)
 {
-    tmin = -1e30;
-    tmax = 1e30;
+    // Use bounds provided by caller (e.g. -inf, +inf for line, or 0, L for segment)
 
     auto clip = [&](double p0, double dp, double pmin, double pmax) -> bool
     {
@@ -44,8 +43,333 @@ namespace CHeT
 namespace Vis
 {
 
-void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> &tracks,
-    const std::vector<VisPoint2D> &extraPoints)
+// --- Overloads for different track types in 2D ---
+
+void RenderTrack2D(const VisLineTrack &tr, TMultiGraph *mg_xy)
+{
+    TGraph *gxy = new TGraph();
+    // Use a large enough range so the line covers the detector view.
+    // The view limits are set by Draw2DCore based on geometry.
+    double range = 2000.0;
+    double pts[2] = { -range, range };
+
+    for(int i = 0; i < 2; i++)
+    {
+        if(std::abs(tr.ux) > 1e-6)
+        {
+            double t = (pts[i] - tr.x0) / tr.ux;
+            gxy->SetPoint(i, pts[i], tr.y0 + tr.uy * t);
+        }
+        else
+        {
+            gxy->SetPoint(0, tr.x0, -range);
+            gxy->SetPoint(1, tr.x0, range);
+        }
+    }
+    gxy->SetLineColor(tr.color);
+    gxy->SetLineWidth(tr.width);
+    gxy->SetLineStyle(tr.style);
+    mg_xy->Add(gxy, "L");
+}
+
+void RenderTrack2D(const VisHelixTrack &tr, TMultiGraph *mg_xy)
+{
+    int n_pts = 100;
+    TGraph *gxy = new TGraph(n_pts);
+    double dt = (tr.t_max - tr.t_min) / (n_pts - 1);
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = tr.t_min + i * dt;
+        gxy->SetPoint(i, tr.cx + tr.radius * std::cos(t), tr.cy + tr.radius * std::sin(t));
+    }
+    gxy->SetLineColor(tr.color);
+    gxy->SetLineWidth(tr.width);
+    gxy->SetLineStyle(tr.style);
+    mg_xy->Add(gxy, "L");
+}
+
+void RenderTrack2D(const VisGenericTrack &tr, TMultiGraph *mg_xy)
+{
+    if(tr.points.empty())
+        return;
+    TGraph *gxy = new TGraph(tr.points.size());
+    for(size_t i = 0; i < tr.points.size(); ++i)
+    {
+        gxy->SetPoint(i, tr.points[i].x, tr.points[i].y);
+    }
+    gxy->SetLineColor(tr.color);
+    gxy->SetLineWidth(tr.width);
+    gxy->SetLineStyle(tr.style);
+    mg_xy->Add(gxy, "L");
+}
+
+// --- ZX Projection (X vs Z) ---
+void RenderTrackZX(const VisLineTrack &tr, TMultiGraph *mg_zx)
+{
+    TGraph *g = new TGraph();
+    double range = 2000.0;
+    double pts[2] = { -range, range };
+
+    for(int i = 0; i < 2; i++)
+    {
+        if(std::abs(tr.ux) > 1e-6)
+        {
+            double t = (pts[i] - tr.x0) / tr.ux;
+            g->SetPoint(i, pts[i], tr.z0 + tr.uz * t);
+        }
+        else
+        {
+            g->SetPoint(0, tr.x0, -range);
+            g->SetPoint(1, tr.x0, range);
+        }
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zx->Add(g, "L");
+}
+
+void RenderTrackZX(const VisHelixTrack &tr, TMultiGraph *mg_zx)
+{
+    int n_pts = 100;
+    TGraph *g = new TGraph(n_pts);
+    double dt = (tr.t_max - tr.t_min) / (n_pts - 1);
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = tr.t_min + i * dt;
+        double x = tr.cx + tr.radius * std::cos(t);
+        double z = tr.z0 + tr.dz_dt * t;
+        g->SetPoint(i, x, z);
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zx->Add(g, "L");
+}
+
+void RenderTrackZX(const VisGenericTrack &tr, TMultiGraph *mg_zx)
+{
+    if(tr.points.empty())
+        return;
+    TGraph *g = new TGraph(tr.points.size());
+    for(size_t i = 0; i < tr.points.size(); ++i)
+        g->SetPoint(i, tr.points[i].x, tr.points[i].z);
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zx->Add(g, "L");
+}
+
+// --- ZY Projection (Z vs Y) ---
+void RenderTrackZY(const VisLineTrack &tr, TMultiGraph *mg_zy)
+{
+    TGraph *g = new TGraph();
+    double range = 2000.0;
+    double pts[2] = { -range, range }; // Z is horizontal
+
+    for(int i = 0; i < 2; i++)
+    {
+        if(std::abs(tr.uz) > 1e-6)
+        {
+            double t = (pts[i] - tr.z0) / tr.uz;
+            g->SetPoint(i, pts[i], tr.y0 + tr.uy * t);
+        }
+        else
+        {
+            g->SetPoint(0, tr.z0, -range);
+            g->SetPoint(1, tr.z0, range);
+        }
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zy->Add(g, "L");
+}
+
+void RenderTrackZY(const VisHelixTrack &tr, TMultiGraph *mg_zy)
+{
+    int n_pts = 100;
+    TGraph *g = new TGraph(n_pts);
+    double dt = (tr.t_max - tr.t_min) / (n_pts - 1);
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = tr.t_min + i * dt;
+        double y = tr.cy + tr.radius * std::sin(t);
+        double z = tr.z0 + tr.dz_dt * t;
+        g->SetPoint(i, z, y);
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zy->Add(g, "L");
+}
+
+void RenderTrackZY(const VisGenericTrack &tr, TMultiGraph *mg_zy)
+{
+    if(tr.points.empty())
+        return;
+    TGraph *g = new TGraph(tr.points.size());
+    for(size_t i = 0; i < tr.points.size(); ++i)
+        g->SetPoint(i, tr.points[i].z, tr.points[i].y);
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_zy->Add(g, "L");
+}
+
+// --- PhiZ Projection (Phi vs Z) ---
+void RenderTrackPhiZ(const VisLineTrack &tr, TMultiGraph *mg_phiz, bool wrap_phi)
+{
+    int n_pts = 200;
+    TGraph *g = new TGraph();
+    double range = 1000.0;
+    int cnt = 0;
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = -range + i * (2 * range) / (n_pts - 1);
+        double x = tr.x0 + tr.ux * t;
+        double y = tr.y0 + tr.uy * t;
+        double z = tr.z0 + tr.uz * t;
+
+        if(std::abs(z) > 400)
+            continue;
+
+        double phi = std::atan2(y, x);
+        if(wrap_phi && phi < 0)
+            phi += 2 * M_PI;
+        g->SetPoint(cnt++, phi, z);
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_phiz->Add(g, "L");
+}
+
+void RenderTrackPhiZ(const VisHelixTrack &tr, TMultiGraph *mg_phiz, bool wrap_phi)
+{
+    int n_pts = 100;
+    TGraph *g = new TGraph(n_pts);
+    double dt = (tr.t_max - tr.t_min) / (n_pts - 1);
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = tr.t_min + i * dt;
+        double x = tr.cx + tr.radius * std::cos(t);
+        double y = tr.cy + tr.radius * std::sin(t);
+        double z = tr.z0 + tr.dz_dt * t;
+
+        double phi = std::atan2(y, x);
+        if(wrap_phi && phi < 0)
+            phi += 2 * M_PI;
+
+        g->SetPoint(i, phi, z);
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_phiz->Add(g, "L");
+}
+
+void RenderTrackPhiZ(const VisGenericTrack &tr, TMultiGraph *mg_phiz, bool wrap_phi)
+{
+    if(tr.points.empty())
+        return;
+    TGraph *g = new TGraph(tr.points.size());
+    for(size_t i = 0; i < tr.points.size(); ++i)
+    {
+        double phi = std::atan2(tr.points[i].y, tr.points[i].x);
+        if(wrap_phi && phi < 0)
+            phi += 2 * M_PI;
+        g->SetPoint(i, phi, tr.points[i].z);
+    }
+    g->SetLineColor(tr.color);
+    g->SetLineWidth(tr.width);
+    g->SetLineStyle(tr.style);
+    mg_phiz->Add(g, "L");
+}
+
+// --- Overloads for different track types in 3D ---
+
+void RenderTrack3D(const VisLineTrack &tr_in, double bounds[6])
+{
+    VisLineTrack tr = tr_in;
+    if(tr.isLocalFrame)
+    {
+        CHeT::Config::ApplyTransformation(tr.x0, tr.y0, tr.z0);
+        CHeT::Config::ApplyRotation(tr.ux, tr.uy, tr.uz);
+    }
+
+    double tmin = -1e30;
+    double tmax = 1e30;
+    bool ok = ClipLineToBox(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz, bounds[0], bounds[1],
+        bounds[2], bounds[3], bounds[4], bounds[5], tmin, tmax);
+    if(ok)
+    {
+        TPolyLine3D *lt = new TPolyLine3D(2);
+        lt->SetPoint(0, tr.z0 + tr.uz * tmin, tr.x0 + tr.ux * tmin, tr.y0 + tr.uy * tmin);
+        lt->SetPoint(1, tr.z0 + tr.uz * tmax, tr.x0 + tr.ux * tmax, tr.y0 + tr.uy * tmax);
+        lt->SetLineColor(tr.color);
+        lt->SetLineWidth(tr.width);
+        lt->SetLineStyle(tr.style);
+        lt->Draw("same");
+    }
+}
+
+void RenderTrack3D(const VisHelixTrack &tr, double bounds[6])
+{
+    int n_pts = 200; // High resolution for 3D helix
+    TPolyLine3D *lt = new TPolyLine3D(n_pts);
+    double dt = (tr.t_max - tr.t_min) / (n_pts - 1);
+
+    for(int i = 0; i < n_pts; ++i)
+    {
+        double t = tr.t_min + i * dt;
+        double x = tr.cx + tr.radius * std::cos(t);
+        double y = tr.cy + tr.radius * std::sin(t);
+        double z = tr.z0 + tr.dz_dt * t;
+
+        if(tr.isLocalFrame)
+        {
+            CHeT::Config::ApplyTransformation(x, y, z);
+        }
+        // ROOT Frame: Z_root=Y_phys, etc. (Respecting original code mapping)
+        lt->SetPoint(i, z, x, y);
+    }
+    lt->SetLineColor(tr.color);
+    lt->SetLineWidth(tr.width);
+    lt->SetLineStyle(tr.style);
+    lt->Draw("same");
+}
+
+void RenderTrack3D(const VisGenericTrack &tr, double bounds[6])
+{
+    if(tr.points.empty())
+        return;
+    TPolyLine3D *lt = new TPolyLine3D(tr.points.size());
+
+    for(size_t i = 0; i < tr.points.size(); ++i)
+    {
+        double x = tr.points[i].x;
+        double y = tr.points[i].y;
+        double z = tr.points[i].z;
+
+        if(tr.isLocalFrame)
+        {
+            CHeT::Config::ApplyTransformation(x, y, z);
+        }
+        lt->SetPoint(i, z, x, y);
+    }
+    lt->SetLineColor(tr.color);
+    lt->SetLineWidth(tr.width);
+    lt->SetLineStyle(tr.style);
+    lt->Draw("same");
+}
+
+// --- Core Functions ---
+
+void Draw2DCore(const std::vector<int> &bundle_ids, const std::vector<VisPoint2D> &extraPoints,
+    const std::function<void(TMultiGraph *, TMultiGraph *, TMultiGraph *, TMultiGraph *)>
+        &trackDrawer,
+    bool wrap_phi)
 {
     // --- 1. Canvas Phi-Z (Unrolled) ---
     TCanvas *c_phiz = (TCanvas *)gROOT->FindObject("c_phiz");
@@ -130,10 +454,10 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
         std::vector<double> sz, sf;
         for(size_t i = 0; i < 500; ++i)
         {
-            double cf = CHeT::Config::wrap0_2pi(vphi[i]);
+            double cf = wrap_phi ? CHeT::Config::wrap0_2pi(vphi[i]) : vphi[i];
 
             // Check for wrap-around jump
-            if(i > 0 && std::abs(cf - CHeT::Config::wrap0_2pi(vphi[i - 1])) > M_PI)
+            if(wrap_phi && i > 0 && std::abs(cf - CHeT::Config::wrap0_2pi(vphi[i - 1])) > M_PI)
             {
                 // Draw current segment
                 TGraph *h = new TGraph();
@@ -180,30 +504,9 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
         }
     }
 
-    // --- Draw Tracks (XY Projection) ---
-    for(const auto &tr : tracks)
-    {
-        TGraph *gxy = new TGraph();
-        double pts[2] = { -30, 30 };
-        for(int i = 0; i < 2; i++)
-        {
-            if(std::abs(tr.ux) > 1e-6)
-            {
-                double t = (pts[i] - tr.x0) / tr.ux;
-                gxy->SetPoint(i, pts[i], tr.y0 + tr.uy * t);
-            }
-            else
-            {
-                // Vertical in X case
-                gxy->SetPoint(0, tr.x0, -30);
-                gxy->SetPoint(1, tr.x0, 30);
-            }
-        }
-        gxy->SetLineColor(tr.color);
-        gxy->SetLineWidth(tr.width);
-        gxy->SetLineStyle(tr.style);
-        mg_xy->Add(gxy, "L");
-    }
+    // --- Draw Tracks (All Projections) ---
+    if(trackDrawer)
+        trackDrawer(mg_xy, mg_zx, mg_zy, mg_phiz);
 
     // --- Draw Extra Points (XY) ---
     for(const auto &pt : extraPoints)
@@ -212,21 +515,54 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
         gp->SetPoint(0, pt.x, pt.y);
         gp->SetMarkerColor(pt.color);
         gp->SetMarkerStyle(pt.markerStyle);
-        gp->SetMarkerSize(1.5);
+        gp->SetMarkerSize(pt.size);
         mg_xy->Add(gp, "P");
     }
 
-    // --- Draw Intersections (XY) ---
+    // --- Draw Intersections ---
     auto inters = Config::FindIntersections(bundle_ids);
     if(!inters.empty())
     {
-        TGraph *gi = new TGraph();
+        // XY
+        TGraph *gi_xy = new TGraph();
         for(size_t i = 0; i < inters.size(); ++i)
-            gi->SetPoint(i, inters[i].x_loc, inters[i].y_loc);
-        gi->SetMarkerStyle(20);
-        gi->SetMarkerSize(0.8);
-        gi->SetMarkerColor(kBlack);
-        mg_xy->Add(gi, "P");
+            gi_xy->SetPoint(i, inters[i].x_loc, inters[i].y_loc);
+        gi_xy->SetMarkerStyle(20);
+        gi_xy->SetMarkerSize(0.8);
+        gi_xy->SetMarkerColor(kBlack);
+        mg_xy->Add(gi_xy, "P");
+
+        // ZX (x vs z)
+        TGraph *gi_zx = new TGraph();
+        for(size_t i = 0; i < inters.size(); ++i)
+            gi_zx->SetPoint(i, inters[i].x_loc, inters[i].z_loc);
+        gi_zx->SetMarkerStyle(20);
+        gi_zx->SetMarkerSize(0.8);
+        gi_zx->SetMarkerColor(kBlack);
+        mg_zx->Add(gi_zx, "P");
+
+        // ZY (z vs y)
+        TGraph *gi_zy = new TGraph();
+        for(size_t i = 0; i < inters.size(); ++i)
+            gi_zy->SetPoint(i, inters[i].z_loc, inters[i].y_loc);
+        gi_zy->SetMarkerStyle(20);
+        gi_zy->SetMarkerSize(0.8);
+        gi_zy->SetMarkerColor(kBlack);
+        mg_zy->Add(gi_zy, "P");
+
+        // PhiZ (phi vs z)
+        TGraph *gi_phiz = new TGraph();
+        for(size_t i = 0; i < inters.size(); ++i)
+        {
+            double phi = std::atan2(inters[i].y_loc, inters[i].x_loc);
+            if(wrap_phi && phi < 0)
+                phi += 2 * M_PI;
+            gi_phiz->SetPoint(i, phi, inters[i].z_loc);
+        }
+        gi_phiz->SetMarkerStyle(20);
+        gi_phiz->SetMarkerSize(0.8);
+        gi_phiz->SetMarkerColor(kBlack);
+        mg_phiz->Add(gi_phiz, "P");
     }
 
     // --- Final Rendering ---
@@ -235,16 +571,19 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
     c_phiz->cd();
     mg_phiz->Draw("A");
     mg_phiz->SetTitle("Detector Map #phi-z; #phi [rad]; z [mm]");
-    mg_phiz->GetXaxis()->SetLimits(0, 2 * M_PI);
-    mg_phiz->GetXaxis()->SetNdivisions(-504);
+    if(wrap_phi)
+    {
+        mg_phiz->GetXaxis()->SetLimits(0, 2 * M_PI);
+        mg_phiz->GetXaxis()->SetNdivisions(-504);
 
-    // Custom axis labels
-    TAxis *ax = mg_phiz->GetXaxis();
-    ax->ChangeLabel(1, -1, -1, -1, -1, -1, "0");
-    ax->ChangeLabel(2, -1, -1, -1, -1, -1, "#pi/2");
-    ax->ChangeLabel(3, -1, -1, -1, -1, -1, "#pi");
-    ax->ChangeLabel(4, -1, -1, -1, -1, -1, "3#pi/2");
-    ax->ChangeLabel(5, -1, -1, -1, -1, -1, "2#pi");
+        // Custom axis labels
+        TAxis *ax = mg_phiz->GetXaxis();
+        ax->ChangeLabel(1, -1, -1, -1, -1, -1, "0");
+        ax->ChangeLabel(2, -1, -1, -1, -1, -1, "#pi/2");
+        ax->ChangeLabel(3, -1, -1, -1, -1, -1, "#pi");
+        ax->ChangeLabel(4, -1, -1, -1, -1, -1, "3#pi/2");
+        ax->ChangeLabel(5, -1, -1, -1, -1, -1, "2#pi");
+    }
 
     // 2. ZX and ZY
     auto cyls = CHeT::Config::GetCylinders();
@@ -309,8 +648,8 @@ void Draw2D(const std::vector<int> &bundle_ids, const std::vector<VisLineTrack> 
     c_xy->Update();
 }
 
-void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tracks,
-    const std::vector<VisPoint3D> &points, bool drawSkeleton)
+void Draw3DCore(const std::vector<int> &hit_ids, const std::vector<VisPoint3D> &points,
+    bool drawSkeleton, const std::function<void(double[6])> &trackDrawer)
 {
     // gStyle->SetCanvasPreferGL(kTRUE);
 
@@ -394,6 +733,8 @@ void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tr
         max_z_phys = cz + max_dim / 2.0;
     }
 
+    double bounds[6] = { min_x_phys, max_x_phys, min_y_phys, max_y_phys, min_z_phys, max_z_phys };
+
     // ROOT Frame: X->Z_phys, Y->X_phys, Z->Y_phys
     TH3F *h_frame = new TH3F("h_frame", "; Z [mm]; X [mm]; Y [mm]", 1, min_z_phys, max_z_phys, 1,
         min_x_phys, max_x_phys, 1, min_y_phys, max_y_phys);
@@ -469,34 +810,8 @@ void Draw3D(const std::vector<int> &hit_ids, const std::vector<VisLineTrack> &tr
     }
 
     // --- Draw Tracks ---
-    for(const auto &tr_in : tracks)
-    {
-        VisLineTrack tr = tr_in;
-        if(tr.isLocalFrame)
-        {
-            CHeT::Config::ApplyTransformation(tr.x0, tr.y0, tr.z0);
-            CHeT::Config::ApplyRotation(tr.ux, tr.uy, tr.uz);
-        }
-
-        double tmin, tmax;
-        // Use the internal helper function
-        bool ok
-            = ClipLineToBox(tr.x0, tr.y0, tr.z0, tr.ux, tr.uy, tr.uz, min_x_phys, max_x_phys, // X
-                min_y_phys, max_y_phys, // Y
-                min_z_phys, max_z_phys, // Z
-                tmin, tmax);
-
-        if(ok)
-        {
-            TPolyLine3D *lt = new TPolyLine3D(2);
-            lt->SetPoint(0, tr.z0 + tr.uz * tmin, tr.x0 + tr.ux * tmin, tr.y0 + tr.uy * tmin);
-            lt->SetPoint(1, tr.z0 + tr.uz * tmax, tr.x0 + tr.ux * tmax, tr.y0 + tr.uy * tmax);
-            lt->SetLineColor(tr.color);
-            lt->SetLineWidth(tr.width);
-            lt->SetLineStyle(tr.style);
-            lt->Draw("same");
-        }
-    }
+    if(trackDrawer)
+        trackDrawer(bounds);
 
     // --- Draw 3D Points ---
     for(const auto &pt_in : points)
