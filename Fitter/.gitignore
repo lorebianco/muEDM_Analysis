@@ -1,0 +1,6 @@
+*.root
+*.fld
+*.png
+data/
+fieldmaps/
+build/

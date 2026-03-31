@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <material Z="13" name="G4_Al0x55ac13421df0" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="166"/>
+      <D unit="g/cm3" value="2.699"/>
+      <atom unit="g/mole" value="26.9815"/>
+    </material>
+    <isotope N="12" Z="6" name="C120x55ac13418d50">
+      <atom unit="g/mole" value="12"/>
+    </isotope>
+    <isotope N="13" Z="6" name="C130x55ac134126e0">
+      <atom unit="g/mole" value="13.0034"/>
+    </isotope>
+    <element name="C0x55ac13412750">
+      <fraction n="0.9893" ref="C120x55ac13418d50"/>
+      <fraction n="0.0107" ref="C130x55ac134126e0"/>
+    </element>
+    <isotope N="1" Z="1" name="H10x55ac13412930">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x55ac134129b0">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x55ac13412a20">
+      <fraction n="0.999885" ref="H10x55ac13412930"/>
+      <fraction n="0.000115" ref="H20x55ac134129b0"/>
+    </element>
+    <isotope N="14" Z="7" name="N140x55ac13412d00">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N150x55ac13413c10">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="N0x55ac13413c60">
+      <fraction n="0.99632" ref="N140x55ac13412d00"/>
+      <fraction n="0.00368" ref="N150x55ac13413c10"/>
+    </element>
+    <isotope N="16" Z="8" name="O160x55ac13413da0">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O170x55ac13413df0">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O180x55ac13413e40">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="O0x55ac13413f20">
+      <fraction n="0.99757" ref="O160x55ac13413da0"/>
+      <fraction n="0.00038" ref="O170x55ac13413df0"/>
+      <fraction n="0.00205" ref="O180x55ac13413e40"/>
+    </element>
+    <material name="G4_KAPTON0x55ac13432240" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="79.6"/>
+      <D unit="g/cm3" value="1.42"/>
+      <fraction n="0.691127814286998" ref="C0x55ac13412750"/>
+      <fraction n="0.0263633782339879" ref="H0x55ac13412a20"/>
+      <fraction n="0.0732713201549139" ref="N0x55ac13413c60"/>
+      <fraction n="0.2092374873241" ref="O0x55ac13413f20"/>
+    </material>
+    <isotope N="63" Z="29" name="Cu630x55ac134340e0">
+      <atom unit="g/mole" value="62.9296"/>
+    </isotope>
+    <isotope N="65" Z="29" name="Cu650x55ac13434270">
+      <atom unit="g/mole" value="64.9278"/>
+    </isotope>
+    <element name="Cu0x55ac134342e0">
+      <fraction n="0.6917" ref="Cu630x55ac134340e0"/>
+      <fraction n="0.3083" ref="Cu650x55ac13434270"/>
+    </element>
+    <material name="G4_Cu0x55ac13434130" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="322"/>
+      <D unit="g/cm3" value="8.96"/>
+      <fraction n="1" ref="Cu0x55ac134342e0"/>
+    </material>
+    <isotope N="19" Z="9" name="F190x55ac13435120">
+      <atom unit="g/mole" value="18.9984"/>
+    </isotope>
+    <element name="F0x55ac13435190">
+      <fraction n="1" ref="F190x55ac13435120"/>
+    </element>
+    <material name="G4_TEFLON0x55ac13434f60" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="99.1"/>
+      <D unit="g/cm3" value="2.2"/>
+      <fraction n="0.240178526067194" ref="C0x55ac13412750"/>
+      <fraction n="0.759821473932806" ref="F0x55ac13435190"/>
+    </material>
+    <material name="G4_MYLAR0x55ac13436580" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="78.7"/>
+      <D unit="g/cm3" value="1.4"/>
+      <fraction n="0.625010832340889" ref="C0x55ac13412750"/>
+      <fraction n="0.0419607170679432" ref="H0x55ac13412a20"/>
+      <fraction n="0.333028450591168" ref="O0x55ac13413f20"/>
+    </material>
+    <material name="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="64.7"/>
+      <D unit="g/cm3" value="1.032"/>
+      <fraction n="0.914708531800025" ref="C0x55ac13412750"/>
+      <fraction n="0.0852914681999746" ref="H0x55ac13412a20"/>
+    </material>
+    <material name="G4_Galactic0x55ac13420c00" state="gas">
+      <T unit="K" value="2.73"/>
+      <P unit="pascal" value="3e-18"/>
+      <MEE unit="eV" value="21.8"/>
+      <D unit="g/cm3" value="1e-25"/>
+      <fraction n="1" ref="H0x55ac13412a20"/>
+    </material>
+  </materials>
+
+  <solids>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="AluminumCylinder0x55ac13420150" rmax="250" rmin="100" startphi="0" z="1000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CathodeKa0x55ac134330e0" rmax="35.02" rmin="35" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CathodeAl0x55ac134334a0" rmax="35.02002" rmin="35.02" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="AnodeAl0x55ac13433850" rmax="25.00002" rmin="25" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="AnodeKa0x55ac13433cb0" rmax="25.02002" rmin="25.00002" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WfCoil0x55ac13434b00" rmax="60" rmin="50" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="teflonTube0x55ac13435ca0" rmax="2" rmin="0" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="copperTube0x55ac134360d0" rmax="0.9" rmin="0" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="FrameUp0x55ac134371f0" rmax="41.12002" rmin="41.02002" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="FrameDown0x55ac13437360" rmax="41.12002" rmin="41.02002" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive1L10x55ac13437aa0" rmax="41.12002" rmin="41.02002" startphi="13.9337917425824" z="25"/>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive2L10x55ac13437c30" rmax="41.12002" rmin="41.02002" startphi="103.933791742582" z="25"/>
+    <union name="CuStrives0x55ac13438d60">
+      <first ref="Strive1L10x55ac13437aa0"/>
+      <second ref="Strive2L10x55ac13437c30"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive3L10x55ac13437dc0" rmax="41.12002" rmin="41.02002" startphi="193.933791742582" z="25"/>
+    <union name="CuStrives0x55ac13438ec0">
+      <first ref="CuStrives0x55ac13438d60"/>
+      <second ref="Strive3L10x55ac13437dc0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive4L10x55ac13437f50" rmax="41.12002" rmin="41.02002" startphi="283.933791742582" z="25"/>
+    <union name="CuStrives0x55ac13438fa0">
+      <first ref="CuStrives0x55ac13438ec0"/>
+      <second ref="Strive4L10x55ac13437f50"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive1L30x55ac13438720" rmax="42.22002" rmin="42.12002" startphi="13.9337917425824" z="65"/>
+    <union name="CuStrives0x55ac134390b0">
+      <first ref="CuStrives0x55ac13438fa0"/>
+      <second ref="Strive1L30x55ac13438720"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive2L30x55ac134388b0" rmax="42.22002" rmin="42.12002" startphi="103.933791742582" z="65"/>
+    <union name="CuStrives0x55ac13439190">
+      <first ref="CuStrives0x55ac134390b0"/>
+      <second ref="Strive2L30x55ac134388b0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive3L30x55ac13438a40" rmax="42.22002" rmin="42.12002" startphi="193.933791742582" z="65"/>
+    <union name="CuStrives0x55ac134392c0">
+      <first ref="CuStrives0x55ac13439190"/>
+      <second ref="Strive3L30x55ac13438a40"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive4L30x55ac13438bd0" rmax="42.22002" rmin="42.12002" startphi="283.933791742582" z="65"/>
+    <union name="CuStrives0x55ac134393a0">
+      <first ref="CuStrives0x55ac134392c0"/>
+      <second ref="Strive4L30x55ac13438bd0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive1L20x55ac134380e0" rmax="42.12002" rmin="41.12002" startphi="13.9337917425824" z="65"/>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive2L20x55ac13438270" rmax="42.12002" rmin="41.12002" startphi="103.933791742582" z="65"/>
+    <union name="MyStrives0x55ac13439480">
+      <first ref="Strive1L20x55ac134380e0"/>
+      <second ref="Strive2L20x55ac13438270"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive3L20x55ac13438400" rmax="42.12002" rmin="41.12002" startphi="193.933791742582" z="65"/>
+    <union name="MyStrives0x55ac134395c0">
+      <first ref="MyStrives0x55ac13439480"/>
+      <second ref="Strive3L20x55ac13438400"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8675834851648" lunit="mm" name="Strive4L20x55ac13438590" rmax="42.12002" rmin="41.12002" startphi="283.933791742582" z="65"/>
+    <union name="MyStrives0x55ac134396a0">
+      <first ref="MyStrives0x55ac134395c0"/>
+      <second ref="Strive4L20x55ac13438590"/>
+    </union>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_00x55ac1343b4f0" rmax="17.5" rmin="16.5" startphi="0" z="300"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_10x55ac1343b8e0" rmax="21.5" rmin="20.5" startphi="0" z="300"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_20x55ac1343bd10" rmax="37.5" rmin="36.5" startphi="0" z="300"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_30x55ac1343c140" rmax="65.5" rmin="64.5" startphi="0" z="300"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_40x55ac1343c570" rmax="69.5" rmin="68.5" startphi="0" z="300"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Plane_50x55ac1343cab0" rmax="73.5" rmin="72.5" startphi="0" z="300"/>
+    <box lunit="mm" name="World0x55ac134213a0" x="300" y="300" z="1050"/>
+  </solids>
+
+  <structure>
+    <volume name="AluminumCylinder0x55ac13431050">
+      <materialref ref="G4_Al0x55ac13421df0"/>
+      <solidref ref="AluminumCylinder0x55ac13420150"/>
+    </volume>
+    <volume name="CathodeKa_LV0x55ac13431c70">
+      <materialref ref="G4_KAPTON0x55ac13432240"/>
+      <solidref ref="CathodeKa0x55ac134330e0"/>
+    </volume>
+    <volume name="CathodeAl_LV0x55ac13431bc0">
+      <materialref ref="G4_Al0x55ac13421df0"/>
+      <solidref ref="CathodeAl0x55ac134334a0"/>
+    </volume>
+    <volume name="AnodeAl_LV0x55ac134339c0">
+      <materialref ref="G4_Al0x55ac13421df0"/>
+      <solidref ref="AnodeAl0x55ac13433850"/>
+    </volume>
+    <volume name="AnodeKa_LV0x55ac13433e40">
+      <materialref ref="G4_KAPTON0x55ac13432240"/>
+      <solidref ref="AnodeKa0x55ac13433cb0"/>
+    </volume>
+    <volume name="WfCoil0x55ac13434c70">
+      <materialref ref="G4_Cu0x55ac13434130"/>
+      <solidref ref="WfCoil0x55ac13434b00"/>
+    </volume>
+    <volume name="TeflonTube_LV0x55ac13435e10">
+      <materialref ref="G4_TEFLON0x55ac13434f60"/>
+      <solidref ref="teflonTube0x55ac13435ca0"/>
+    </volume>
+    <volume name="copperTube_LV0x55ac13436260">
+      <materialref ref="G4_Cu0x55ac13434130"/>
+      <solidref ref="copperTube0x55ac134360d0"/>
+    </volume>
+    <volume name="FrameUp_LV0x55ac134374d0">
+      <materialref ref="G4_Cu0x55ac13434130"/>
+      <solidref ref="FrameUp0x55ac134371f0"/>
+    </volume>
+    <volume name="FrameDown_LV0x55ac13437640">
+      <materialref ref="G4_Cu0x55ac13434130"/>
+      <solidref ref="FrameDown0x55ac13437360"/>
+    </volume>
+    <volume name="CuStrives_LV0x55ac13439780">
+      <materialref ref="G4_Cu0x55ac13434130"/>
+      <solidref ref="CuStrives0x55ac134393a0"/>
+    </volume>
+    <volume name="MyStrives_LV0x55ac134398d0">
+      <materialref ref="G4_MYLAR0x55ac13436580"/>
+      <solidref ref="MyStrives0x55ac134396a0"/>
+    </volume>
+    <volume name="Plane_00x55ac1343b660">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_00x55ac1343b4f0"/>
+    </volume>
+    <volume name="Plane_10x55ac1343ba70">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_10x55ac1343b8e0"/>
+    </volume>
+    <volume name="Plane_20x55ac1343bea0">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_20x55ac1343bd10"/>
+    </volume>
+    <volume name="Plane_30x55ac1343c2d0">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_30x55ac1343c140"/>
+    </volume>
+    <volume name="Plane_40x55ac1343c700">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_40x55ac1343c570"/>
+    </volume>
+    <volume name="Plane_50x55ac1343cc40">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x55ac13412510"/>
+      <solidref ref="Plane_50x55ac1343cab0"/>
+    </volume>
+    <volume name="World0x55ac134136a0">
+      <materialref ref="G4_Galactic0x55ac13420c00"/>
+      <solidref ref="World0x55ac134213a0"/>
+      <physvol name="AluminumCylinder0x55ac134311f0">
+        <volumeref ref="AluminumCylinder0x55ac13431050"/>
+      </physvol>
+      <physvol name="CathodeKa_PV0x55ac13433370">
+        <volumeref ref="CathodeKa_LV0x55ac13431c70"/>
+      </physvol>
+      <physvol name="CathodeAl_PV0x55ac134336f0">
+        <volumeref ref="CathodeAl_LV0x55ac13431bc0"/>
+      </physvol>
+      <physvol name="AnodeAl_PV0x55ac13433b30">
+        <volumeref ref="AnodeAl_LV0x55ac134339c0"/>
+      </physvol>
+      <physvol name="AnodeKa_PV0x55ac13433fb0">
+        <volumeref ref="AnodeKa_LV0x55ac13433e40"/>
+      </physvol>
+      <physvol name="WfCoil0x55ac13434d80">
+        <volumeref ref="WfCoil0x55ac13434c70"/>
+      </physvol>
+      <physvol name="TeflonTube_PV0x55ac13435fa0">
+        <volumeref ref="TeflonTube_LV0x55ac13435e10"/>
+        <position name="TeflonTube_PV0x55ac13435fa0_pos" unit="mm" x="-2" y="0" z="0"/>
+      </physvol>
+      <physvol name="copperTube_PV0x55ac13436450">
+        <volumeref ref="copperTube_LV0x55ac13436260"/>
+        <position name="copperTube_PV0x55ac13436450_pos" unit="mm" x="0.9" y="0" z="0"/>
+      </physvol>
+      <physvol name="FrameUp_PV0x55ac134377d0">
+        <volumeref ref="FrameUp_LV0x55ac134374d0"/>
+        <position name="FrameUp_PV0x55ac134377d0_pos" unit="mm" x="0" y="0" z="22.5"/>
+      </physvol>
+      <physvol name="FrameDown_PV0x55ac13437990">
+        <volumeref ref="FrameDown_LV0x55ac13437640"/>
+        <position name="FrameDown_PV0x55ac13437990_pos" unit="mm" x="0" y="0" z="-22.5"/>
+      </physvol>
+      <physvol name="CuStrives_PV0x55ac13439a60">
+        <volumeref ref="CuStrives_LV0x55ac13439780"/>
+      </physvol>
+      <physvol name="MyStrives_PV0x55ac1343a170">
+        <volumeref ref="MyStrives_LV0x55ac134398d0"/>
+      </physvol>
+      <physvol name="Plane_00x55ac1343b7b0">
+        <volumeref ref="Plane_00x55ac1343b660"/>
+      </physvol>
+      <physvol copynumber="1" name="Plane_10x55ac1343bbe0">
+        <volumeref ref="Plane_10x55ac1343ba70"/>
+      </physvol>
+      <physvol copynumber="2" name="Plane_20x55ac1343c010">
+        <volumeref ref="Plane_20x55ac1343bea0"/>
+      </physvol>
+      <physvol copynumber="3" name="Plane_30x55ac1343c440">
+        <volumeref ref="Plane_30x55ac1343c2d0"/>
+      </physvol>
+      <physvol copynumber="4" name="Plane_40x55ac1343c870">
+        <volumeref ref="Plane_40x55ac1343c700"/>
+      </physvol>
+      <physvol copynumber="5" name="Plane_50x55ac1343cdb0">
+        <volumeref ref="Plane_50x55ac1343cc40"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="World0x55ac134136a0"/>
+  </setup>
+
+</gdml>

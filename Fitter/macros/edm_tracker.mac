@@ -1,0 +1,39 @@
+### I/O files
+inDir = ../../data/input/toy/
+input = cosmictoy0000.root
+outDir = ../../data/output/
+
+### Geometry
+geomDir = ../geometry/
+geometry = chet_sim_geometry.gdml
+
+### Magnetic Field Configuration
+# Options: multi, single, constant
+b-type = constant
+
+## Path to the folder containing the map files
+b-dir = ../fieldmaps/
+b-path = Field22MeV
+
+## Scale factor (default -1.0)
+b-scale = -1.0
+
+## If b-type = constant, set |Bz| in kGauss
+b-const = 28.9
+
+### Fitter configuration
+fitter = cosmic
+prefitter = true
+quiet = false
+
+### Events
+#event = -1
+entryMax = 1000
+#rangeLoop = 0 1000
+
+### Analysis
+turns = 2
+
+### Simulation (for now)
+smearing = false
+pattern-rec = false

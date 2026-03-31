@@ -1,0 +1,1105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Physical volume of the experiment setup">
+
+  <define/>
+
+  <materials>
+    <material Z="13" name="G4_Al0x5f2c88f9e430" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="166"/>
+      <D unit="g/cm3" value="2.699"/>
+      <atom unit="g/mole" value="26.9815"/>
+    </material>
+    <isotope N="12" Z="6" name="C120x5f2c86d6b7d0">
+      <atom unit="g/mole" value="12"/>
+    </isotope>
+    <isotope N="13" Z="6" name="C130x5f2c871b8f70">
+      <atom unit="g/mole" value="13.0034"/>
+    </isotope>
+    <element name="C0x5f2c88f752c0">
+      <fraction n="0.9893" ref="C120x5f2c86d6b7d0"/>
+      <fraction n="0.0107" ref="C130x5f2c871b8f70"/>
+    </element>
+    <isotope N="1" Z="1" name="H10x5f2c88f7ee90">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x5f2c88f82f20">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x5f2c88f82f70">
+      <fraction n="0.999885" ref="H10x5f2c88f7ee90"/>
+      <fraction n="0.000115" ref="H20x5f2c88f82f20"/>
+    </element>
+    <isotope N="14" Z="7" name="N140x5f2c88f869b0">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N150x5f2c88fa30c0">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="N0x5f2c88fa0be0">
+      <fraction n="0.99632" ref="N140x5f2c88f869b0"/>
+      <fraction n="0.00368" ref="N150x5f2c88fa30c0"/>
+    </element>
+    <isotope N="16" Z="8" name="O160x5f2c88f7b990">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O170x5f2c88f83500">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O180x5f2c88f867a0">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="O0x5f2c88fa0d60">
+      <fraction n="0.99757" ref="O160x5f2c88f7b990"/>
+      <fraction n="0.00038" ref="O170x5f2c88f83500"/>
+      <fraction n="0.00205" ref="O180x5f2c88f867a0"/>
+    </element>
+    <material name="G4_KAPTON0x5f2c88fa0860" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="79.6"/>
+      <D unit="g/cm3" value="1.42"/>
+      <fraction n="0.691127814286998" ref="C0x5f2c88f752c0"/>
+      <fraction n="0.0263633782339879" ref="H0x5f2c88f82f70"/>
+      <fraction n="0.0732713201549139" ref="N0x5f2c88fa0be0"/>
+      <fraction n="0.2092374873241" ref="O0x5f2c88fa0d60"/>
+    </material>
+    <isotope N="63" Z="29" name="Cu630x5f2c871c7a30">
+      <atom unit="g/mole" value="62.9296"/>
+    </isotope>
+    <isotope N="65" Z="29" name="Cu650x5f2c871c5060">
+      <atom unit="g/mole" value="64.9278"/>
+    </isotope>
+    <element name="Cu0x5f2c871c31e0">
+      <fraction n="0.6917" ref="Cu630x5f2c871c7a30"/>
+      <fraction n="0.3083" ref="Cu650x5f2c871c5060"/>
+    </element>
+    <material name="G4_Cu0x5f2c871c30a0" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="322"/>
+      <D unit="g/cm3" value="8.96"/>
+      <fraction n="1" ref="Cu0x5f2c871c31e0"/>
+    </material>
+    <isotope N="14" Z="7" name="N140x5f2c88f88a70">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N150x5f2c88f885d0">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="Nitrogen0x5f2c871b8420">
+      <fraction n="0.99632" ref="N140x5f2c88f88a70"/>
+      <fraction n="0.00368" ref="N150x5f2c88f885d0"/>
+    </element>
+    <isotope N="16" Z="8" name="O160x5f2c88ef43d0">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O170x5f2c88f88960">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O180x5f2c88f86520">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="Oxygen0x5f2c871b8560">
+      <fraction n="0.99757" ref="O160x5f2c88ef43d0"/>
+      <fraction n="0.00038" ref="O170x5f2c88f88960"/>
+      <fraction n="0.00205" ref="O180x5f2c88f86520"/>
+    </element>
+    <material name="Air0x5f2c871b9b90" state="gas">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="85.7030667332999"/>
+      <D unit="g/cm3" value="1.16128981360397e-13"/>
+      <fraction n="0.7" ref="Nitrogen0x5f2c871b8420"/>
+      <fraction n="0.3" ref="Oxygen0x5f2c871b8560"/>
+    </material>
+    <material name="G4_PLASTIC_SC_VINYLTOLUENE0x5f2c88f97530" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="64.7"/>
+      <D unit="g/cm3" value="1.032"/>
+      <fraction n="0.914708531800025" ref="C0x5f2c88f752c0"/>
+      <fraction n="0.0852914681999746" ref="H0x5f2c88f82f70"/>
+    </material>
+    <isotope N="12" Z="6" name="C120x5f2c88f741d0">
+      <atom unit="g/mole" value="12"/>
+    </isotope>
+    <isotope N="13" Z="6" name="C130x5f2c88f74250">
+      <atom unit="g/mole" value="13.0034"/>
+    </isotope>
+    <element name="C0x5f2c88f74070">
+      <fraction n="0.9893" ref="C120x5f2c88f741d0"/>
+      <fraction n="0.0107" ref="C130x5f2c88f74250"/>
+    </element>
+    <isotope N="1" Z="1" name="H10x5f2c88f73ef0">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x5f2c88f73f60">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x5f2c88f73db0">
+      <fraction n="0.999885" ref="H10x5f2c88f73ef0"/>
+      <fraction n="0.000115" ref="H20x5f2c88f73f60"/>
+    </element>
+    <material name="BC4000x5f2c88f757e0" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="62.7418342703239"/>
+      <D unit="g/cm3" value="1.023"/>
+      <fraction n="0.915115250422317" ref="C0x5f2c88f74070"/>
+      <fraction n="0.0848847495776831" ref="H0x5f2c88f73db0"/>
+    </material>
+    <isotope N="54" Z="26" name="Fe540x5f2c88fb92c0">
+      <atom unit="g/mole" value="53.9396"/>
+    </isotope>
+    <isotope N="56" Z="26" name="Fe560x5f2c88f9f010">
+      <atom unit="g/mole" value="55.9349"/>
+    </isotope>
+    <isotope N="57" Z="26" name="Fe570x5f2c88fb8020">
+      <atom unit="g/mole" value="56.9354"/>
+    </isotope>
+    <isotope N="58" Z="26" name="Fe580x5f2c88fb5bf0">
+      <atom unit="g/mole" value="57.9333"/>
+    </isotope>
+    <element name="Fe0x5f2c88fb5dc0">
+      <fraction n="0.05845" ref="Fe540x5f2c88fb92c0"/>
+      <fraction n="0.91754" ref="Fe560x5f2c88f9f010"/>
+      <fraction n="0.02119" ref="Fe570x5f2c88fb8020"/>
+      <fraction n="0.00282" ref="Fe580x5f2c88fb5bf0"/>
+    </element>
+    <isotope N="50" Z="24" name="Cr500x5f2c88f9f3f0">
+      <atom unit="g/mole" value="49.946"/>
+    </isotope>
+    <isotope N="52" Z="24" name="Cr520x5f2c88fa0190">
+      <atom unit="g/mole" value="51.9405"/>
+    </isotope>
+    <isotope N="53" Z="24" name="Cr530x5f2c88fb6790">
+      <atom unit="g/mole" value="52.9407"/>
+    </isotope>
+    <isotope N="54" Z="24" name="Cr540x5f2c88fbb4b0">
+      <atom unit="g/mole" value="53.9389"/>
+    </isotope>
+    <element name="Cr0x5f2c88fbc340">
+      <fraction n="0.04345" ref="Cr500x5f2c88f9f3f0"/>
+      <fraction n="0.83789" ref="Cr520x5f2c88fa0190"/>
+      <fraction n="0.09501" ref="Cr530x5f2c88fb6790"/>
+      <fraction n="0.02365" ref="Cr540x5f2c88fbb4b0"/>
+    </element>
+    <isotope N="58" Z="28" name="Ni580x5f2c871c8970">
+      <atom unit="g/mole" value="57.9353"/>
+    </isotope>
+    <isotope N="60" Z="28" name="Ni600x5f2c88fbc420">
+      <atom unit="g/mole" value="59.9308"/>
+    </isotope>
+    <isotope N="61" Z="28" name="Ni610x5f2c88fbc490">
+      <atom unit="g/mole" value="60.9311"/>
+    </isotope>
+    <isotope N="62" Z="28" name="Ni620x5f2c88fbc4e0">
+      <atom unit="g/mole" value="61.9283"/>
+    </isotope>
+    <isotope N="64" Z="28" name="Ni640x5f2c88fbc530">
+      <atom unit="g/mole" value="63.928"/>
+    </isotope>
+    <element name="Ni0x5f2c88fbc5d0">
+      <fraction n="0.680769" ref="Ni580x5f2c871c8970"/>
+      <fraction n="0.262231" ref="Ni600x5f2c88fbc420"/>
+      <fraction n="0.011399" ref="Ni610x5f2c88fbc490"/>
+      <fraction n="0.036345" ref="Ni620x5f2c88fbc4e0"/>
+      <fraction n="0.009256" ref="Ni640x5f2c88fbc530"/>
+    </element>
+    <material name="G4_STAINLESS-STEEL0x5f2c88fbc1c0" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="282.97693634122"/>
+      <D unit="g/cm3" value="8"/>
+      <fraction n="0.746212874621521" ref="Fe0x5f2c88fb5dc0"/>
+      <fraction n="0.169001044311525" ref="Cr0x5f2c88fbc340"/>
+      <fraction n="0.0847860810669534" ref="Ni0x5f2c88fbc5d0"/>
+    </material>
+    <material name="G4_MYLAR0x5f2c88f99840" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="78.7"/>
+      <D unit="g/cm3" value="1.4"/>
+      <fraction n="0.625010832340889" ref="C0x5f2c88f752c0"/>
+      <fraction n="0.0419607170679432" ref="H0x5f2c88f82f70"/>
+      <fraction n="0.333028450591168" ref="O0x5f2c88fa0d60"/>
+    </material>
+    <isotope N="19" Z="9" name="F190x5f2c88f83c60">
+      <atom unit="g/mole" value="18.9984"/>
+    </isotope>
+    <element name="F0x5f2c88f85810">
+      <fraction n="1" ref="F190x5f2c88f83c60"/>
+    </element>
+    <material name="PTFE0x5f2c88f85950" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="104.363114428171"/>
+      <D unit="g/cm3" value="2.2"/>
+      <fraction n="0.240167337242135" ref="C0x5f2c88f74070"/>
+      <fraction n="0.759832662757865" ref="F0x5f2c88f85810"/>
+    </material>
+  </materials>
+
+  <solids>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="MagnetLayer0x5f2c88fa5f50" rmax="102" rmin="100" startphi="0" z="1000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="MagnetLayer0x5f2c88fa0f60" rmax="106" rmin="104" startphi="0" z="1000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="MagnetLayer0x5f2c871c73c0" rmax="110" rmin="108" startphi="0" z="1000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CathodeKa0x5f2c88fa2410" rmax="35.02" rmin="35" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CathodeAl0x5f2c871c4c70" rmax="35.02002" rmin="35.02" startphi="0" z="400"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="AnodeAl0x5f2c871c48c0" rmax="24.98" rmin="24.97998" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="AnodeKa0x5f2c871c38e0" rmax="25" rmin="24.98" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WfCoil0x5f2c871c3e50" rmax="60" rmin="50" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="VD_Orbit0x5f2c871c8a70" rmax="35" rmin="25" startphi="0" z="0.02"/>
+    <box lunit="mm" name="FullVerticalScint0x5f2c871c81c0" x="5" y="120" z="85"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="VerticalScintHole10x5f2c871c80b0" rmax="5.67" rmin="0" startphi="0" z="137.984683259131"/>
+    <subtraction name="VerticalScintH10x5f2c88f97850">
+      <first ref="FullVerticalScint0x5f2c871c81c0"/>
+      <second ref="VerticalScintHole10x5f2c871c80b0"/>
+      <position name="VerticalScintH10x5f2c88f97850_pos" unit="mm" x="0" y="35.9588" z="-71.441"/>
+      <rotation name="VerticalScintH10x5f2c88f97850_rot" unit="deg" x="-40.1326889071717" y="-29.0374799953788" z="90.0001840410759"/>
+    </subtraction>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="VerticalScintHole20x5f2c871c8860" rmax="5.02" rmin="0" startphi="0" z="135.119539984062"/>
+    <subtraction name="VerticalScintH20x5f2c88f977a0">
+      <first ref="VerticalScintH10x5f2c88f97850"/>
+      <second ref="VerticalScintHole20x5f2c871c8860"/>
+      <position name="VerticalScintH20x5f2c88f977a0_pos" unit="mm" x="0" y="-28.6245" z="-17.84"/>
+      <rotation name="VerticalScintH20x5f2c88f977a0_rot" unit="deg" x="-122.421886913814" y="33.2790187133205" z="45.9383013484627"/>
+    </subtraction>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="VerticalScintHole30x5f2c871c42e0" rmax="3.58" rmin="0" startphi="0" z="78.0804695001921"/>
+    <subtraction name="VerticalScint0x5f2c88f98230">
+      <first ref="VerticalScintH20x5f2c88f977a0"/>
+      <second ref="VerticalScintHole30x5f2c871c42e0"/>
+      <position name="VerticalScint0x5f2c88f98230_pos" unit="mm" x="0" y="27.3196" z="28.925"/>
+      <rotation name="VerticalScint0x5f2c88f98230_rot" unit="deg" x="-57.3567260032483" y="-61.939425226704" z="90.0002413321129"/>
+    </subtraction>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb6530" rmax="17.35" rmin="16.65" startphi="0" z="330"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb7040" rmax="21.35" rmin="20.65" startphi="0" z="330"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb7180" rmax="37.35" rmin="36.65" startphi="0" z="330"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb7ad0" rmax="65.85" rmin="65.15" startphi="0" z="330"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb8420" rmax="75.85" rmin="75.15" startphi="0" z="330"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Cylinder0x5f2c88fb8d40" rmax="85.85" rmin="85.15" startphi="0" z="330"/>
+    <box lunit="mm" name="EndBarDet0x5f2c88fb9e40" x="55" y="3" z="181"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CorrCoil0x5f2c88fb9ab0" rmax="75" rmin="45" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CorrCoil0x5f2c88fbae70" rmax="65" rmin="45" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CorrCoil0x5f2c88fbab70" rmax="75" rmin="45" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="CorrCoil0x5f2c88fbb780" rmax="65" rmin="45" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="MagnetPlateUp0x5f2c88fbbd60" rmax="125" rmin="100" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="MagnetPlateDown0x5f2c88fbdcb0" rmax="125" rmin="100" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="FarEndPlate0x5f2c88fbe3e0" rmax="110" rmin="0" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="FrameUp0x5f2c88fbf170" rmax="41.1" rmin="41" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="FrameDown0x5f2c88fb6680" rmax="41.1" rmin="41" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive1L10x5f2c88fc0f40" rmax="41.1" rmin="41" startphi="13.9405789569543" z="70"/>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive2L10x5f2c88fc0600" rmax="41.1" rmin="41" startphi="103.940578956954" z="70"/>
+    <union name="CuStrives0x5f2c88f86650">
+      <first ref="Strive1L10x5f2c88fc0f40"/>
+      <second ref="Strive2L10x5f2c88fc0600"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive3L10x5f2c88fb5ae0" rmax="41.1" rmin="41" startphi="193.940578956954" z="70"/>
+    <union name="CuStrives0x5f2c88fa57e0">
+      <first ref="CuStrives0x5f2c88f86650"/>
+      <second ref="Strive3L10x5f2c88fb5ae0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive4L10x5f2c88fa2ed0" rmax="41.1" rmin="41" startphi="283.940578956954" z="70"/>
+    <union name="CuStrives0x5f2c88fbcee0">
+      <first ref="CuStrives0x5f2c88fa57e0"/>
+      <second ref="Strive4L10x5f2c88fa2ed0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive1L30x5f2c88fc1330" rmax="42.2" rmin="42.1" startphi="13.9405789569543" z="90"/>
+    <union name="CuStrives0x5f2c88fbcfc0">
+      <first ref="CuStrives0x5f2c88fbcee0"/>
+      <second ref="Strive1L30x5f2c88fc1330"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive2L30x5f2c88fc14c0" rmax="42.2" rmin="42.1" startphi="103.940578956954" z="90"/>
+    <union name="CuStrives0x5f2c88fbd0a0">
+      <first ref="CuStrives0x5f2c88fbcfc0"/>
+      <second ref="Strive2L30x5f2c88fc14c0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive3L30x5f2c88fc1650" rmax="42.2" rmin="42.1" startphi="193.940578956954" z="90"/>
+    <union name="CuStrives0x5f2c88fbd180">
+      <first ref="CuStrives0x5f2c88fbd0a0"/>
+      <second ref="Strive3L30x5f2c88fc1650"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive4L30x5f2c88fbccd0" rmax="42.2" rmin="42.1" startphi="283.940578956954" z="90"/>
+    <union name="CuStrives0x5f2c88fbd260">
+      <first ref="CuStrives0x5f2c88fbd180"/>
+      <second ref="Strive4L30x5f2c88fbccd0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive1L20x5f2c88f87770" rmax="42.1" rmin="41.1" startphi="13.9405789569543" z="90"/>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive2L20x5f2c88f87510" rmax="42.1" rmin="41.1" startphi="103.940578956954" z="90"/>
+    <union name="MyStrives0x5f2c88fbd340">
+      <first ref="Strive1L20x5f2c88f87770"/>
+      <second ref="Strive2L20x5f2c88f87510"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive3L20x5f2c88f7b5d0" rmax="42.1" rmin="41.1" startphi="193.940578956954" z="90"/>
+    <union name="MyStrives0x5f2c88fbf3c0">
+      <first ref="MyStrives0x5f2c88fbd340"/>
+      <second ref="Strive3L20x5f2c88f7b5d0"/>
+    </union>
+    <tube aunit="deg" deltaphi="27.8811579139087" lunit="mm" name="Strive4L20x5f2c88fc11c0" rmax="42.1" rmin="41.1" startphi="283.940578956954" z="90"/>
+    <union name="MyStrives0x5f2c88fbf4a0">
+      <first ref="MyStrives0x5f2c88fbf3c0"/>
+      <second ref="Strive4L20x5f2c88fc11c0"/>
+    </union>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="PulseResistors0x5f2c88fc3d50" rmax="3" rmin="0" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fc47d0" rmax="83" rmin="41" startphi="0" z="4"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fc4d60" rmax="45" rmin="41" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fbffd0" rmax="83" rmin="41" startphi="0" z="7"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fc1b10" rmax="67" rmin="41" startphi="0" z="12.5"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88ebddd0" rmax="45" rmin="41" startphi="0" z="30.25"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fc5cf0" rmax="67" rmin="41" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Shaft0x5f2c88fc5740" rmax="52" rmin="41" startphi="0" z="15"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ShaftE10x5f2c88eba840" rmax="83" rmin="41" startphi="0" z="3"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ShaftE20x5f2c88ebcaa0" rmax="46.67" rmin="41" startphi="0" z="15"/>
+    <cone aunit="deg" deltaphi="360" lunit="mm" name="ShaftE_Cone0x5f2c88eba420" rmax1="46.67" rmax2="51.62" rmin1="41" rmin2="41" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ShaftE30x5f2c88ebe800" rmax="51.62" rmin="41" startphi="0" z="161"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ebe6d0" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ebefc0" rmax="98" rmin="57.5" startphi="-10.525" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ebf960" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ec04b0" rmax="98" rmin="57.5" startphi="49.475" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ebd230" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ebbc50" rmax="98" rmin="57.5" startphi="109.475" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ebb460" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ec1610" rmax="98" rmin="57.5" startphi="169.475" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ec1750" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ec0f80" rmax="98" rmin="57.5" startphi="229.475" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRod0x5f2c88ec2e60" rmax="4.4" rmin="0" startphi="0" z="369"/>
+    <tube aunit="deg" deltaphi="21.05" lunit="mm" name="SupportRodHolder0x5f2c88ec5360" rmax="98" rmin="57.5" startphi="289.475" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRodDisc0x5f2c88ec5810" rmax="51.75" rmin="40.75" startphi="0" z="7"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportRodDisc0x5f2c88ec41d0" rmax="57.5" rmin="52" startphi="0" z="10"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WFCHolder0x5f2c88fe09a0" rmax="50" rmin="49" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WFCHolder0x5f2c88fe1990" rmax="61" rmin="50" startphi="0" z="5"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WFCHolderSegment0x5f2c88ec3cf0" rmax="52" rmin="50" startphi="0" z="20"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="WFCHolderSegment0x5f2c88fdf4d0" rmax="52" rmin="50" startphi="0" z="4.5"/>
+    <tube aunit="deg" deltaphi="13.5" lunit="mm" name="WFCHolderSegment0x5f2c88fe4270" rmax="52" rmin="50" startphi="-6.74999999999999" z="132.5"/>
+    <tube aunit="deg" deltaphi="13.5" lunit="mm" name="WFCHolderSegment0x5f2c88fe2a80" rmax="52" rmin="50" startphi="113.25" z="132.5"/>
+    <tube aunit="deg" deltaphi="13.5" lunit="mm" name="WFCHolderSegment0x5f2c88fe2f90" rmax="52" rmin="50" startphi="233.25" z="132.5"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportETHPlateFull0x5f2c88fe6600" rmax="100" rmin="0" startphi="0" z="1.6"/>
+    <box lunit="mm" name="EntranceTriggerBox0x5f2c88ebf0d0" x="20" y="20" z="3.6"/>
+    <subtraction name="SupportETHPlateETTop0x5f2c88fe70d0">
+      <first ref="SupportETHPlateFull0x5f2c88fe6600"/>
+      <second ref="EntranceTriggerBox0x5f2c88ebf0d0"/>
+      <position name="SupportETHPlateETTop0x5f2c88fe70d0_pos" unit="mm" x="-1" y="40" z="0"/>
+    </subtraction>
+    <subtraction name="SupportETHPlate0x5f2c88fe71f0">
+      <first ref="SupportETHPlateETTop0x5f2c88fe70d0"/>
+      <second ref="EntranceTriggerBox0x5f2c88ebf0d0"/>
+      <position name="SupportETHPlate0x5f2c88fe71f0_pos" unit="mm" x="-1" y="-40" z="0"/>
+    </subtraction>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportETHTub0x5f2c88fe2750" rmax="100" rmin="90" startphi="0" z="130"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportETHRing0x5f2c88fe8980" rmax="80" rmin="70" startphi="0" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_00x5f2c88fe9340" rmax="100" rmin="80" startphi="0" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_10x5f2c88fe99a0" rmax="100" rmin="80" startphi="36" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_20x5f2c88fea000" rmax="100" rmin="80" startphi="72" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_30x5f2c88fe82d0" rmax="100" rmin="80" startphi="108" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_40x5f2c88fe78f0" rmax="100" rmin="80" startphi="144" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_50x5f2c88feac20" rmax="100" rmin="80" startphi="180" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_60x5f2c88feca10" rmax="100" rmin="80" startphi="216" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_70x5f2c88f89400" rmax="100" rmin="80" startphi="252" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_80x5f2c88f89a50" rmax="100" rmin="80" startphi="288" z="4"/>
+    <tube aunit="deg" deltaphi="11.4591559026165" lunit="mm" name="supportETHSpike_90x5f2c88f8a140" rmax="100" rmin="80" startphi="324" z="4"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="SupportETHFullInnerTube0x5f2c88f8aa50" rmax="90" rmin="0" startphi="0" z="130"/>
+    <box lunit="mm" name="SupportETHFullInnerBox0x5f2c88fe29a0" x="200" y="170" z="132"/>
+    <subtraction name="SupportETHInnerHolderTub0x5f2c88f8adc0">
+      <first ref="SupportETHFullInnerTube0x5f2c88f8aa50"/>
+      <second ref="SupportETHFullInnerBox0x5f2c88fe29a0"/>
+    </subtraction>
+    <box lunit="mm" name="SupportETHIHpart_00x5f2c88fec800" x="1.6" y="120" z="5"/>
+    <box lunit="mm" name="SupportETHIHpart_10x5f2c88fec6b0" x="10" y="25" z="130"/>
+    <box lunit="mm" name="SupportETHIHpart_20x5f2c88f8cac0" x="10" y="25" z="130"/>
+    <box lunit="mm" name="World0x5f2c88f88500" x="300" y="300" z="1200"/>
+  </solids>
+
+  <structure>
+    <volume name="MagnetLayer_LV0x5f2c88f9e770">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="MagnetLayer0x5f2c88fa5f50"/>
+    </volume>
+    <volume name="MagnetLayer_LV0x5f2c88fa10f0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="MagnetLayer0x5f2c88fa0f60"/>
+    </volume>
+    <volume name="MagnetLayer_LV0x5f2c88f9eaf0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="MagnetLayer0x5f2c871c73c0"/>
+    </volume>
+    <volume name="CathodeKa_LV0x5f2c88f9fdb0">
+      <materialref ref="G4_KAPTON0x5f2c88fa0860"/>
+      <solidref ref="CathodeKa0x5f2c88fa2410"/>
+    </volume>
+    <volume name="CathodeAl_LV0x5f2c871c4ef0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="CathodeAl0x5f2c871c4c70"/>
+    </volume>
+    <volume name="AnodeAl_LV0x5f2c871c8e30">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="AnodeAl0x5f2c871c48c0"/>
+    </volume>
+    <volume name="AnodeKa_LV0x5f2c871c4120">
+      <materialref ref="G4_KAPTON0x5f2c88fa0860"/>
+      <solidref ref="AnodeKa0x5f2c871c38e0"/>
+    </volume>
+    <volume name="WfCoil0x5f2c871c35d0">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="WfCoil0x5f2c871c3e50"/>
+    </volume>
+    <volume name="VD_Orbit_LV0x5f2c871c8d00">
+      <materialref ref="Air0x5f2c871b9b90"/>
+      <solidref ref="VD_Orbit0x5f2c871c8a70"/>
+    </volume>
+    <volume name="VerticalScint_LV0x5f2c88f984a0">
+      <materialref ref="G4_PLASTIC_SC_VINYLTOLUENE0x5f2c88f97530"/>
+      <solidref ref="VerticalScint0x5f2c88f98230"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c871c83b0">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb6530"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c88fb6960">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb7040"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c88fb73f0">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb7180"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c88fb7d50">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb7ad0"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c88fb8690">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb8420"/>
+    </volume>
+    <volume name="CylinderCHeT_LV0x5f2c88fb8ff0">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="Cylinder0x5f2c88fb8d40"/>
+    </volume>
+    <volume name="EndBarDet_LV0x5f2c88fb97e0">
+      <materialref ref="BC4000x5f2c88f757e0"/>
+      <solidref ref="EndBarDet0x5f2c88fb9e40"/>
+    </volume>
+    <volume name="CorrCoil_LV0x5f2c88fba0e0">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="CorrCoil0x5f2c88fb9ab0"/>
+    </volume>
+    <volume name="CorrCoil_LV0x5f2c88fba8d0">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="CorrCoil0x5f2c88fbae70"/>
+    </volume>
+    <volume name="CorrCoil_LV0x5f2c88fbb1c0">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="CorrCoil0x5f2c88fbab70"/>
+    </volume>
+    <volume name="CorrCoil_LV0x5f2c88fbba90">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="CorrCoil0x5f2c88fbb780"/>
+    </volume>
+    <volume name="MagnetPlateUp_LV0x5f2c88f98bc0">
+      <materialref ref="G4_STAINLESS-STEEL0x5f2c88fbc1c0"/>
+      <solidref ref="MagnetPlateUp0x5f2c88fbbd60"/>
+    </volume>
+    <volume name="MagnetPlateDown_LV0x5f2c88fbdf90">
+      <materialref ref="G4_STAINLESS-STEEL0x5f2c88fbc1c0"/>
+      <solidref ref="MagnetPlateDown0x5f2c88fbdcb0"/>
+    </volume>
+    <volume name="FarEndPlate_LV0x5f2c88fbe980">
+      <materialref ref="G4_STAINLESS-STEEL0x5f2c88fbc1c0"/>
+      <solidref ref="FarEndPlate0x5f2c88fbe3e0"/>
+    </volume>
+    <volume name="FrameUp_LV0x5f2c88f9f170">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="FrameUp0x5f2c88fbf170"/>
+    </volume>
+    <volume name="FrameDown_LV0x5f2c88fbc7b0">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="FrameDown0x5f2c88fb6680"/>
+    </volume>
+    <volume name="CuStrives_LV0x5f2c88fbf580">
+      <materialref ref="G4_Cu0x5f2c871c30a0"/>
+      <solidref ref="CuStrives0x5f2c88fbd260"/>
+    </volume>
+    <volume name="MyStrives_LV0x5f2c88fbf690">
+      <materialref ref="G4_MYLAR0x5f2c88f99840"/>
+      <solidref ref="MyStrives0x5f2c88fbf4a0"/>
+    </volume>
+    <volume name="PulseResistors_LV0x5f2c88fc37a0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="PulseResistors0x5f2c88fc3d50"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fc40a0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fc47d0"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fbfbb0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fc4d60"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fb9370">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fbffd0"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fc6f40">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fc1b10"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fc21e0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88ebddd0"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88fc54e0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fc5cf0"/>
+    </volume>
+    <volume name="Shaft_LV0x5f2c88eb9e70">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="Shaft0x5f2c88fc5740"/>
+    </volume>
+    <volume name="ShaftE1_LV0x5f2c88ebac10">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="ShaftE10x5f2c88eba840"/>
+    </volume>
+    <volume name="ShaftE2_LV0x5f2c88eb9f20">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="ShaftE20x5f2c88ebcaa0"/>
+    </volume>
+    <volume name="ShaftE_Cone_LV0x5f2c88fbed30">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="ShaftE_Cone0x5f2c88eba420"/>
+    </volume>
+    <volume name="ShaftE3_LV0x5f2c88fc5170">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="ShaftE30x5f2c88ebe800"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ebeb70">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ebe6d0"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ebf380">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ebefc0"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ec0250">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ebf960"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ec05c0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ec04b0"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ebb9f0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ebd230"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ebbd90">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ebbc50"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ec25a0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ebb460"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ec1e30">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ec1610"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ec3890">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ec1750"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ec3560">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ec0f80"/>
+    </volume>
+    <volume name="SupportRod_LV0x5f2c88ec3320">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRod0x5f2c88ec2e60"/>
+    </volume>
+    <volume name="SupportRodHolder_LV0x5f2c88ec5bc0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodHolder0x5f2c88ec5360"/>
+    </volume>
+    <volume name="SupportRodDisc_LV0x5f2c88fdf190">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodDisc0x5f2c88ec5810"/>
+    </volume>
+    <volume name="SupportRodDisc_LV0x5f2c88fe0650">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportRodDisc0x5f2c88ec41d0"/>
+    </volume>
+    <volume name="WFCHolder_LV0x5f2c88fe1500">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolder0x5f2c88fe09a0"/>
+    </volume>
+    <volume name="WFCHolder_LV0x5f2c88ec3940">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolder0x5f2c88fe1990"/>
+    </volume>
+    <volume name="WFCHolderSegment_LV0x5f2c88fdfd80">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolderSegment0x5f2c88ec3cf0"/>
+    </volume>
+    <volume name="WFCHolderSegment_LV0x5f2c88fe3ba0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolderSegment0x5f2c88fdf4d0"/>
+    </volume>
+    <volume name="WFCHolderSegment_LV0x5f2c88fe4b60">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolderSegment0x5f2c88fe4270"/>
+    </volume>
+    <volume name="WFCHolderSegment_LV0x5f2c88fe3600">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolderSegment0x5f2c88fe2a80"/>
+    </volume>
+    <volume name="WFCHolderSegment_LV0x5f2c88fe6220">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="WFCHolderSegment0x5f2c88fe2f90"/>
+    </volume>
+    <volume name="SupportETHPlate_LV0x5f2c88fe7440">
+      <materialref ref="PTFE0x5f2c88f85950"/>
+      <solidref ref="SupportETHPlate0x5f2c88fe71f0"/>
+    </volume>
+    <volume name="SupportETHTub_LV0x5f2c88fe21f0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportETHTub0x5f2c88fe2750"/>
+    </volume>
+    <volume name="SupportETHRing_LV0x5f2c88fe8c50">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="SupportETHRing0x5f2c88fe8980"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88fe9610">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_00x5f2c88fe9340"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88fe9d20">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_10x5f2c88fe99a0"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88fe7fa0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_20x5f2c88fea000"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88feb750">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_30x5f2c88fe82d0"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88fe7ab0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_40x5f2c88fe78f0"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88feaf60">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_50x5f2c88feac20"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88fecca0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_60x5f2c88feca10"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88f89640">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_70x5f2c88f89400"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88f89e10">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_80x5f2c88f89a50"/>
+    </volume>
+    <volume name="SupportETHspike_LV0x5f2c88f8a5b0">
+      <materialref ref="G4_Al0x5f2c88f9e430"/>
+      <solidref ref="supportETHSpike_90x5f2c88f8a140"/>
+    </volume>
+    <volume name="SupportETHInnerHolderTub_LV0x5f2c88f8b000">
+      <materialref ref="PTFE0x5f2c88f85950"/>
+      <solidref ref="SupportETHInnerHolderTub0x5f2c88f8adc0"/>
+    </volume>
+    <volume name="SupportETHIHpart_0_LV0x5f2c88f8b280">
+      <materialref ref="PTFE0x5f2c88f85950"/>
+      <solidref ref="SupportETHIHpart_00x5f2c88fec800"/>
+    </volume>
+    <volume name="SupportETHIHpart_1_LV0x5f2c88f8cf80">
+      <materialref ref="PTFE0x5f2c88f85950"/>
+      <solidref ref="SupportETHIHpart_10x5f2c88fec6b0"/>
+    </volume>
+    <volume name="SupportETHIHpart_2_LV0x5f2c88f8cca0">
+      <materialref ref="PTFE0x5f2c88f85950"/>
+      <solidref ref="SupportETHIHpart_20x5f2c88f8cac0"/>
+    </volume>
+    <volume name="World0x5f2c88f7cf20">
+      <materialref ref="Air0x5f2c871b9b90"/>
+      <solidref ref="World0x5f2c88f88500"/>
+      <physvol name="MagnetLayer_PV0x5f2c88fa2380">
+        <volumeref ref="MagnetLayer_LV0x5f2c88f9e770"/>
+      </physvol>
+      <physvol copynumber="1" name="MagnetLayer_PV0x5f2c88fa5260">
+        <volumeref ref="MagnetLayer_LV0x5f2c88fa10f0"/>
+      </physvol>
+      <physvol copynumber="2" name="MagnetLayer_PV0x5f2c88f9ea10">
+        <volumeref ref="MagnetLayer_LV0x5f2c88f9eaf0"/>
+      </physvol>
+      <physvol name="CathodeKa_PV0x5f2c88f9fe60">
+        <volumeref ref="CathodeKa_LV0x5f2c88f9fdb0"/>
+      </physvol>
+      <physvol name="CathodeAl_PV0x5f2c871c4fa0">
+        <volumeref ref="CathodeAl_LV0x5f2c871c4ef0"/>
+      </physvol>
+      <physvol name="AnodeAl_PV0x5f2c871c8f40">
+        <volumeref ref="AnodeAl_LV0x5f2c871c8e30"/>
+      </physvol>
+      <physvol name="AnodeKa_PV0x5f2c88fa0130">
+        <volumeref ref="AnodeKa_LV0x5f2c871c4120"/>
+      </physvol>
+      <physvol name="WfCoil0x5f2c871c36e0">
+        <volumeref ref="WfCoil0x5f2c871c35d0"/>
+      </physvol>
+      <physvol name="VD_Orbit_PV0x5f2c871c3ff0">
+        <volumeref ref="VD_Orbit_LV0x5f2c871c8d00"/>
+      </physvol>
+      <physvol name="VerticalScint_PV0x5f2c88f985b0">
+        <volumeref ref="VerticalScint_LV0x5f2c88f984a0"/>
+        <position name="VerticalScint_PV0x5f2c88f985b0_pos" unit="mm" x="-15" y="0" z="-360.109"/>
+      </physvol>
+      <physvol name="CylinderCHeT_PV0x5f2c88fb5e80">
+        <volumeref ref="CylinderCHeT_LV0x5f2c871c83b0"/>
+      </physvol>
+      <physvol copynumber="1" name="CylinderCHeT_PV0x5f2c88fb6090">
+        <volumeref ref="CylinderCHeT_LV0x5f2c88fb6960"/>
+      </physvol>
+      <physvol copynumber="2" name="CylinderCHeT_PV0x5f2c88f988f0">
+        <volumeref ref="CylinderCHeT_LV0x5f2c88fb73f0"/>
+      </physvol>
+      <physvol copynumber="3" name="CylinderCHeT_PV0x5f2c88fb75f0">
+        <volumeref ref="CylinderCHeT_LV0x5f2c88fb7d50"/>
+      </physvol>
+      <physvol copynumber="4" name="CylinderCHeT_PV0x5f2c88fb7f50">
+        <volumeref ref="CylinderCHeT_LV0x5f2c88fb8690"/>
+      </physvol>
+      <physvol copynumber="5" name="CylinderCHeT_PV0x5f2c88fb8890">
+        <volumeref ref="CylinderCHeT_LV0x5f2c88fb8ff0"/>
+      </physvol>
+      <physvol name="EndBarDet_PV0x5f2c88fb89c0">
+        <volumeref ref="EndBarDet_LV0x5f2c88fb97e0"/>
+        <position name="EndBarDet_PV0x5f2c88fb89c0_pos" unit="mm" x="0" y="-28.9097023990699" z="412.5"/>
+      </physvol>
+      <physvol name="CorrCoil_PV0x5f2c88fba1f0">
+        <volumeref ref="CorrCoil_LV0x5f2c88fba0e0"/>
+        <position name="CorrCoil_PV0x5f2c88fba1f0_pos" unit="mm" x="0" y="0" z="284.875"/>
+      </physvol>
+      <physvol copynumber="1" name="CorrCoil_PV0x5f2c88fb9310">
+        <volumeref ref="CorrCoil_LV0x5f2c88fba8d0"/>
+        <position name="CorrCoil_PV0x5f2c88fb9310_pos" unit="mm" x="0" y="0" z="235.125"/>
+      </physvol>
+      <physvol copynumber="2" name="CorrCoil_PV0x5f2c88fba3f0">
+        <volumeref ref="CorrCoil_LV0x5f2c88fbb1c0"/>
+        <position name="CorrCoil_PV0x5f2c88fba3f0_pos" unit="mm" x="0" y="0" z="-284.875"/>
+      </physvol>
+      <physvol copynumber="3" name="CorrCoil_PV0x5f2c88fbb3b0">
+        <volumeref ref="CorrCoil_LV0x5f2c88fbba90"/>
+        <position name="CorrCoil_PV0x5f2c88fbb3b0_pos" unit="mm" x="0" y="0" z="-235.125"/>
+      </physvol>
+      <physvol name="MagnetPlateUp_PV0x5f2c88f99320">
+        <volumeref ref="MagnetPlateUp_LV0x5f2c88f98bc0"/>
+        <position name="MagnetPlateUp_PV0x5f2c88f99320_pos" unit="mm" x="0" y="0" z="505"/>
+      </physvol>
+      <physvol name="MagnetPlateDown_PV0x5f2c88fbe040">
+        <volumeref ref="MagnetPlateDown_LV0x5f2c88fbdf90"/>
+        <position name="MagnetPlateDown_PV0x5f2c88fbe040_pos" unit="mm" x="0" y="0" z="-505"/>
+      </physvol>
+      <physvol name="FarEndPlate_PV0x5f2c88fb6160">
+        <volumeref ref="FarEndPlate_LV0x5f2c88fbe980"/>
+        <position name="FarEndPlate_PV0x5f2c88fb6160_pos" unit="mm" x="0" y="0" z="515"/>
+      </physvol>
+      <physvol name="FrameUp_PV0x5f2c88fbc900">
+        <volumeref ref="FrameUp_LV0x5f2c88f9f170"/>
+        <position name="FrameUp_PV0x5f2c88fbc900_pos" unit="mm" x="0" y="0" z="45"/>
+      </physvol>
+      <physvol name="FrameDown_PV0x5f2c88fbcb40">
+        <volumeref ref="FrameDown_LV0x5f2c88fbc7b0"/>
+        <position name="FrameDown_PV0x5f2c88fbcb40_pos" unit="mm" x="0" y="0" z="-45"/>
+      </physvol>
+      <physvol name="CuStrives_PV0x5f2c88fbf7e0">
+        <volumeref ref="CuStrives_LV0x5f2c88fbf580"/>
+      </physvol>
+      <physvol name="MyStrives_PV0x5f2c88fbf9c0">
+        <volumeref ref="MyStrives_LV0x5f2c88fbf690"/>
+      </physvol>
+      <physvol name="PulseResistors_PV0x5f2c88fc3850">
+        <volumeref ref="PulseResistors_LV0x5f2c88fc37a0"/>
+      </physvol>
+      <physvol name="USShaft_PV0x5f2c88fc41b0">
+        <volumeref ref="Shaft_LV0x5f2c88fc40a0"/>
+        <position name="USShaft_PV0x5f2c88fc41b0_pos" unit="mm" x="0" y="0" z="302"/>
+      </physvol>
+      <physvol copynumber="1" name="DSShaft_PV0x5f2c88fc43b0">
+        <volumeref ref="Shaft_LV0x5f2c88fc40a0"/>
+        <position name="DSShaft_PV0x5f2c88fc43b0_pos" unit="mm" x="0" y="0" z="-302"/>
+      </physvol>
+      <physvol copynumber="2" name="USShaft_PV0x5f2c88fc4d00">
+        <volumeref ref="Shaft_LV0x5f2c88fbfbb0"/>
+        <position name="USShaft_PV0x5f2c88fc4d00_pos" unit="mm" x="0" y="0" z="284.875"/>
+      </physvol>
+      <physvol copynumber="3" name="DSShaft_PV0x5f2c88fc4ac0">
+        <volumeref ref="Shaft_LV0x5f2c88fbfbb0"/>
+        <position name="DSShaft_PV0x5f2c88fc4ac0_pos" unit="mm" x="0" y="0" z="-284.875"/>
+      </physvol>
+      <physvol copynumber="4" name="USShaft_PV0x5f2c88fc2bc0">
+        <volumeref ref="Shaft_LV0x5f2c88fb9370"/>
+        <position name="USShaft_PV0x5f2c88fc2bc0_pos" unit="mm" x="0" y="0" z="266.25"/>
+      </physvol>
+      <physvol copynumber="5" name="DSShaft_PV0x5f2c88fc0360">
+        <volumeref ref="Shaft_LV0x5f2c88fb9370"/>
+        <position name="DSShaft_PV0x5f2c88fc0360_pos" unit="mm" x="0" y="0" z="-266.25"/>
+      </physvol>
+      <physvol copynumber="6" name="USShaft_PV0x5f2c88fc53e0">
+        <volumeref ref="Shaft_LV0x5f2c88fc6f40"/>
+        <position name="USShaft_PV0x5f2c88fc53e0_pos" unit="mm" x="0" y="0" z="256.5"/>
+      </physvol>
+      <physvol copynumber="7" name="DSShaft_PV0x5f2c88fc6ff0">
+        <volumeref ref="Shaft_LV0x5f2c88fc6f40"/>
+        <position name="DSShaft_PV0x5f2c88fc6ff0_pos" unit="mm" x="0" y="0" z="-256.5"/>
+      </physvol>
+      <physvol copynumber="8" name="USShaft_PV0x5f2c88fc6ee0">
+        <volumeref ref="Shaft_LV0x5f2c88fc21e0"/>
+        <position name="USShaft_PV0x5f2c88fc6ee0_pos" unit="mm" x="0" y="0" z="235.125"/>
+      </physvol>
+      <physvol copynumber="9" name="DSShaft_PV0x5f2c88ebdfd0">
+        <volumeref ref="Shaft_LV0x5f2c88fc21e0"/>
+        <position name="DSShaft_PV0x5f2c88ebdfd0_pos" unit="mm" x="0" y="0" z="-235.125"/>
+      </physvol>
+      <physvol copynumber="10" name="USShaft_PV0x5f2c88fbfee0">
+        <volumeref ref="Shaft_LV0x5f2c88fc54e0"/>
+        <position name="USShaft_PV0x5f2c88fbfee0_pos" unit="mm" x="0" y="0" z="215"/>
+      </physvol>
+      <physvol copynumber="11" name="DSShaft_PV0x5f2c88fb9420">
+        <volumeref ref="Shaft_LV0x5f2c88fc54e0"/>
+        <position name="DSShaft_PV0x5f2c88fb9420_pos" unit="mm" x="0" y="0" z="-215"/>
+      </physvol>
+      <physvol copynumber="12" name="USShaft_PV0x5f2c88fc5990">
+        <volumeref ref="Shaft_LV0x5f2c88eb9e70"/>
+        <position name="USShaft_PV0x5f2c88fc5990_pos" unit="mm" x="0" y="0" z="202.5"/>
+      </physvol>
+      <physvol copynumber="13" name="DSShaft_PV0x5f2c88ebae90">
+        <volumeref ref="Shaft_LV0x5f2c88eb9e70"/>
+        <position name="DSShaft_PV0x5f2c88ebae90_pos" unit="mm" x="0" y="0" z="-202.5"/>
+      </physvol>
+      <physvol name="ShaftE1_PV0x5f2c88ebc710">
+        <volumeref ref="ShaftE1_LV0x5f2c88ebac10"/>
+        <position name="ShaftE1_PV0x5f2c88ebc710_pos" unit="mm" x="0" y="0" z="305.5"/>
+      </physvol>
+      <physvol name="ShaftE2_PV0x5f2c88eba030">
+        <volumeref ref="ShaftE2_LV0x5f2c88eb9f20"/>
+        <position name="ShaftE2_PV0x5f2c88eba030_pos" unit="mm" x="0" y="0" z="314.5"/>
+      </physvol>
+      <physvol name="SE_C_PV0x5f2c88ebc440">
+        <volumeref ref="ShaftE_Cone_LV0x5f2c88fbed30"/>
+        <position name="SE_C_PV0x5f2c88ebc440_pos" unit="mm" x="0" y="0" z="332"/>
+      </physvol>
+      <physvol name="ShaftE3_PV0x5f2c88fc19c0">
+        <volumeref ref="ShaftE3_LV0x5f2c88fc5170"/>
+        <position name="ShaftE3_PV0x5f2c88fc19c0_pos" unit="mm" x="0" y="0" z="422.5"/>
+      </physvol>
+      <physvol name="SupportRod_LV0x5f2c88ebec80">
+        <volumeref ref="SupportRod_LV0x5f2c88ebeb70"/>
+        <position name="SupportRod_LV0x5f2c88ebec80_pos" unit="mm" x="92" y="0" z="0"/>
+      </physvol>
+      <physvol name="SupportRodHolderDS_LV0x5f2c88ebf490">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ebf380"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ebf490_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="6" name="SupportRodHolderUS_LV0x5f2c88ebf730">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ebf380"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ebf730_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="1" name="SupportRod_LV0x5f2c88ebfdb0">
+        <volumeref ref="SupportRod_LV0x5f2c88ec0250"/>
+        <position name="SupportRod_LV0x5f2c88ebfdb0_pos" unit="mm" x="46" y="79.6743371481683" z="0"/>
+      </physvol>
+      <physvol copynumber="1" name="SupportRodHolderDS_LV0x5f2c88ec0450">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec05c0"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ec0450_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="7" name="SupportRodHolderUS_LV0x5f2c88ec0670">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec05c0"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ec0670_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="2" name="SupportRod_LV0x5f2c88ebd570">
+        <volumeref ref="SupportRod_LV0x5f2c88ebb9f0"/>
+        <position name="SupportRod_LV0x5f2c88ebd570_pos" unit="mm" x="-46" y="79.6743371481684" z="0"/>
+      </physvol>
+      <physvol copynumber="2" name="SupportRodHolderDS_LV0x5f2c88ebd1d0">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ebbd90"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ebd1d0_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="8" name="SupportRodHolderUS_LV0x5f2c88ebbbf0">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ebbd90"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ebbbf0_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="3" name="SupportRod_LV0x5f2c88ebd140">
+        <volumeref ref="SupportRod_LV0x5f2c88ec25a0"/>
+        <position name="SupportRod_LV0x5f2c88ebd140_pos" unit="mm" x="-92" y="1.12667505521556e-14" z="0"/>
+      </physvol>
+      <physvol copynumber="3" name="SupportRodHolderDS_LV0x5f2c88ebb990">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec1e30"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ebb990_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="9" name="SupportRodHolderUS_LV0x5f2c88ebb400">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec1e30"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ebb400_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="4" name="SupportRod_LV0x5f2c88ec0ab0">
+        <volumeref ref="SupportRod_LV0x5f2c88ec3890"/>
+        <position name="SupportRod_LV0x5f2c88ec0ab0_pos" unit="mm" x="-46" y="-79.6743371481683" z="0"/>
+      </physvol>
+      <physvol copynumber="4" name="SupportRodHolderDS_LV0x5f2c88ec0e20">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec3560"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ec0e20_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="10" name="SupportRodHolderUS_LV0x5f2c88ec3610">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec3560"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ec3610_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="5" name="SupportRod_LV0x5f2c88ec0ef0">
+        <volumeref ref="SupportRod_LV0x5f2c88ec3320"/>
+        <position name="SupportRod_LV0x5f2c88ec0ef0_pos" unit="mm" x="45.9999999999999" y="-79.6743371481684" z="0"/>
+      </physvol>
+      <physvol copynumber="5" name="SupportRodHolderDS_LV0x5f2c88ebc250">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec5bc0"/>
+        <position name="SupportRodHolderDS_LV0x5f2c88ebc250_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol copynumber="11" name="SupportRodHolderUS_LV0x5f2c88ec5c70">
+        <volumeref ref="SupportRodHolder_LV0x5f2c88ec5bc0"/>
+        <position name="SupportRodHolderUS_LV0x5f2c88ec5c70_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol name="USSupportRodDisc_PV0x5f2c88ec3120">
+        <volumeref ref="SupportRodDisc_LV0x5f2c88fdf190"/>
+        <position name="USSupportRodDisc_PV0x5f2c88ec3120_pos" unit="mm" x="0" y="0" z="-191.5"/>
+      </physvol>
+      <physvol copynumber="1" name="DSSupportRodDisc_PV0x5f2c88ec2920">
+        <volumeref ref="SupportRodDisc_LV0x5f2c88fdf190"/>
+        <position name="DSSupportRodDisc_PV0x5f2c88ec2920_pos" unit="mm" x="0" y="0" z="191.5"/>
+      </physvol>
+      <physvol copynumber="2" name="USSupportRodDisc_PV0x5f2c88ec4840">
+        <volumeref ref="SupportRodDisc_LV0x5f2c88fe0650"/>
+        <position name="USSupportRodDisc_PV0x5f2c88ec4840_pos" unit="mm" x="0" y="0" z="-193"/>
+      </physvol>
+      <physvol copynumber="3" name="DSSupportRodDisc_PV0x5f2c88fe0850">
+        <volumeref ref="SupportRodDisc_LV0x5f2c88fe0650"/>
+        <position name="DSSupportRodDisc_PV0x5f2c88fe0850_pos" unit="mm" x="0" y="0" z="193"/>
+      </physvol>
+      <physvol name="WFCHolder_PV0x5f2c88fe15b0">
+        <volumeref ref="WFCHolder_LV0x5f2c88fe1500"/>
+      </physvol>
+      <physvol name="USWFCHolder_PV0x5f2c88fe17b0">
+        <volumeref ref="WFCHolder_LV0x5f2c88ec3940"/>
+        <position name="USWFCHolder_PV0x5f2c88fe17b0_pos" unit="mm" x="0" y="0" z="7.5"/>
+      </physvol>
+      <physvol copynumber="1" name="DSWFCHolder_PV0x5f2c88ec3ba0">
+        <volumeref ref="WFCHolder_LV0x5f2c88ec3940"/>
+        <position name="DSWFCHolder_PV0x5f2c88ec3ba0_pos" unit="mm" x="0" y="0" z="-7.5"/>
+      </physvol>
+      <physvol name="USWFCHolderSegment_PV0x5f2c88fe1880">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fdfd80"/>
+        <position name="USWFCHolderSegment_PV0x5f2c88fe1880_pos" unit="mm" x="0" y="0" z="-157"/>
+      </physvol>
+      <physvol copynumber="1" name="DSWFCHolderSegment_PV0x5f2c88fdf3a0">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fdfd80"/>
+        <position name="DSWFCHolderSegment_PV0x5f2c88fdf3a0_pos" unit="mm" x="0" y="0" z="157"/>
+      </physvol>
+      <physvol copynumber="2" name="USWFCHolderSegment_PV0x5f2c88fe1ef0">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe3ba0"/>
+        <position name="USWFCHolderSegment_PV0x5f2c88fe1ef0_pos" unit="mm" x="0" y="0" z="-12.25"/>
+      </physvol>
+      <physvol copynumber="3" name="DSWFCHolderSegment_PV0x5f2c88fe3db0">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe3ba0"/>
+        <position name="DSWFCHolderSegment_PV0x5f2c88fe3db0_pos" unit="mm" x="0" y="0" z="12.25"/>
+      </physvol>
+      <physvol copynumber="4" name="USWFCHolderSegment_PV0x5f2c88fe46c0">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe4b60"/>
+        <position name="USWFCHolderSegment_PV0x5f2c88fe46c0_pos" unit="mm" x="0" y="0" z="-80.75"/>
+      </physvol>
+      <physvol copynumber="5" name="DSWFCHolderSegment_PV0x5f2c88fe2120">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe4b60"/>
+        <position name="DSWFCHolderSegment_PV0x5f2c88fe2120_pos" unit="mm" x="0" y="0" z="80.75"/>
+      </physvol>
+      <physvol copynumber="4" name="USWFCHolderSegment_PV0x5f2c88fe3810">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe3600"/>
+        <position name="USWFCHolderSegment_PV0x5f2c88fe3810_pos" unit="mm" x="0" y="0" z="-80.75"/>
+      </physvol>
+      <physvol copynumber="5" name="DSWFCHolderSegment_PV0x5f2c88fe2e00">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe3600"/>
+        <position name="DSWFCHolderSegment_PV0x5f2c88fe2e00_pos" unit="mm" x="0" y="0" z="80.75"/>
+      </physvol>
+      <physvol copynumber="4" name="USWFCHolderSegment_PV0x5f2c88fe3370">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe6220"/>
+        <position name="USWFCHolderSegment_PV0x5f2c88fe3370_pos" unit="mm" x="0" y="0" z="-80.75"/>
+      </physvol>
+      <physvol copynumber="5" name="DSWFCHolderSegment_PV0x5f2c88fe5ef0">
+        <volumeref ref="WFCHolderSegment_LV0x5f2c88fe6220"/>
+        <position name="DSWFCHolderSegment_PV0x5f2c88fe5ef0_pos" unit="mm" x="0" y="0" z="80.75"/>
+      </physvol>
+      <physvol name="SupportETHPlate_PV0x5f2c88fe7550">
+        <volumeref ref="SupportETHPlate_LV0x5f2c88fe7440"/>
+        <position name="SupportETHPlate_PV0x5f2c88fe7550_pos" unit="mm" x="0" y="0" z="-443.809"/>
+      </physvol>
+      <physvol name="SupportETHTub_PV0x5f2c88fe33d0">
+        <volumeref ref="SupportETHTub_LV0x5f2c88fe21f0"/>
+        <position name="SupportETHTub_PV0x5f2c88fe33d0_pos" unit="mm" x="0" y="0" z="-378.009"/>
+      </physvol>
+      <physvol name="SupportETHRing_PV0x5f2c88fe24d0">
+        <volumeref ref="SupportETHRing_LV0x5f2c88fe8c50"/>
+        <position name="SupportETHRing_PV0x5f2c88fe24d0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol name="SupportETHspike_PV0x5f2c88fe30a0">
+        <volumeref ref="SupportETHspike_LV0x5f2c88fe9610"/>
+        <position name="SupportETHspike_PV0x5f2c88fe30a0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="1" name="SupportETHspike_PV0x5f2c88fe25e0">
+        <volumeref ref="SupportETHspike_LV0x5f2c88fe9d20"/>
+        <position name="SupportETHspike_PV0x5f2c88fe25e0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="2" name="SupportETHspike_PV0x5f2c88fe8f60">
+        <volumeref ref="SupportETHspike_LV0x5f2c88fe7fa0"/>
+        <position name="SupportETHspike_PV0x5f2c88fe8f60_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="3" name="SupportETHspike_PV0x5f2c88fe31c0">
+        <volumeref ref="SupportETHspike_LV0x5f2c88feb750"/>
+        <position name="SupportETHspike_PV0x5f2c88fe31c0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="4" name="SupportETHspike_PV0x5f2c88fe57c0">
+        <volumeref ref="SupportETHspike_LV0x5f2c88fe7ab0"/>
+        <position name="SupportETHspike_PV0x5f2c88fe57c0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="5" name="SupportETHspike_PV0x5f2c88fe77e0">
+        <volumeref ref="SupportETHspike_LV0x5f2c88feaf60"/>
+        <position name="SupportETHspike_PV0x5f2c88fe77e0_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="6" name="SupportETHspike_PV0x5f2c88fe7e20">
+        <volumeref ref="SupportETHspike_LV0x5f2c88fecca0"/>
+        <position name="SupportETHspike_PV0x5f2c88fe7e20_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="7" name="SupportETHspike_PV0x5f2c88fe8760">
+        <volumeref ref="SupportETHspike_LV0x5f2c88f89640"/>
+        <position name="SupportETHspike_PV0x5f2c88fe8760_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="8" name="SupportETHspike_PV0x5f2c88fecf30">
+        <volumeref ref="SupportETHspike_LV0x5f2c88f89e10"/>
+        <position name="SupportETHspike_PV0x5f2c88fecf30_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol copynumber="9" name="SupportETHspike_PV0x5f2c88f8a660">
+        <volumeref ref="SupportETHspike_LV0x5f2c88f8a5b0"/>
+        <position name="SupportETHspike_PV0x5f2c88f8a660_pos" unit="mm" x="0" y="0" z="-311.009"/>
+      </physvol>
+      <physvol name="SupportETHInnerHolderTub_PV0x5f2c88f8b110">
+        <volumeref ref="SupportETHInnerHolderTub_LV0x5f2c88f8b000"/>
+        <position name="SupportETHInnerHolderTub_PV0x5f2c88f8b110_pos" unit="mm" x="0" y="0" z="-378.009"/>
+      </physvol>
+      <physvol name="SupportETHIHpart_0_PV0x5f2c88fec8b0">
+        <volumeref ref="SupportETHIHpart_0_LV0x5f2c88f8b280"/>
+        <position name="SupportETHIHpart_0_PV0x5f2c88fec8b0_pos" unit="mm" x="-10.7" y="0" z="-429.509"/>
+      </physvol>
+      <physvol name="SupportETHIHpart_1_PV0x5f2c88f8d030">
+        <volumeref ref="SupportETHIHpart_1_LV0x5f2c88f8cf80"/>
+        <position name="SupportETHIHpart_1_PV0x5f2c88f8d030_pos" unit="mm" x="-15" y="72.5" z="-378.009"/>
+      </physvol>
+      <physvol name="SupportETHIHpart_2_PV0x5f2c88f8cbf0">
+        <volumeref ref="SupportETHIHpart_2_LV0x5f2c88f8cca0"/>
+        <position name="SupportETHIHpart_2_PV0x5f2c88f8cbf0_pos" unit="mm" x="-15" y="-72.5" z="-378.009"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="World0x5f2c88f7cf20"/>
+  </setup>
+
+</gdml>
