@@ -110,6 +110,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:affc43d053abfc5aac208d284e2ac379a" id="r_affc43d053abfc5aac208d284e2ac379a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#affc43d053abfc5aac208d284e2ac379a">GetStereoAngle</a> (double radius, double deltaPhi=<a class="el" href="CHeTGlobalSettings_8cc.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a>, double length=2.0 *<a class="el" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a>)</td></tr>
+<tr class="memdesc:affc43d053abfc5aac208d284e2ac379a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the analytical stereo angle for a given radius.  <br /></td></tr>
+<tr class="separator:affc43d053abfc5aac208d284e2ac379a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cbe05b237eb35782c8614e2aaaccffd" id="r_a3cbe05b237eb35782c8614e2aaaccffd"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a3cbe05b237eb35782c8614e2aaaccffd">GetOffsetExp</a> ()</td></tr>
 <tr class="memdesc:a3cbe05b237eb35782c8614e2aaaccffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current experimental angular offset (OFFSET_EXP).  <br /></td></tr>
 <tr class="separator:a3cbe05b237eb35782c8614e2aaaccffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,7 +194,13 @@ Variables</h2></td></tr>
 <tr class="memitem:ada5d85110cb946893a8bbeed11ab01e5" id="r_ada5d85110cb946893a8bbeed11ab01e5"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a> = 150.0</td></tr>
 <tr class="memdesc:ada5d85110cb946893a8bbeed11ab01e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Half-length of the detector [mm].  <br /></td></tr>
 <tr class="separator:ada5d85110cb946893a8bbeed11ab01e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a596fae75794d6fb7fe46b28b85e32f5f" id="r_a596fae75794d6fb7fe46b28b85e32f5f"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">BUNDLE_WIDTH</a> = 2.0</td></tr>
+<tr class="memitem:a5643fe2ee17800bd378260f289733e16" id="r_a5643fe2ee17800bd378260f289733e16"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a5643fe2ee17800bd378260f289733e16">FIBER_WIDTH</a> = 0.5</td></tr>
+<tr class="memdesc:a5643fe2ee17800bd378260f289733e16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physical width of a single fiber [mm].  <br /></td></tr>
+<tr class="separator:a5643fe2ee17800bd378260f289733e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1665ff8ee2662afea5ed7ec824de2b99" id="r_a1665ff8ee2662afea5ed7ec824de2b99"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a1665ff8ee2662afea5ed7ec824de2b99">FIBERS_PER_SIPM</a> = 4</td></tr>
+<tr class="memdesc:a1665ff8ee2662afea5ed7ec824de2b99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of fibers per SiPM (bundle)  <br /></td></tr>
+<tr class="separator:a1665ff8ee2662afea5ed7ec824de2b99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a596fae75794d6fb7fe46b28b85e32f5f" id="r_a596fae75794d6fb7fe46b28b85e32f5f"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">BUNDLE_WIDTH</a> = <a class="el" href="namespaceCHeT_1_1Config.html#a5643fe2ee17800bd378260f289733e16">FIBER_WIDTH</a> * <a class="el" href="namespaceCHeT_1_1Config.html#a1665ff8ee2662afea5ed7ec824de2b99">FIBERS_PER_SIPM</a></td></tr>
 <tr class="memdesc:a596fae75794d6fb7fe46b28b85e32f5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physical width of a bundle [mm].  <br /></td></tr>
 <tr class="separator:a596fae75794d6fb7fe46b28b85e32f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -407,7 +416,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Vector of intersection points. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00404">404</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00407">407</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -553,7 +562,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structCHeT_1_1Config_1_1FiberProp.html" title="Properties of a specific reconstructed fiber.">FiberProp</a> structure containing geometry info. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00342">342</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00345">345</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -593,7 +602,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Global Bundle ID, or -1 if mapping not found. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00373">373</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00376">376</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -631,7 +640,7 @@ Variables</h2></td></tr>
 
 <p>Helper: Converts Geometry (Cyl, Layer, Index) to Global ID. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00465">465</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00468">468</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -703,6 +712,61 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="affc43d053abfc5aac208d284e2ac379a" name="affc43d053abfc5aac208d284e2ac379a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affc43d053abfc5aac208d284e2ac379a">&#9670;&#160;</a></span>GetStereoAngle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double CHeT::Config::GetStereoAngle </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>deltaPhi</em> = <code><a class="el" href="CHeTGlobalSettings_8cc.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>length</em> = <code>2.0&#160;*&#160;<a class="el" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the analytical stereo angle for a given radius. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radius</td><td>The radius of the cylinder layer [mm] </td></tr>
+    <tr><td class="paramname">deltaPhi</td><td>The total twist angle of the fiber from end to end [rad] (default: PI) </td></tr>
+    <tr><td class="paramname">length</td><td>The total longitudinal length of the cylinder [mm] (default: 2 * L_HALF) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Stereo angle in radians </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00094">94</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
+
+</div>
+</div>
 <a id="af697c2aaff013fb901b7775c38cad993" name="af697c2aaff013fb901b7775c38cad993"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af697c2aaff013fb901b7775c38cad993">&#9670;&#160;</a></span>GetTranslation()</h2>
 
@@ -766,7 +830,7 @@ Variables</h2></td></tr>
 
 <p>Interactive CLI menu to explore the mapping. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00554">554</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00557">557</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -788,7 +852,7 @@ Variables</h2></td></tr>
 
 <p>Helper: Prints mapping details for a given Global ID to stdout. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00494">494</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00497">497</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -1024,7 +1088,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Wrapped angle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00334">334</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8cc_source.html#l00337">337</a> of file <a class="el" href="CHeTGlobalSettings_8cc_source.html">CHeTGlobalSettings.cc</a>.</p>
 
 </div>
 </div>
@@ -1039,7 +1103,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr double CHeT::Config::BUNDLE_WIDTH = 2.0</td>
+          <td class="memname">constexpr double CHeT::Config::BUNDLE_WIDTH = <a class="el" href="namespaceCHeT_1_1Config.html#a5643fe2ee17800bd378260f289733e16">FIBER_WIDTH</a> * <a class="el" href="namespaceCHeT_1_1Config.html#a1665ff8ee2662afea5ed7ec824de2b99">FIBERS_PER_SIPM</a></td>
         </tr>
       </table>
   </td>
@@ -1051,7 +1115,59 @@ Variables</h2></td></tr>
 
 <p>Physical width of a bundle [mm]. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00082">82</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00085">85</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
+
+</div>
+</div>
+<a id="a5643fe2ee17800bd378260f289733e16" name="a5643fe2ee17800bd378260f289733e16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5643fe2ee17800bd378260f289733e16">&#9670;&#160;</a></span>FIBER_WIDTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr double CHeT::Config::FIBER_WIDTH = 0.5</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Physical width of a single fiber [mm]. </p>
+
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00083">83</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
+
+</div>
+</div>
+<a id="a1665ff8ee2662afea5ed7ec824de2b99" name="a1665ff8ee2662afea5ed7ec824de2b99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1665ff8ee2662afea5ed7ec824de2b99">&#9670;&#160;</a></span>FIBERS_PER_SIPM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr int CHeT::Config::FIBERS_PER_SIPM = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Number of fibers per SiPM (bundle) </p>
+
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00084">84</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
 
 </div>
 </div>
@@ -1077,7 +1193,7 @@ Variables</h2></td></tr>
 
 <p>Half-length of the detector [mm]. </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00081">81</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTGlobalSettings_8hh_source.html#l00082">82</a> of file <a class="el" href="CHeTGlobalSettings_8hh_source.html">CHeTGlobalSettings.hh</a>.</p>
 
 </div>
 </div>

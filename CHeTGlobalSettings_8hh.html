@@ -164,6 +164,9 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:affc43d053abfc5aac208d284e2ac379a" id="r_affc43d053abfc5aac208d284e2ac379a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#affc43d053abfc5aac208d284e2ac379a">CHeT::Config::GetStereoAngle</a> (double radius, double deltaPhi=<a class="el" href="CHeTGlobalSettings_8cc.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a>, double length=2.0 *<a class="el" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">L_HALF</a>)</td></tr>
+<tr class="memdesc:affc43d053abfc5aac208d284e2ac379a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the analytical stereo angle for a given radius.  <br /></td></tr>
+<tr class="separator:affc43d053abfc5aac208d284e2ac379a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cbe05b237eb35782c8614e2aaaccffd" id="r_a3cbe05b237eb35782c8614e2aaaccffd"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a3cbe05b237eb35782c8614e2aaaccffd">CHeT::Config::GetOffsetExp</a> ()</td></tr>
 <tr class="memdesc:a3cbe05b237eb35782c8614e2aaaccffd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current experimental angular offset (OFFSET_EXP).  <br /></td></tr>
 <tr class="separator:a3cbe05b237eb35782c8614e2aaaccffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -245,7 +248,13 @@ Variables</h2></td></tr>
 <tr class="memitem:ada5d85110cb946893a8bbeed11ab01e5" id="r_ada5d85110cb946893a8bbeed11ab01e5"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#ada5d85110cb946893a8bbeed11ab01e5">CHeT::Config::L_HALF</a> = 150.0</td></tr>
 <tr class="memdesc:ada5d85110cb946893a8bbeed11ab01e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Half-length of the detector [mm].  <br /></td></tr>
 <tr class="separator:ada5d85110cb946893a8bbeed11ab01e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a596fae75794d6fb7fe46b28b85e32f5f" id="r_a596fae75794d6fb7fe46b28b85e32f5f"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">CHeT::Config::BUNDLE_WIDTH</a> = 2.0</td></tr>
+<tr class="memitem:a5643fe2ee17800bd378260f289733e16" id="r_a5643fe2ee17800bd378260f289733e16"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a5643fe2ee17800bd378260f289733e16">CHeT::Config::FIBER_WIDTH</a> = 0.5</td></tr>
+<tr class="memdesc:a5643fe2ee17800bd378260f289733e16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physical width of a single fiber [mm].  <br /></td></tr>
+<tr class="separator:a5643fe2ee17800bd378260f289733e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1665ff8ee2662afea5ed7ec824de2b99" id="r_a1665ff8ee2662afea5ed7ec824de2b99"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a1665ff8ee2662afea5ed7ec824de2b99">CHeT::Config::FIBERS_PER_SIPM</a> = 4</td></tr>
+<tr class="memdesc:a1665ff8ee2662afea5ed7ec824de2b99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of fibers per SiPM (bundle)  <br /></td></tr>
+<tr class="separator:a1665ff8ee2662afea5ed7ec824de2b99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a596fae75794d6fb7fe46b28b85e32f5f" id="r_a596fae75794d6fb7fe46b28b85e32f5f"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceCHeT_1_1Config.html#a596fae75794d6fb7fe46b28b85e32f5f">CHeT::Config::BUNDLE_WIDTH</a> = <a class="el" href="namespaceCHeT_1_1Config.html#a5643fe2ee17800bd378260f289733e16">FIBER_WIDTH</a> * <a class="el" href="namespaceCHeT_1_1Config.html#a1665ff8ee2662afea5ed7ec824de2b99">FIBERS_PER_SIPM</a></td></tr>
 <tr class="memdesc:a596fae75794d6fb7fe46b28b85e32f5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physical width of a bundle [mm].  <br /></td></tr>
 <tr class="separator:a596fae75794d6fb7fe46b28b85e32f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

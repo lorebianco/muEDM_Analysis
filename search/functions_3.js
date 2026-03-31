@@ -12,5 +12,6 @@ var searchData=
   ['getoffsetexp_9',['GetOffsetExp',['../namespaceCHeT_1_1Config.html#a3cbe05b237eb35782c8614e2aaaccffd',1,'CHeT::Config']]],
   ['getraw_10',['GetRaw',['../classCHeT_1_1Data_1_1Reader.html#abe7b4c5af57fd61917a3a3e82dea7233',1,'CHeT::Data::Reader']]],
   ['getrotation_11',['GetRotation',['../namespaceCHeT_1_1Config.html#adf0aaa5d2f9fd6c11843ec979b3a1b19',1,'CHeT::Config']]],
-  ['gettranslation_12',['GetTranslation',['../namespaceCHeT_1_1Config.html#af697c2aaff013fb901b7775c38cad993',1,'CHeT::Config']]]
+  ['getstereoangle_12',['GetStereoAngle',['../namespaceCHeT_1_1Config.html#affc43d053abfc5aac208d284e2ac379a',1,'CHeT::Config']]],
+  ['gettranslation_13',['GetTranslation',['../namespaceCHeT_1_1Config.html#af697c2aaff013fb901b7775c38cad993',1,'CHeT::Config']]]
 ];
