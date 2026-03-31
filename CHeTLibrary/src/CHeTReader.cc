@@ -75,6 +75,53 @@ ROOT::RDF::RNode Reader::GetEstimators()
     auto enabledLayers = fEnabledLayers;
     auto enabledGeometries = fEnabledGeometries;
 
+    // 0. Check if input is already in High-Level SEV format (ToyMC or processed data)
+    auto colNames = fHeadNode.GetColumnNames();
+    if(std::find(colNames.begin(), colNames.end(), "All_Bundle") != colNames.end())
+    {
+        auto df = fHeadNode;
+
+        // If the Toy only saved All_Bundle, we can reconstruct the rest on the fly
+        if(std::find(colNames.begin(), colNames.end(), "All_Cyl") == colNames.end())
+        {
+            df = df.Define("All_Cyl",
+                [](const RVecI &bunds)
+                {
+                    RVecI cyls;
+                    for(auto b : bunds)
+                        cyls.push_back((b >= 0) ? CHeT::Config::GetFiberProp(b).cylinderId : -1);
+                    return cyls;
+                },
+                { "All_Bundle" });
+        }
+        if(std::find(colNames.begin(), colNames.end(), "All_Lay") == colNames.end())
+        {
+            df = df.Define("All_Lay",
+                [](const RVecI &bunds)
+                {
+                    RVecI lays;
+                    for(auto b : bunds)
+                        lays.push_back((b >= 0) ? CHeT::Config::GetFiberProp(b).layerId : -1);
+                    return lays;
+                },
+                { "All_Bundle" });
+        }
+        if(std::find(colNames.begin(), colNames.end(), "nHits_Total") == colNames.end())
+        {
+            df = df.Define("nHits_Total", "(double)All_Cyl.size()")
+                     .Define("nHits_Cyl0", "Sum(All_Cyl == 0)")
+                     .Define("nHits_Cyl1", "Sum(All_Cyl == 1)")
+                     .Define("nHits_Cyl0_Inner", "Sum(All_Cyl == 0 && All_Lay == 0)")
+                     .Define("nHits_Cyl0_Outer", "Sum(All_Cyl == 0 && All_Lay == 1)")
+                     .Define("nHits_Cyl1_Inner", "Sum(All_Cyl == 1 && All_Lay == 0)")
+                     .Define("nHits_Cyl1_Outer", "Sum(All_Cyl == 1 && All_Lay == 1)");
+        }
+
+        // Note: For pure Toy data, FirstToA and SumToT might not be meaningful/present.
+
+        return df;
+    }
+
     // 1. ToA Corrections (Alignment w.r.t. FD00)
     // FD00 is the reference: only LSB -> ns conversion
     auto df_corr = fHeadNode.Define(

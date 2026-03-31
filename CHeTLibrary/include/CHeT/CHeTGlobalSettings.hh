@@ -34,6 +34,7 @@ struct LayerConfig
     double radius; ///< Radius in [mm]
     double phiOffset; ///< Angular offset in [rad]
     int direction; ///< Winding direction: +1 (CCW) or -1 (CW)
+    double nominalStereoAngle; ///< Nominal stereo angle in [rad]
     int color; ///< ROOT color index for display
 };
 
@@ -79,7 +80,21 @@ struct BundlesIntersection
 
 // Kept as constexpr in header for compile-time optimization
 constexpr double L_HALF = 150.0; ///< Half-length of the detector [mm]
-constexpr double BUNDLE_WIDTH = 2.0; ///< Physical width of a bundle [mm]
+constexpr double FIBER_WIDTH = 0.5; ///< Physical width of a single fiber [mm]
+constexpr int FIBERS_PER_SIPM = 4; ///< Number of fibers per SiPM (bundle)
+constexpr double BUNDLE_WIDTH = FIBER_WIDTH * FIBERS_PER_SIPM; ///< Physical width of a bundle [mm]
+
+/**
+ * @brief Computes the analytical stereo angle for a given radius.
+ * @param radius The radius of the cylinder layer [mm]
+ * @param deltaPhi The total twist angle of the fiber from end to end [rad] (default: PI)
+ * @param length The total longitudinal length of the cylinder [mm] (default: 2 * L_HALF)
+ * @return Stereo angle in radians
+ */
+inline double GetStereoAngle(double radius, double deltaPhi = M_PI, double length = 2.0 * L_HALF)
+{
+    return std::atan((radius * deltaPhi) / length);
+}
 
 // --- Experimental Offsets ---
 

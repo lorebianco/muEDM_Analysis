@@ -96,6 +96,7 @@ struct ToyEvent
     double mc_x0, mc_y0, mc_z0;
     double mc_ux, mc_uy, mc_uz;
     double mc_E, mc_R, mc_cx, mc_cy; // Per Michel
+    double mc_tmin, mc_tmax;
 
     // Dati (Digitization)
     vector<int> hit_ids;
@@ -689,7 +690,7 @@ vector<CircularHoughResult> DoCircularHoughTransform(const vector<Int_t> &hit_id
 }
 
 vector<ZHoughResult> DoZHoughTransform(const vector<Int_t> &hit_ids, double xc, double yc,
-    double R_reco, int nCandidates = 1, bool drawGraphs = true)
+    double R_reco, int nCandidates = 1, bool drawGraphs = true, double tol_Z_fit = 15.0)
 {
     struct Point3DLocal
     {
@@ -776,7 +777,7 @@ vector<ZHoughResult> DoZHoughTransform(const vector<Int_t> &hit_ids, double xc, 
             // Associamo la hit alla Z attesa migliore, permettendo all'elica di evolversi (t_test
             // espanso)
             vector<Point3D> track_hits;
-            double tol_Z_fit = 15.0; // mm
+            // double tol_Z_fit = 15.0; // mm
             double min_t = 1e9, max_t = -1e9;
 
             for(auto &p : valid_points)
@@ -2569,6 +2570,177 @@ void RunCosmicToyMC(int nEvents = 10000, double efficiency = 1.0, Double_t minPV
     return;
 }
 
+// ==============================================================================
+// X. HOUGH EFFICIENCY & PURITY EVALUATION
+// ==============================================================================
+
+// Aggiunta per Efficienza e Purezza: calcolo DOCA tra un'intersezione e la traccia simulata
+double GetDistanceToHelix(const CHeT::Config::BundlesIntersection &inter, const MichelTrack &tr)
+{
+    // 1. Distanza dal cilindro teorico (2D)
+    double r_hit = std::sqrt(std::pow(inter.x - tr.cx, 2) + std::pow(inter.y - tr.cy, 2));
+    double dist_xy = std::abs(r_hit - tr.radius);
+
+    // 2. Distanza longitudinale (Z) calcolata srotolando la fase
+    double phi = std::atan2(inter.y - tr.cy, inter.x - tr.cx);
+    double dist_z = 1e9;
+
+    if(std::abs(tr.dz_dt) > 1e-6)
+    {
+        double t_z = (inter.z - tr.z0) / tr.dz_dt;
+        double k_float = (t_z - phi) / (2.0 * M_PI);
+        int k = std::round(k_float);
+        double t_best = phi + 2.0 * M_PI * k;
+        dist_z = std::abs(inter.z - (tr.z0 + tr.dz_dt * t_best));
+    }
+    else
+    {
+        dist_z = std::abs(inter.z - tr.z0);
+    }
+
+    return std::sqrt(dist_xy * dist_xy + dist_z * dist_z);
+}
+
+struct EfficiencyResult
+{
+    int true_intersections_total = 0;
+    int true_positives = 0;
+    int false_positives = 0;
+
+    double GetEfficiency() const
+    {
+        return true_intersections_total > 0 ? (double)true_positives / true_intersections_total
+                                            : 0.0;
+    }
+    double GetPurity() const
+    {
+        return (true_positives + false_positives) > 0
+            ? (double)true_positives / (true_positives + false_positives)
+            : 0.0;
+    }
+};
+
+EfficiencyResult EvaluateHoughTrack(const vector<Point3D> &cand_hits_local,
+    const vector<int> &hit_ids, const MichelTrack &tr, double tol_mm = 2.0)
+{
+    EfficiencyResult res;
+    auto all_inters = Config::FindIntersections(hit_ids);
+
+    vector<bool> is_true(all_inters.size(), false);
+    for(size_t i = 0; i < all_inters.size(); ++i)
+    {
+        double dist = GetDistanceToHelix(all_inters[i], tr);
+        if(dist <= tol_mm)
+        {
+            is_true[i] = true;
+            res.true_intersections_total++;
+        }
+    }
+
+    for(const auto &ch : cand_hits_local)
+    {
+        bool found = false;
+        bool matched_as_true = false;
+        for(size_t i = 0; i < all_inters.size(); ++i)
+        {
+            double d_match = std::sqrt(std::pow(ch.x - all_inters[i].x_loc, 2)
+                + std::pow(ch.y - all_inters[i].y_loc, 2)
+                + std::pow(ch.z - all_inters[i].z_loc, 2));
+            if(d_match < 1e-4)
+            {
+                found = true;
+                if(is_true[i])
+                    matched_as_true = true;
+                break;
+            }
+        }
+
+        if(found)
+        {
+            if(matched_as_true)
+                res.true_positives++;
+            else
+                res.false_positives++;
+        }
+    }
+
+    return res;
+}
+
+void RunROCForMichelHough(int nEvents = 50, double efficiency = 1.0)
+{
+    TDirectory::AddDirectory(false);
+    gRandom->SetSeed(0);
+
+    printf("Starting ROC Evaluation for Michel Hough Transform with %d events...\n", nEvents);
+
+    // Valuteremo la ROC variando tol_Z_fit
+    std::vector<double> thresholds = { 5.0, 7.5, 10.0, 12.5, 15.0, 17.5, 20.0, 22.5, 25 };
+    // std::vector<double> thresholds = { 15.0, 50.0, 100, 200 };
+    std::vector<double> eff_avg(thresholds.size(), 0.0);
+    std::vector<double> pur_avg(thresholds.size(), 0.0);
+    std::vector<int> counts(thresholds.size(), 0);
+
+    for(int i = 0; i < nEvents; ++i)
+    {
+        if(i % 5 == 0)
+            cout << "\rProcessing event " << i << "/" << nEvents << flush;
+
+        MichelTrack tr = GenerateMichelTrack(false);
+        vector<int> hits = FindMichelHits(tr, efficiency);
+        if(hits.size() < 3)
+            continue;
+
+        auto cands2D = DoCircularHoughTransform(hits, 1., 1000, 10000, false);
+        if(cands2D.empty())
+            continue;
+        auto cand2D = cands2D[0];
+
+        for(size_t t_idx = 0; t_idx < thresholds.size(); ++t_idx)
+        {
+            double tolZ = thresholds[t_idx];
+            auto candsZ = DoZHoughTransform(hits, cand2D.xc, cand2D.yc, cand2D.R, 1, false, tolZ);
+            if(candsZ.empty())
+                continue;
+            auto candZ = candsZ[0];
+
+            EfficiencyResult res
+                = EvaluateHoughTrack(candZ.track_hits, hits, tr, 2.0); // 2.0 mm true distance
+
+            if(res.true_intersections_total > 0)
+            {
+                eff_avg[t_idx] += res.GetEfficiency();
+                pur_avg[t_idx] += res.GetPurity();
+                counts[t_idx]++;
+            }
+        }
+    }
+    cout << endl;
+
+    TGraph *gROC = new TGraph();
+    for(size_t t_idx = 0; t_idx < thresholds.size(); ++t_idx)
+    {
+        if(counts[t_idx] > 0)
+        {
+            eff_avg[t_idx] /= counts[t_idx];
+            pur_avg[t_idx] /= counts[t_idx];
+            gROC->SetPoint(gROC->GetN(), eff_avg[t_idx], pur_avg[t_idx]);
+            printf("Threshold tolZ = %5.1f mm | Eff = %5.3f | Pur = %5.3f\n", thresholds[t_idx],
+                eff_avg[t_idx], pur_avg[t_idx]);
+        }
+    }
+
+    TCanvas *cROC = new TCanvas("cROC", "Efficiency vs Purity (ROC)", 800, 600);
+    cROC->SetGrid();
+    gROC->SetTitle("Hough Selection ROC;Efficiency;Purity");
+    gROC->SetMarkerStyle(20);
+    gROC->SetMarkerSize(1.5);
+    gROC->SetMarkerColor(kAzure + 1);
+    gROC->SetLineColor(kAzure + 1);
+    gROC->SetLineWidth(2);
+    gROC->Draw("APL");
+}
+
 void RunMichelToyMC(int nEvents = 1000, double efficiency = 1.0, bool doDoubleFit = true)
 {
     TDirectory::AddDirectory(false);
@@ -2787,7 +2959,9 @@ void GenerateMichelDataset(string filename, int nEvents, double efficiency = 1.0
     tree->Branch("mc_cy", &ev.mc_cy);
     tree->Branch("mc_z0", &ev.mc_z0);
     tree->Branch("mc_uz", &ev.mc_uz);
-    tree->Branch("hits", &ev.hit_ids);
+    tree->Branch("mc_tmin", &ev.mc_tmin);
+    tree->Branch("mc_tmax", &ev.mc_tmax);
+
     for(int i = 0; i < nEvents; ++i)
     {
         MichelTrack tr = GenerateMichelTrack(false);
@@ -2797,6 +2971,8 @@ void GenerateMichelDataset(string filename, int nEvents, double efficiency = 1.0
         ev.mc_cy = tr.cy;
         ev.mc_z0 = tr.z0;
         ev.mc_uz = tr.dz_dt;
+        ev.mc_tmin = tr.t_min;
+        ev.mc_tmax = tr.t_max;
         ev.hit_ids = FindMichelHits(tr, efficiency);
         if(!ev.hit_ids.empty())
             tree->Fill();
@@ -2980,8 +3156,8 @@ void FindAlignment(double dx0, double dz0, double dsx, double dsz)
 // 11. UNIFIED ANALYZER
 // ==============================================================================
 
-void AnalyzeToyDataset(string filename, string treeName = "CosmicToy",
-    AnalysisMode mode = AnalysisMode::ALL, int entryID = -1)
+void AnalyzeToyDataset(
+    string filename, bool isCosmic = true, AnalysisMode mode = AnalysisMode::ALL, int entryID = -1)
 {
     bool doDoubleFit = true;
 
@@ -2991,35 +3167,37 @@ void AnalyzeToyDataset(string filename, string treeName = "CosmicToy",
         cerr << "[Error] Could not open file: " << filename << endl;
         return;
     }
-    TTree *tree = (TTree *)f->Get(treeName.c_str());
-    if(!tree)
+    TTree *treeSEV = (TTree *)f->Get("Event");
+    TTree *treeSIM = (TTree *)f->Get("sim");
+    if(!treeSEV || !treeSIM)
     {
-        cerr << "[Error] Tree " << treeName << " not found." << endl;
+        cerr << "[Error] Required trees (Event, sim) not found." << endl;
         return;
     }
 
     ToyEvent ev;
     std::vector<int> *hits_ptr = &ev.hit_ids;
-    tree->SetBranchAddress("hits", &hits_ptr);
+    treeSEV->SetBranchAddress("All_Bundle", &hits_ptr);
 
-    bool isCosmic = (treeName == "CosmicToy");
     if(isCosmic)
     {
-        tree->SetBranchAddress("mc_x0", &ev.mc_x0);
-        tree->SetBranchAddress("mc_y0", &ev.mc_y0);
-        tree->SetBranchAddress("mc_z0", &ev.mc_z0);
-        tree->SetBranchAddress("mc_ux", &ev.mc_ux);
-        tree->SetBranchAddress("mc_uy", &ev.mc_uy);
-        tree->SetBranchAddress("mc_uz", &ev.mc_uz);
+        treeSIM->SetBranchAddress("mc_x0", &ev.mc_x0);
+        treeSIM->SetBranchAddress("mc_y0", &ev.mc_y0);
+        treeSIM->SetBranchAddress("mc_z0", &ev.mc_z0);
+        treeSIM->SetBranchAddress("mc_ux", &ev.mc_ux);
+        treeSIM->SetBranchAddress("mc_uy", &ev.mc_uy);
+        treeSIM->SetBranchAddress("mc_uz", &ev.mc_uz);
     }
     else
     {
-        tree->SetBranchAddress("mc_E", &ev.mc_E);
-        tree->SetBranchAddress("mc_R", &ev.mc_R);
-        tree->SetBranchAddress("mc_cx", &ev.mc_cx);
-        tree->SetBranchAddress("mc_cy", &ev.mc_cy);
-        tree->SetBranchAddress("mc_z0", &ev.mc_z0);
-        tree->SetBranchAddress("mc_uz", &ev.mc_uz);
+        treeSIM->SetBranchAddress("mc_E", &ev.mc_E);
+        treeSIM->SetBranchAddress("mc_R", &ev.mc_R);
+        treeSIM->SetBranchAddress("mc_cx", &ev.mc_cx);
+        treeSIM->SetBranchAddress("mc_cy", &ev.mc_cy);
+        treeSIM->SetBranchAddress("mc_z0", &ev.mc_z0);
+        treeSIM->SetBranchAddress("mc_uz", &ev.mc_uz);
+        treeSIM->SetBranchAddress("mc_tmin", &ev.mc_tmin);
+        treeSIM->SetBranchAddress("mc_tmax", &ev.mc_tmax);
     }
 
     TDirectory::AddDirectory(false);
@@ -3050,7 +3228,7 @@ void AnalyzeToyDataset(string filename, string treeName = "CosmicToy",
     auto h_res_z = make_unique<TH1D>("h_res_z", "Z_{0} Residual; #Delta Z_{0}[mm]", 100, -60, 60);
     auto h_res_dz = make_unique<TH1D>("h_res_dz", "dz/ds Residual; #Delta (dz/ds)", 100, -0.4, 0.4);
 
-    int nEntries = tree->GetEntries();
+    int nEntries = treeSEV->GetEntries();
     vector<int> entriesToProcess;
     if(mode == AnalysisMode::ALL)
         for(int i = 0; i < nEntries; ++i)
@@ -3080,7 +3258,9 @@ void AnalyzeToyDataset(string filename, string treeName = "CosmicToy",
             fflush(stdout);
         }
 
-        tree->GetEntry(idx);
+        treeSEV->GetEntry(idx);
+        treeSIM->GetEntry(idx);
+
         if(isCosmic)
         {
             if(ev.hit_ids.size() < 4)
@@ -3145,8 +3325,8 @@ void AnalyzeToyDataset(string filename, string treeName = "CosmicToy",
                     if(mode != AnalysisMode::ALL)
                     {
                         vector<Vis::VisHelixTrack> tracks;
-                        tracks.emplace_back(ev.mc_cx, ev.mc_cy, ev.mc_R, ev.mc_z0, ev.mc_uz, -M_PI,
-                            M_PI, kYellow, 4);
+                        tracks.emplace_back(ev.mc_cx, ev.mc_cy, ev.mc_R, ev.mc_z0, ev.mc_uz,
+                            ev.mc_tmin, ev.mc_tmax, kYellow, 4);
                         tracks.emplace_back(cand2D.xc, cand2D.yc, cand2D.R, candZ.z0,
                             candZ.dz_ds * cand2D.R, candZ.t_min, candZ.t_max, kRed, 2);
                         Vis::Draw3D(ev.hit_ids, tracks);
