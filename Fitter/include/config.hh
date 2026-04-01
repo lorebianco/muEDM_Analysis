@@ -30,6 +30,7 @@ class Config
     // I/O files
     std::string inputDir = "../../data/input/toy/";
     std::string inputFileName = "cosmictoy0000.root";
+    std::string inputTreeName = "Event";
     std::vector<std::string> inputDataFiles = { inputDir + inputFileName };
 
     std::string outputDir = "../../data/output/";

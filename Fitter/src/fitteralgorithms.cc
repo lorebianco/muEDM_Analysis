@@ -103,14 +103,17 @@ void FITALG::CosmicFitter()
         return;
     }
 
-    TTree *treeSEV = (TTree *)f->Get("Event");
     TTree *treeSIM = (TTree *)f->Get("sim");
+    bool hasSIM = (treeSIM != nullptr);
 
-    if(!treeSEV || !treeSIM)
-    {
-        cerr << ">>> Required trees (Event, sim) not found." << endl;
-        return;
-    }
+    CHeT::Data::Reader reader(config.inputDataFiles[0], config.inputTreeName);
+    if(!hasSIM)
+        reader.SetCuts(215, 250, 40, 220);
+
+    auto df = reader.GetCHeTTree();
+
+    auto hits_col = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
+    auto allEventsHits = *hits_col;
 
     // 1. Istanzia il viewer personalizzato
     FITALG::AnalyticViewer *myViewer = new FITALG::AnalyticViewer();
@@ -121,18 +124,19 @@ void FITALG::CosmicFitter()
         myViewer->LoadGeometry(config.geometryFile.c_str());
     }
 
-    std::vector<int> *hits_ptr = nullptr;
     double mc_x0 = 0, mc_y0 = 0, mc_z0 = 0, mc_ux = 0, mc_uy = 0, mc_uz = 0;
 
-    treeSEV->SetBranchAddress("All_Bundle", &hits_ptr);
-    treeSIM->SetBranchAddress("mc_x0", &mc_x0);
-    treeSIM->SetBranchAddress("mc_y0", &mc_y0);
-    treeSIM->SetBranchAddress("mc_z0", &mc_z0);
-    treeSIM->SetBranchAddress("mc_ux", &mc_ux);
-    treeSIM->SetBranchAddress("mc_uy", &mc_uy);
-    treeSIM->SetBranchAddress("mc_uz", &mc_uz);
+    if(hasSIM)
+    {
+        treeSIM->SetBranchAddress("mc_x0", &mc_x0);
+        treeSIM->SetBranchAddress("mc_y0", &mc_y0);
+        treeSIM->SetBranchAddress("mc_z0", &mc_z0);
+        treeSIM->SetBranchAddress("mc_ux", &mc_ux);
+        treeSIM->SetBranchAddress("mc_uy", &mc_uy);
+        treeSIM->SetBranchAddress("mc_uz", &mc_uz);
+    }
 
-    Long64_t nEvents = treeSIM->GetEntries();
+    Long64_t nEvents = hasSIM ? treeSIM->GetEntries() : allEventsHits.size();
     Long64_t maxEvents = (config.rangeLoop.second < nEvents) ? config.rangeLoop.second : nEvents;
     Long64_t startEvent = config.rangeLoop.first;
 
@@ -157,13 +161,17 @@ void FITALG::CosmicFitter()
             cout << ">>> Processed " << i << " events..." << endl;
         }
 
-        treeSEV->GetEntry(i);
-        treeSIM->GetEntry(i);
+        if(hasSIM)
+            treeSIM->GetEntry(i);
 
-        if(!hits_ptr || hits_ptr->size() < 3)
+        if(i >= allEventsHits.size())
             continue;
 
-        std::vector<int> hit_ids = *hits_ptr;
+        const auto &rvec = allEventsHits[i];
+        std::vector<int> hit_ids(rvec.begin(), rvec.end());
+
+        if(hit_ids.size() < 3)
+            continue;
         FitOutput fitRes = Do3DFit(hit_ids, false);
         RecoTrack trFit = fitRes.track;
 
@@ -171,53 +179,81 @@ void FITALG::CosmicFitter()
         {
             myViewer->AddEvent(i, fitRes);
 
-            double trueLoc_x0 = mc_x0, trueLoc_y0 = mc_y0, trueLoc_z0 = mc_z0;
-            CHeT::Config::ApplyInverseTransformation(trueLoc_x0, trueLoc_y0, trueLoc_z0);
-
-            double trueLoc_ux = mc_ux, trueLoc_uy = mc_uy, trueLoc_uz = mc_uz;
-            CHeT::Config::ApplyInverseRotation(trueLoc_ux, trueLoc_uy, trueLoc_uz);
-
-            double t_to_y0 = -trueLoc_y0 / trueLoc_uy;
-            double true_x0 = trueLoc_x0 + trueLoc_ux * t_to_y0;
-            double true_z0 = trueLoc_z0 + trueLoc_uz * t_to_y0;
-            double true_sx = trueLoc_ux / trueLoc_uy;
-            double true_sz = trueLoc_uz / trueLoc_uy;
-
-            double true_cosTheta = trueLoc_uy;
-            double true_phi = atan2(trueLoc_ux, trueLoc_uz);
-
-            double norm = sqrt(trFit.sx * trFit.sx + 1.0 + trFit.sz * trFit.sz);
-            double fit_uy = -1.0 / norm;
-            double fit_ux = trFit.sx * fit_uy;
-            double fit_uz = trFit.sz * fit_uy;
-
-            double fit_cosTheta = fit_uy;
-            double fit_phi = atan2(fit_ux, fit_uz);
-
-            if(config.processSingle)
+            if(hasSIM)
             {
-                printf("\nEvent %lld\n", i);
-                printf("===============================================================\n");
-                printf("                   FIT RESULTS vs MC TRUTH                     \n");
-                printf("===============================================================\n");
-                printf(" %-10s | %12s | %12s | %12s \n", "Param", "True", "Fitted", "Residual");
-                printf("---------------------------------------------------------------\n");
-                printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "x0 [mm]", true_x0, trFit.x0,
-                    trFit.x0 - true_x0);
-                printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "z0 [mm]", true_z0, trFit.z0,
-                    trFit.z0 - true_z0);
-                printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sx (dx/dy)", true_sx, trFit.sx,
-                    trFit.sx - true_sx);
-                printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sz (dz/dy)", true_sz, trFit.sz,
-                    trFit.sz - true_sz);
-                printf("---------------------------------------------------------------\n");
-                printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "cos(theta)", true_cosTheta,
-                    fit_cosTheta, fit_cosTheta - true_cosTheta);
-                printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "phi [rad]", true_phi, fit_phi,
-                    fit_phi - true_phi);
-                printf("---------------------------------------------------------------\n");
-                printf(" Chi2/ndf  : %.4f\n", trFit.chi2);
-                printf("===============================================================\n");
+                double trueLoc_x0 = mc_x0, trueLoc_y0 = mc_y0, trueLoc_z0 = mc_z0;
+                CHeT::Config::ApplyInverseTransformation(trueLoc_x0, trueLoc_y0, trueLoc_z0);
+
+                double trueLoc_ux = mc_ux, trueLoc_uy = mc_uy, trueLoc_uz = mc_uz;
+                CHeT::Config::ApplyInverseRotation(trueLoc_ux, trueLoc_uy, trueLoc_uz);
+
+                double t_to_y0 = -trueLoc_y0 / trueLoc_uy;
+                double true_x0 = trueLoc_x0 + trueLoc_ux * t_to_y0;
+                double true_z0 = trueLoc_z0 + trueLoc_uz * t_to_y0;
+                double true_sx = trueLoc_ux / trueLoc_uy;
+                double true_sz = trueLoc_uz / trueLoc_uy;
+
+                double true_cosTheta = trueLoc_uy;
+                double true_phi = atan2(trueLoc_ux, trueLoc_uz);
+
+                double norm = sqrt(trFit.sx * trFit.sx + 1.0 + trFit.sz * trFit.sz);
+                double fit_uy = -1.0 / norm;
+                double fit_ux = trFit.sx * fit_uy;
+                double fit_uz = trFit.sz * fit_uy;
+
+                double fit_cosTheta = fit_uy;
+                double fit_phi = atan2(fit_ux, fit_uz);
+
+                if(config.processSingle)
+                {
+                    printf("\nEvent %lld\n", i);
+                    printf("===============================================================\n");
+                    printf("                   FIT RESULTS vs MC TRUTH                     \n");
+                    printf("===============================================================\n");
+                    printf(" %-10s | %12s | %12s | %12s \n", "Param", "True", "Fitted", "Residual");
+                    printf("---------------------------------------------------------------\n");
+                    printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "x0 [mm]", true_x0, trFit.x0,
+                        trFit.x0 - true_x0);
+                    printf(" %-10s | %12.4f | %12.4f | %12.4f \n", "z0 [mm]", true_z0, trFit.z0,
+                        trFit.z0 - true_z0);
+                    printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sx (dx/dy)", true_sx, trFit.sx,
+                        trFit.sx - true_sx);
+                    printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "sz (dz/dy)", true_sz, trFit.sz,
+                        trFit.sz - true_sz);
+                    printf("---------------------------------------------------------------\n");
+                    printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "cos(theta)", true_cosTheta,
+                        fit_cosTheta, fit_cosTheta - true_cosTheta);
+                    printf(" %-10s | %12.5f | %12.5f | %12.5f \n", "phi [rad]", true_phi, fit_phi,
+                        fit_phi - true_phi);
+                    printf("---------------------------------------------------------------\n");
+                    printf(" Chi2/ndf  : %.4f\n", trFit.chi2);
+                    printf("===============================================================\n");
+                }
+            }
+            else
+            {
+                double norm = sqrt(trFit.sx * trFit.sx + 1.0 + trFit.sz * trFit.sz);
+                double fit_uy = -1.0 / norm;
+                double fit_ux = trFit.sx * fit_uy;
+                double fit_uz = trFit.sz * fit_uy;
+                double fit_cosTheta = fit_uy;
+                double fit_phi = atan2(fit_ux, fit_uz);
+
+                if(config.processSingle)
+                {
+                    printf("\nEvent %lld\n", i);
+                    printf("===============================================================\n");
+                    printf("                   FIT RESULTS                                 \n");
+                    printf("===============================================================\n");
+                    printf(" %-10s | %12.4f \n", "x0 [mm]", trFit.x0);
+                    printf(" %-10s | %12.4f \n", "z0 [mm]", trFit.z0);
+                    printf(" %-10s | %12.5f \n", "sx (dx/dy)", trFit.sx);
+                    printf(" %-10s | %12.5f \n", "sz (dz/dy)", trFit.sz);
+                    printf(" %-10s | %12.5f \n", "cos(theta)", fit_cosTheta);
+                    printf(" %-10s | %12.5f \n", "phi [rad]", fit_phi);
+                    printf(" Chi2/ndf  : %.4f\n", trFit.chi2);
+                    printf("===============================================================\n");
+                }
             }
         }
         else
@@ -229,7 +265,8 @@ void FITALG::CosmicFitter()
         if(!config.quietMode)
         {
             std::vector<CHeT::Vis::VisLineTrack> visTracks;
-            visTracks.emplace_back(mc_x0, mc_y0, mc_z0, mc_ux, mc_uy, mc_uz, kYellow, 3);
+            if(hasSIM)
+                visTracks.emplace_back(mc_x0, mc_y0, mc_z0, mc_ux, mc_uy, mc_uz, kYellow, 3);
 
             if(trFit.converged)
             {
@@ -335,8 +372,7 @@ void FITALG::SpacepointFitter()
         chetHitArray.Clear();
 
         // Get event and filter
-        data.GetChain()->GetEntry(ev);
-        data.ProcessAndFilterEvent();
+        data.ProcessAndFilterEvent(ev);
 
         Int_t nHits = data.hitsCoordinates.size();
 
@@ -813,8 +849,7 @@ void FITALG::HelixFitter()
                 continue;
 
         // Get event
-        data.GetChain()->GetEntry(ev);
-        data.ProcessAndFilterEvent();
+        data.ProcessAndFilterEvent(ev);
 
         Int_t nHits = data.hitsCoordinates.size();
 

@@ -1,3 +1,7 @@
+#include <memory>
+
+#include <TFile.h>
+
 #include "CHeT/CHeTReader.hh"
 
 using namespace std;
@@ -14,10 +18,32 @@ namespace CHeT
 namespace Data
 {
 
+namespace
+{
+std::string DiscoverTreeName(const std::string &filename, const std::string &providedName)
+{
+    if(providedName != "auto" && providedName != "")
+        return providedName;
+
+    std::unique_ptr<TFile> f(TFile::Open(filename.c_str(), "READ"));
+    if(!f || f->IsZombie())
+        return "raw";
+
+    if(f->Get("chet"))
+        return "chet";
+    if(f->Get("raw"))
+        return "raw";
+    if(f->Get("Event"))
+        return "Event";
+
+    return "raw";
+}
+} // namespace
+
 Reader::Reader(const std::string &filename, const std::string &treeName)
     : fFilename(filename)
-    , fTreeName(treeName)
-    , fDF(treeName, filename)
+    , fTreeName(DiscoverTreeName(filename, treeName))
+    , fDF(fTreeName, filename)
     , fHeadNode(fDF)
 {
     // Disable implicit MT if necessary, or manage it at higher level
@@ -61,7 +87,7 @@ ROOT::RDF::RNode Reader::GetRaw()
     return fHeadNode;
 }
 
-ROOT::RDF::RNode Reader::GetEstimators()
+ROOT::RDF::RNode Reader::GetCHeTTree()
 {
     // Capture parameters for lambdas
     double tMin = fToaMin;
@@ -117,6 +143,22 @@ ROOT::RDF::RNode Reader::GetEstimators()
                      .Define("nHits_Cyl1_Outer", "Sum(All_Cyl == 1 && All_Lay == 1)");
         }
 
+        if(std::find(colNames.begin(), colNames.end(), "All_ToA") == colNames.end())
+        {
+            df = df.Define(
+                "All_ToA", [](const RVecI &b) { return RVecD(b.size(), 0.0); }, { "All_Bundle" });
+        }
+        if(std::find(colNames.begin(), colNames.end(), "All_ToT") == colNames.end())
+        {
+            df = df.Define(
+                "All_ToT", [](const RVecI &b) { return RVecUS(b.size(), 0); }, { "All_Bundle" });
+        }
+        if(std::find(colNames.begin(), colNames.end(), "All_Board") == colNames.end())
+        {
+            df = df.Define(
+                "All_Board", [](const RVecI &b) { return RVecI(b.size(), 0); }, { "All_Bundle" });
+        }
+
         // Note: For pure Toy data, FirstToA and SumToT might not be meaningful/present.
 
         return df;
@@ -142,7 +184,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
 
     // 2. Loop Board -> Selection -> Bundle Mapping
     auto df_geo = df_corr;
-    vector<string> toa_cols, tot_cols, cyl_cols, lay_cols, bund_cols;
+    vector<string> toa_cols, tot_cols, cyl_cols, lay_cols, bund_cols, board_cols;
 
     // Map string ID -> numeric ID for geometry
     map<string, int> board_id_map = { { "00", 0 }, { "01", 1 }, { "02", 2 }, { "03", 3 } };
@@ -157,12 +199,14 @@ ROOT::RDF::RNode Reader::GetEstimators()
         string cyl_n = "FD" + id + "_cyl_sel";
         string lay_n = "FD" + id + "_lay_sel";
         string bund_n = "FD" + id + "_bund_sel";
+        string board_n = "FD" + id + "_board_sel";
 
         toa_cols.push_back(toa_n);
         tot_cols.push_back(tot_n);
         cyl_cols.push_back(cyl_n);
         lay_cols.push_back(lay_n);
         bund_cols.push_back(bund_n);
+        board_cols.push_back(board_n);
 
         // Check Board Filtering
         bool isBoardEnabled = true;
@@ -182,7 +226,8 @@ ROOT::RDF::RNode Reader::GetEstimators()
                          .Define(tot_n, []() { return RVecUS {}; })
                          .Define(cyl_n, []() { return RVecI {}; })
                          .Define(lay_n, []() { return RVecI {}; })
-                         .Define(bund_n, []() { return RVecI {}; });
+                         .Define(bund_n, []() { return RVecI {}; })
+                         .Define(board_n, []() { return RVecI {}; });
             continue;
         }
 
@@ -193,6 +238,7 @@ ROOT::RDF::RNode Reader::GetEstimators()
         string cyl_tmp = cyl_n + "_tmp";
         string lay_tmp = lay_n + "_tmp";
         string bund_tmp = bund_n + "_tmp";
+        string board_tmp = board_n + "_tmp";
 
         // Time cuts on ToA and ToT
         df_geo = df_geo.Define(toa_tmp,
@@ -241,6 +287,9 @@ ROOT::RDF::RNode Reader::GetEstimators()
                 return lays;
             },
             { bund_tmp });
+
+        df_geo = df_geo.Define(board_tmp,
+            [b_id](const RVecI &bunds) { return RVecI(bunds.size(), b_id); }, { bund_tmp });
 
         // Create Filter Mask based on Cylinder and Layer
         string mask_n = "FD" + id + "_geo_mask";
@@ -322,7 +371,9 @@ ROOT::RDF::RNode Reader::GetEstimators()
                      .Define(lay_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
                          { lay_tmp, mask_n })
                      .Define(bund_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
-                         { bund_tmp, mask_n });
+                         { bund_tmp, mask_n })
+                     .Define(board_n, [](const RVecI &v, const RVecI &m) { return v[m]; },
+                         { board_tmp, mask_n });
     }
 
     // 3. Global Concatenation (All Boards -> Single Event Vector)
@@ -343,6 +394,21 @@ ROOT::RDF::RNode Reader::GetEstimators()
                   [](const RVecI &b0, const RVecI &b1, const RVecI &b2, const RVecI &b3)
                   { return Concatenate(b0, Concatenate(b1, Concatenate(b2, b3))); },
                   bund_cols)
+              .Define(
+                  "All_ToA",
+                  [](const RVecD &t0, const RVecD &t1, const RVecD &t2, const RVecD &t3)
+                  { return Concatenate(t0, Concatenate(t1, Concatenate(t2, t3))); },
+                  toa_cols)
+              .Define(
+                  "All_ToT",
+                  [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2, const RVecUS &t3)
+                  { return Concatenate(t0, Concatenate(t1, Concatenate(t2, t3))); },
+                  tot_cols)
+              .Define(
+                  "All_Board",
+                  [](const RVecI &b0, const RVecI &b1, const RVecI &b2, const RVecI &b3)
+                  { return Concatenate(b0, Concatenate(b1, Concatenate(b2, b3))); },
+                  board_cols)
 
               // Counts and Event-Level variables
               .Define("nHits_Total", "(double)All_Cyl.size()")
@@ -370,6 +436,20 @@ ROOT::RDF::RNode Reader::GetEstimators()
                   tot_cols);
 
     return df_final;
+}
+
+void Reader::SaveToTree(const std::string &filename, const std::string &treeName)
+{
+    auto df = GetCHeTTree();
+    std::vector<std::string> colsToSave;
+    for(const auto &col : df.GetColumnNames())
+    {
+        if(col.find("All_") == 0 || col.find("nHits_") == 0 || col == "FirstToA" || col == "SumToT")
+        {
+            colsToSave.push_back(col);
+        }
+    }
+    df.Snapshot(treeName, filename, colsToSave);
 }
 
 } // namespace Data

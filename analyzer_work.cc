@@ -93,10 +93,11 @@ constexpr bool DEBUG_RUN = false;
 struct ToyEvent
 {
     // Verità (Truth)
-    double mc_x0, mc_y0, mc_z0;
-    double mc_ux, mc_uy, mc_uz;
-    double mc_E, mc_R, mc_cx, mc_cy; // Per Michel
-    double mc_tmin, mc_tmax;
+    double mc_x, mc_y, mc_z;
+    double trk_x0, trk_y0, trk_z0;
+    double trk_ux, trk_uy, trk_uz;
+    double mc_E, trk_R, trk_cx, trk_cy; // Per Michel
+    double trk_tmin, trk_tmax;
 
     // Dati (Digitization)
     vector<int> hit_ids;
@@ -2924,22 +2925,22 @@ void GenerateCosmicDataset(string filename, int nEvents, double efficiency = 1.0
     TFile f(filename.c_str(), "RECREATE");
     TTree *tree = new TTree("CosmicToy", "Toy Cosmic Events");
     ToyEvent ev;
-    tree->Branch("mc_x0", &ev.mc_x0);
-    tree->Branch("mc_y0", &ev.mc_y0);
-    tree->Branch("mc_z0", &ev.mc_z0);
-    tree->Branch("mc_ux", &ev.mc_ux);
-    tree->Branch("mc_uy", &ev.mc_uy);
-    tree->Branch("mc_uz", &ev.mc_uz);
+    tree->Branch("trk_x0", &ev.trk_x0);
+    tree->Branch("trk_y0", &ev.trk_y0);
+    tree->Branch("trk_z0", &ev.trk_z0);
+    tree->Branch("trk_ux", &ev.trk_ux);
+    tree->Branch("trk_uy", &ev.trk_uy);
+    tree->Branch("trk_uz", &ev.trk_uz);
     tree->Branch("hits", &ev.hit_ids);
     for(int i = 0; i < nEvents; ++i)
     {
         CosmicTrack tr = GenerateCosmic();
-        ev.mc_x0 = tr.x0;
-        ev.mc_y0 = tr.y0;
-        ev.mc_z0 = tr.z0;
-        ev.mc_ux = tr.ux;
-        ev.mc_uy = tr.uy;
-        ev.mc_uz = tr.uz;
+        ev.trk_x0 = tr.x0;
+        ev.trk_y0 = tr.y0;
+        ev.trk_z0 = tr.z0;
+        ev.trk_ux = tr.ux;
+        ev.trk_uy = tr.uy;
+        ev.trk_uz = tr.uz;
         ev.hit_ids = FindHitBundles(tr, efficiency);
         if(!ev.hit_ids.empty())
             tree->Fill();
@@ -2954,25 +2955,25 @@ void GenerateMichelDataset(string filename, int nEvents, double efficiency = 1.0
     TTree *tree = new TTree("MichelToy", "Toy Michel Events");
     ToyEvent ev;
     tree->Branch("mc_E", &ev.mc_E);
-    tree->Branch("mc_R", &ev.mc_R);
-    tree->Branch("mc_cx", &ev.mc_cx);
-    tree->Branch("mc_cy", &ev.mc_cy);
-    tree->Branch("mc_z0", &ev.mc_z0);
-    tree->Branch("mc_uz", &ev.mc_uz);
-    tree->Branch("mc_tmin", &ev.mc_tmin);
-    tree->Branch("mc_tmax", &ev.mc_tmax);
+    tree->Branch("trk_R", &ev.trk_R);
+    tree->Branch("trk_cx", &ev.trk_cx);
+    tree->Branch("trk_cy", &ev.trk_cy);
+    tree->Branch("trk_z0", &ev.trk_z0);
+    tree->Branch("trk_uz", &ev.trk_uz);
+    tree->Branch("trk_tmin", &ev.trk_tmin);
+    tree->Branch("trk_tmax", &ev.trk_tmax);
 
     for(int i = 0; i < nEvents; ++i)
     {
         MichelTrack tr = GenerateMichelTrack(false);
         ev.mc_E = tr.E_kin;
-        ev.mc_R = tr.radius;
-        ev.mc_cx = tr.cx;
-        ev.mc_cy = tr.cy;
-        ev.mc_z0 = tr.z0;
-        ev.mc_uz = tr.dz_dt;
-        ev.mc_tmin = tr.t_min;
-        ev.mc_tmax = tr.t_max;
+        ev.trk_R = tr.radius;
+        ev.trk_cx = tr.cx;
+        ev.trk_cy = tr.cy;
+        ev.trk_z0 = tr.z0;
+        ev.trk_uz = tr.dz_dt;
+        ev.trk_tmin = tr.t_min;
+        ev.trk_tmax = tr.t_max;
         ev.hit_ids = FindMichelHits(tr, efficiency);
         if(!ev.hit_ids.empty())
             tree->Fill();
@@ -3167,9 +3168,9 @@ void AnalyzeToyDataset(
         cerr << "[Error] Could not open file: " << filename << endl;
         return;
     }
-    TTree *treeSEV = (TTree *)f->Get("Event");
+    TTree *treeCHeT = (TTree *)f->Get("chet");
     TTree *treeSIM = (TTree *)f->Get("sim");
-    if(!treeSEV || !treeSIM)
+    if(!treeCHeT || !treeSIM)
     {
         cerr << "[Error] Required trees (Event, sim) not found." << endl;
         return;
@@ -3177,27 +3178,31 @@ void AnalyzeToyDataset(
 
     ToyEvent ev;
     std::vector<int> *hits_ptr = &ev.hit_ids;
-    treeSEV->SetBranchAddress("All_Bundle", &hits_ptr);
+    treeCHeT->SetBranchAddress("All_Bundle", &hits_ptr);
+
+    treeSIM->SetBranchAddress("mc_x", &ev.mc_x);
+    treeSIM->SetBranchAddress("mc_y", &ev.mc_y);
+    treeSIM->SetBranchAddress("mc_z", &ev.mc_z);
 
     if(isCosmic)
     {
-        treeSIM->SetBranchAddress("mc_x0", &ev.mc_x0);
-        treeSIM->SetBranchAddress("mc_y0", &ev.mc_y0);
-        treeSIM->SetBranchAddress("mc_z0", &ev.mc_z0);
-        treeSIM->SetBranchAddress("mc_ux", &ev.mc_ux);
-        treeSIM->SetBranchAddress("mc_uy", &ev.mc_uy);
-        treeSIM->SetBranchAddress("mc_uz", &ev.mc_uz);
+        treeSIM->SetBranchAddress("trk_x0", &ev.trk_x0);
+        treeSIM->SetBranchAddress("trk_y0", &ev.trk_y0);
+        treeSIM->SetBranchAddress("trk_z0", &ev.trk_z0);
+        treeSIM->SetBranchAddress("trk_ux", &ev.trk_ux);
+        treeSIM->SetBranchAddress("trk_uy", &ev.trk_uy);
+        treeSIM->SetBranchAddress("trk_uz", &ev.trk_uz);
     }
     else
     {
         treeSIM->SetBranchAddress("mc_E", &ev.mc_E);
-        treeSIM->SetBranchAddress("mc_R", &ev.mc_R);
-        treeSIM->SetBranchAddress("mc_cx", &ev.mc_cx);
-        treeSIM->SetBranchAddress("mc_cy", &ev.mc_cy);
-        treeSIM->SetBranchAddress("mc_z0", &ev.mc_z0);
-        treeSIM->SetBranchAddress("mc_uz", &ev.mc_uz);
-        treeSIM->SetBranchAddress("mc_tmin", &ev.mc_tmin);
-        treeSIM->SetBranchAddress("mc_tmax", &ev.mc_tmax);
+        treeSIM->SetBranchAddress("trk_R", &ev.trk_R);
+        treeSIM->SetBranchAddress("trk_cx", &ev.trk_cx);
+        treeSIM->SetBranchAddress("trk_cy", &ev.trk_cy);
+        treeSIM->SetBranchAddress("trk_z0", &ev.trk_z0);
+        treeSIM->SetBranchAddress("trk_uz", &ev.trk_uz);
+        treeSIM->SetBranchAddress("trk_tmin", &ev.trk_tmin);
+        treeSIM->SetBranchAddress("trk_tmax", &ev.trk_tmax);
     }
 
     TDirectory::AddDirectory(false);
@@ -3228,7 +3233,7 @@ void AnalyzeToyDataset(
     auto h_res_z = make_unique<TH1D>("h_res_z", "Z_{0} Residual; #Delta Z_{0}[mm]", 100, -60, 60);
     auto h_res_dz = make_unique<TH1D>("h_res_dz", "dz/ds Residual; #Delta (dz/ds)", 100, -0.4, 0.4);
 
-    int nEntries = treeSEV->GetEntries();
+    int nEntries = treeCHeT->GetEntries();
     vector<int> entriesToProcess;
     if(mode == AnalysisMode::ALL)
         for(int i = 0; i < nEntries; ++i)
@@ -3258,7 +3263,7 @@ void AnalyzeToyDataset(
             fflush(stdout);
         }
 
-        treeSEV->GetEntry(idx);
+        treeCHeT->GetEntry(idx);
         treeSIM->GetEntry(idx);
 
         if(isCosmic)
@@ -3269,14 +3274,14 @@ void AnalyzeToyDataset(
             FitOutput out = Do3DFit(ev.hit_ids, false);
             if(out.track.converged)
             {
-                Config::ApplyInverseTransformation(ev.mc_x0, ev.mc_y0, ev.mc_z0);
-                Config::ApplyInverseRotation(ev.mc_ux, ev.mc_uy, ev.mc_uz);
+                Config::ApplyInverseTransformation(ev.trk_x0, ev.trk_y0, ev.trk_z0);
+                Config::ApplyInverseRotation(ev.trk_ux, ev.trk_uy, ev.trk_uz);
 
-                double t = -ev.mc_y0 / ev.mc_uy;
-                double true_x0 = ev.mc_x0 + ev.mc_ux * t;
-                double true_z0 = ev.mc_z0 + ev.mc_uz * t;
-                double true_sx = ev.mc_ux / ev.mc_uy;
-                double true_sz = ev.mc_uz / ev.mc_uy;
+                double t = -ev.trk_y0 / ev.trk_uy;
+                double true_x0 = ev.trk_x0 + ev.trk_ux * t;
+                double true_z0 = ev.trk_z0 + ev.trk_uz * t;
+                double true_sx = ev.trk_ux / ev.trk_uy;
+                double true_sz = ev.trk_uz / ev.trk_uy;
 
                 // Variables
                 h_fit_x0->Fill(out.track.x0);
@@ -3294,8 +3299,8 @@ void AnalyzeToyDataset(
                 if(mode != AnalysisMode::ALL)
                 {
                     vector<Vis::VisLineTrack> tracks;
-                    tracks.emplace_back(
-                        ev.mc_x0, ev.mc_y0, ev.mc_z0, ev.mc_ux, ev.mc_uy, ev.mc_uz, kYellow, 3);
+                    tracks.emplace_back(ev.trk_x0, ev.trk_y0, ev.trk_z0, ev.trk_ux, ev.trk_uy,
+                        ev.trk_uz, kYellow, 3);
                     tracks.emplace_back(out.track.x0, 0, out.track.z0, out.track.sx, 1,
                         out.track.sz, kRed, 2, 7, true);
                     Vis::Draw3D(ev.hit_ids, tracks, out.fittedPoints);
@@ -3314,19 +3319,19 @@ void AnalyzeToyDataset(
                 if(!candsZ.empty())
                 {
                     auto candZ = candsZ[0];
-                    h_res_xc->Fill(cand2D.xc - ev.mc_cx);
-                    h_res_yc->Fill(cand2D.yc - ev.mc_cy);
-                    h_res_R->Fill(cand2D.R - ev.mc_R);
-                    h_res_z->Fill(candZ.z0 - ev.mc_z0);
-                    double true_dz_ds = ev.mc_uz / ev.mc_R;
+                    h_res_xc->Fill(cand2D.xc - ev.trk_cx);
+                    h_res_yc->Fill(cand2D.yc - ev.trk_cy);
+                    h_res_R->Fill(cand2D.R - ev.trk_R);
+                    h_res_z->Fill(candZ.z0 - ev.trk_z0);
+                    double true_dz_ds = ev.trk_uz / ev.trk_R;
                     h_res_dz->Fill(candZ.dz_ds - true_dz_ds);
                     nGood++;
 
                     if(mode != AnalysisMode::ALL)
                     {
                         vector<Vis::VisHelixTrack> tracks;
-                        tracks.emplace_back(ev.mc_cx, ev.mc_cy, ev.mc_R, ev.mc_z0, ev.mc_uz,
-                            ev.mc_tmin, ev.mc_tmax, kYellow, 4);
+                        tracks.emplace_back(ev.trk_cx, ev.trk_cy, ev.trk_R, ev.trk_z0, ev.trk_uz,
+                            ev.trk_tmin, ev.trk_tmax, kYellow, 4);
                         tracks.emplace_back(cand2D.xc, cand2D.yc, cand2D.R, candZ.z0,
                             candZ.dz_ds * cand2D.R, candZ.t_min, candZ.t_max, kRed, 2);
                         Vis::Draw3D(ev.hit_ids, tracks);
@@ -3491,7 +3496,7 @@ void DrawEvent(
         return;
     }
 
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
 
     if(eventID == -1)
@@ -3502,7 +3507,7 @@ void DrawEvent(
     }
 
     reader.SetSingleEvent(eventID);
-    auto df = reader.GetEstimators();
+    auto df = reader.GetCHeTTree();
 
     // The reader provides "All_Bundle", which contains the global IDs of
     // selected hits
@@ -3536,11 +3541,11 @@ void PlotRawCorrelation(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t to
     string filename
         = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     // Explicitly set cuts even though we define our own filtered vars below
     // (Reader defines FDxx_corrToA)
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
-    auto df = reader.GetEstimators();
+    auto df = reader.GetCHeTTree();
     auto rawCount = reader.GetRaw().Count();
 
     auto df_all_hits
@@ -3592,9 +3597,9 @@ void PlotMultiplicity(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totM
     string filename
         = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
-    auto df_full = reader.GetEstimators();
+    auto df_full = reader.GetCHeTTree();
 
     long long nRaw = reader.GetRaw().Count().GetValue();
     auto df = df_full.Filter("nHits_Total > 0");
@@ -3766,11 +3771,11 @@ void PlotEstimators(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totMin
     string filename
         = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
 
     long long nRaw = reader.GetRaw().Count().GetValue();
-    auto df = reader.GetEstimators().Filter("SumToT > 0");
+    auto df = reader.GetCHeTTree().Filter("SumToT > 0");
     auto nPassed = df.Count();
 
     auto h_toa = df.Histo1D(
@@ -3806,11 +3811,11 @@ void PlotMultiplicityCorrelations(
     string filename
         = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
 
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
 
     long long nRaw = reader.GetRaw().Count().GetValue();
-    auto df = reader.GetEstimators().Filter("nHits_Total > 0");
+    auto df = reader.GetCHeTTree().Filter("nHits_Total > 0");
     auto nPassed = df.Count();
 
     auto h_hits_toa = df.Histo2D({ "h_hits_toa", "Multiplicity vs First ToA;n Hits;First ToA [ns]",
@@ -3847,7 +3852,7 @@ void FitCosmicEvent(
     // --- 1. Preparazione Dati (Lettura evento singolo) ---
     string filename
         = "/home/lorenzo/muEDM_Project/Data/RootData/run00" + to_string(runID) + ".root";
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
 
     // Usa Range per processare SOLO l'evento richiesto (molto veloce)
@@ -3858,7 +3863,7 @@ void FitCosmicEvent(
     }
 
     reader.SetSingleEvent(eventID);
-    auto df = reader.GetEstimators();
+    auto df = reader.GetCHeTTree();
 
     // Take dei dati
     auto hits_ptr = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
@@ -3953,9 +3958,9 @@ void AnalyzeCosmicRun(Int_t runID, Double_t toaMin, Double_t toaMax, UInt_t totM
     // Config::SetDelta1(Config::GetDelta1() - 18.0 * (M_PI / 180.0));
 
     // Data reader
-    Data::Reader reader(filename);
+    Data::Reader reader(filename, "auto");
     reader.SetCuts(toaMin, toaMax, totMin, totMax);
-    auto df = reader.GetEstimators();
+    auto df = reader.GetCHeTTree();
 
     auto all_hits_ptr = df.Take<RVecI>("All_Bundle");
     const auto &all_hits = *all_hits_ptr;

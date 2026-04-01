@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <cmath>
+#include <map>
+#include <tuple>
 
 #include <TMath.h>
 #include <TRandom3.h>
@@ -56,9 +58,9 @@ CosmicTrack GenerateCosmic()
     return track;
 }
 
-vector<int> FindCosmicHits(const CosmicTrack &track, double efficiency)
+HitResult FindCosmicHits(const CosmicTrack &track, double efficiency)
 {
-    vector<int> hits;
+    std::map<int, std::tuple<double, double, double>> hit_map;
     auto cylinders = Config::GetCylinders();
     int current_global_offset = 0;
 
@@ -101,7 +103,7 @@ vector<int> FindCosmicHits(const CosmicTrack &track, double efficiency)
 
                             if(dphi < (M_PI / lay.nBundles) && gRandom->Rndm() <= efficiency)
                             {
-                                hits.push_back(b_id);
+                                hit_map[b_id] = { xi, yi, zi };
                             }
                         }
                     }
@@ -110,9 +112,15 @@ vector<int> FindCosmicHits(const CosmicTrack &track, double efficiency)
             current_global_offset += lay.nBundles;
         }
     }
-    sort(hits.begin(), hits.end());
-    hits.erase(unique(hits.begin(), hits.end()), hits.end());
-    return hits;
+    HitResult res;
+    for(const auto &kv : hit_map)
+    {
+        res.bundles.push_back(kv.first);
+        res.x.push_back(std::get<0>(kv.second));
+        res.y.push_back(std::get<1>(kv.second));
+        res.z.push_back(std::get<2>(kv.second));
+    }
+    return res;
 }
 
 double GenerateMichelEnergy()
@@ -132,7 +140,6 @@ double GenerateMichelEnergy()
 
 MichelTrack GenerateMichelTrack(bool requireHitsBoundary)
 {
-    const double E_max = 52.8;
     const double B_tesla = 2.89;
     const double m_e = 0.511;
     const double R_start = 30.0;
@@ -224,9 +231,9 @@ MichelTrack GenerateMichelTrack(bool requireHitsBoundary)
     return tr;
 }
 
-vector<int> FindMichelHits(const MichelTrack &tr, double efficiency)
+HitResult FindMichelHits(const MichelTrack &tr, double efficiency)
 {
-    vector<int> hits;
+    std::map<int, std::tuple<double, double, double>> hit_map;
     auto cylinders = Config::GetCylinders();
     int current_global_offset = 0;
 
@@ -278,7 +285,7 @@ vector<int> FindMichelHits(const MichelTrack &tr, double efficiency)
                                     if(dphi < (M_PI / lay.nBundles)
                                         && gRandom->Rndm() <= efficiency)
                                     {
-                                        hits.push_back(b_id);
+                                        hit_map[b_id] = { x, y, z };
                                     }
                                 }
                             }
@@ -289,9 +296,15 @@ vector<int> FindMichelHits(const MichelTrack &tr, double efficiency)
             current_global_offset += lay.nBundles;
         }
     }
-    std::sort(hits.begin(), hits.end());
-    hits.erase(std::unique(hits.begin(), hits.end()), hits.end());
-    return hits;
+    HitResult res;
+    for(const auto &kv : hit_map)
+    {
+        res.bundles.push_back(kv.first);
+        res.x.push_back(std::get<0>(kv.second));
+        res.y.push_back(std::get<1>(kv.second));
+        res.z.push_back(std::get<2>(kv.second));
+    }
+    return res;
 }
 
 } // namespace ToyMC

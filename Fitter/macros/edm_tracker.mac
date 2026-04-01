@@ -1,6 +1,6 @@
 ### I/O files
-inDir = ../../data/input/toy/
-input = cosmictoy0000.root
+inDir = ../../data/input/
+input = run00291.root
 outDir = ../../data/output/
 
 ### Geometry

@@ -36,6 +36,14 @@ struct MichelTrack
 
 // --- Generation Functions ---
 
+struct HitResult
+{
+    std::vector<int> bundles;
+    std::vector<double> x;
+    std::vector<double> y;
+    std::vector<double> z;
+};
+
 /**
  * @brief Generates a random cosmic muon track traversing the detector.
  * @return A CosmicTrack object with truth parameters.
@@ -46,9 +54,9 @@ CosmicTrack GenerateCosmic();
  * @brief Finds the global bundle IDs intersected by a cosmic track.
  * @param track The true cosmic track.
  * @param efficiency The single-layer detection efficiency [0.0, 1.0].
- * @return Vector of global bundle IDs that recorded a hit.
+ * @return HitResult containing bundle IDs and true hit positions.
  */
-std::vector<int> FindCosmicHits(const CosmicTrack &track, double efficiency = 1.0);
+HitResult FindCosmicHits(const CosmicTrack &track, double efficiency = 1.0);
 
 /**
  * @brief Generates a random energy for a Michel electron according to the Michel spectrum.
@@ -67,9 +75,9 @@ MichelTrack GenerateMichelTrack(bool requireHitsBoundary = false);
  * @brief Finds the global bundle IDs intersected by a Michel electron helix.
  * @param tr The true Michel track.
  * @param efficiency The single-layer detection efficiency [0.0, 1.0].
- * @return Vector of global bundle IDs that recorded a hit.
+ * @return HitResult containing bundle IDs and true hit positions.
  */
-std::vector<int> FindMichelHits(const MichelTrack &tr, double efficiency = 1.0);
+HitResult FindMichelHits(const MichelTrack &tr, double efficiency = 1.0);
 
 } // namespace ToyMC
 

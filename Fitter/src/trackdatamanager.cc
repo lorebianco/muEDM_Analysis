@@ -5,45 +5,32 @@ using namespace std;
 TrackDataManager::TrackDataManager()
 {
     // >>>>> Input <<<<< //
-    tracksChain = new TChain("hits_discretized");
-    decayChain = new TChain("MuDecayOutput");
+    simChain = new TChain("sim");
 
     for(const auto &fileName : Config::get().inputDataFiles)
     {
         cout << ">>> Adding file: " << fileName << endl;
-        tracksChain->Add(fileName.c_str());
-        decayChain->Add(fileName.c_str());
+        simChain->Add(fileName.c_str());
     }
 
     // Set branch addresses
-    hits_EventID = nullptr, hits_TrackID = nullptr, hits_ParticleID = nullptr,
-    hits_DetectorID = nullptr, hits_DetName = nullptr, hits_time = nullptr, hits_posX = nullptr,
-    hits_posY = nullptr, hits_posZ = nullptr;
+    simChain->SetBranchAddress("EventID", &truedecay_EventID);
+    simChain->SetBranchAddress("trk_x0", &trueDecay_posX);
+    simChain->SetBranchAddress("trk_y0", &trueDecay_posY);
+    simChain->SetBranchAddress("trk_z0", &trueDecay_posZ);
+    simChain->SetBranchAddress("trk_ux", &trueDecay_momX);
+    simChain->SetBranchAddress("trk_uy", &trueDecay_momY);
+    simChain->SetBranchAddress("trk_uz", &trueDecay_momZ);
 
-    decayChain->SetBranchAddress("EventID", &truedecay_EventID);
-    decayChain->SetBranchAddress("muDecayPosX", &trueDecay_posX);
-    decayChain->SetBranchAddress("muDecayPosY", &trueDecay_posY);
-    decayChain->SetBranchAddress("muDecayPosZ", &trueDecay_posZ);
-    decayChain->SetBranchAddress("posIniMomX", &trueDecay_momX);
-    decayChain->SetBranchAddress("posIniMomY", &trueDecay_momY);
-    decayChain->SetBranchAddress("posIniMomZ", &trueDecay_momZ);
-    decayChain->SetBranchAddress("time", &trueDecay_time);
-
-    tracksChain->SetBranchAddress("EventID", &hits_EventID);
-    tracksChain->SetBranchAddress("TrackID", &hits_TrackID);
-    tracksChain->SetBranchAddress("ParticleID", &hits_ParticleID);
-    tracksChain->SetBranchAddress("DetectorID", &hits_DetectorID);
-    tracksChain->SetBranchAddress("DetName", &hits_DetName);
-    tracksChain->SetBranchAddress("det_x", &hits_posX);
-    tracksChain->SetBranchAddress("det_y", &hits_posY);
-    tracksChain->SetBranchAddress("det_z", &hits_posZ);
-    tracksChain->SetBranchAddress("time", &hits_time);
-
-    // Construct the map
-    BuildDecayIndex();
+    reader = std::make_unique<CHeT::Data::Reader>(Config::get().inputDataFiles[0], "auto");
+    auto df = reader->GetCHeTTree();
+    auto hits_ptr = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
+    allEventsHits = *hits_ptr;
 
     // Set nEvents and processedEvents
-    nEvents = tracksChain->GetEntries();
+    nEvents = simChain->GetEntries();
+    if(nEvents == 0)
+        nEvents = allEventsHits.size();
 
     if(Config::get().processSingle)
         processedEvents = 1;
@@ -127,230 +114,51 @@ TrackDataManager::TrackDataManager()
 
 TrackDataManager::~TrackDataManager()
 {
-    delete decayChain;
-    delete tracksChain;
+    delete simChain;
 }
 
-void TrackDataManager::BuildDecayIndex()
+void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
 {
-    cout << ">>> Building Decay Event Map..." << endl;
+    if(eventID >= 0)
+        currentEventIndex = eventID;
 
-    decayChain->SetBranchStatus("EventID", 1);
-    Int_t tempID;
-    decayChain->SetBranchAddress("EventID", &tempID);
-
-    Long64_t nEntries = decayChain->GetEntries();
-    for(Long64_t i = 0; i < nEntries; i++)
-    {
-        decayChain->GetEntry(i);
-        decayIndexMap[tempID] = i; // Map ID -> Index i
-    }
-
-    decayChain->SetBranchStatus("*", 1);
-    decayChain->SetBranchAddress("EventID", &truedecay_EventID);
-
-    cout << ">>> Map built. Indexed " << decayIndexMap.size() << " decay events" << endl;
-}
-
-void TrackDataManager::ProcessAndFilterEvent()
-{
     // Clean containers
     hitsCoordinates.clear();
     hitsCylinderID.clear();
 
-    // Check pointers
-    if(!hits_posX || hits_posX->empty())
+    if(currentEventIndex >= (Long64_t)allEventsHits.size())
         return;
 
-    // Synchro TTrees
-    Int_t currentEventID = hits_EventID->at(0);
+    const auto &rvec = allEventsHits[currentEventIndex];
+    std::vector<int> hit_ids(rvec.begin(), rvec.end());
 
-    Bool_t truthFound = SetTrueDecayData(currentEventID);
-
-    if(!truthFound)
-        return;
-
-    // Conversion: 1 mm = 0.1 cm
-    const Double_t mm2cm = 0.1;
-
-    // Copy in temporary vectors
-    vector<string> local_DetName = *hits_DetName;
-
-    // Group floats
-    vector<vector<Float_t>> local_fltVecs = {
-        *hits_posX, *hits_posY, *hits_posZ, // Index 0, 1, 2
-    };
-
-    // Group ints
-    vector<vector<Int_t>> local_intVecs = {
-        *hits_DetectorID, // Index 0
-        *hits_TrackID, // Index 1
-        *hits_ParticleID // Index 2
-    };
-
-    // FIRST FILTER: Detector Exclusions
-    FilterVectors(local_DetName, local_fltVecs, local_intVecs);
-
-    if(local_DetName.empty())
-        return;
-
-    // Find positron
-    Int_t particleTarget = -11;
-    Int_t targetTrackID = FindFirstTrack(local_intVecs[1], local_intVecs[2], particleTarget);
-
-    // SECOND FILTER: Keep only positron track
-    if(targetTrackID != -1)
-    {
-        FilterParticleAndTrack(
-            local_DetName, local_fltVecs, local_intVecs, targetTrackID, particleTarget);
-    }
-    else
-    {
-        return;
-    }
+    SetTrueDecayData(currentEventIndex);
 
     // SAVE DATA
-    size_t nHitsRemaining = local_fltVecs[0].size();
-    hitsCoordinates.reserve(nHitsRemaining);
-    hitsCylinderID.reserve(nHitsRemaining);
+    // Calculate all possible 3D intersections from the fired bundles.
+    // Spacepoint and Helix fitters will use these true 3D points.
+    const Double_t mm2cm = 0.1;
+    auto intersections = CHeT::Config::FindIntersections(hit_ids);
 
-    for(size_t i = 0; i < nHitsRemaining; ++i)
+    for(const auto &inter : intersections)
     {
-        vector<Double_t> point = { local_fltVecs[0][i] * mm2cm, local_fltVecs[1][i] * mm2cm,
-            local_fltVecs[2][i] * mm2cm };
+        std::vector<Double_t> point = { inter.x * mm2cm, inter.y * mm2cm, inter.z * mm2cm };
         hitsCoordinates.push_back(point);
-        hitsCylinderID.push_back(local_intVecs[0][i]);
-    }
-}
-
-// >>> Helper Functions for filter <<< //
-void TrackDataManager::FilterVectors(
-    vector<string> &strVec, vector<vector<float>> &fltVecs, vector<vector<int>> &intVecs)
-{
-    // Indices to keep
-    vector<size_t> indicesToKeep;
-    size_t size = strVec.size();
-
-    for(size_t i = 0; i < size; ++i)
-    {
-        // If string is NOT in the set excludeStrings, keep index
-        if(excludeStrings.find(strVec[i]) == excludeStrings.end())
-            indicesToKeep.push_back(i);
+        hitsCylinderID.push_back(inter.cylinderId);
     }
 
-    // Reconstruct vectors (filter)
-    // Strings
-    vector<string> newStrVec;
-    newStrVec.reserve(indicesToKeep.size());
-    for(auto idx : indicesToKeep)
-        newStrVec.push_back(strVec[idx]);
-    strVec = move(newStrVec);
-
-    // Float
-    for(auto &vec : fltVecs)
-    {
-        vector<Float_t> newVec;
-        newVec.reserve(indicesToKeep.size());
-        for(auto idx : indicesToKeep)
-            newVec.push_back(vec[idx]);
-        vec = move(newVec);
-    }
-
-    // Int
-    for(auto &vec : intVecs)
-    {
-        vector<Int_t> newVec;
-        newVec.reserve(indicesToKeep.size());
-        for(auto idx : indicesToKeep)
-            newVec.push_back(vec[idx]);
-        vec = move(newVec);
-    }
-}
-
-Int_t TrackDataManager::FindFirstTrack(
-    const vector<Int_t> &trackIDs, const vector<Int_t> &particleIDs, Int_t targetParticleID)
-{
-    Int_t minTrackID = 999999;
-    Bool_t found = false;
-
-    for(size_t i = 0; i < trackIDs.size(); ++i)
-    {
-        if(particleIDs[i] == targetParticleID)
-        {
-            if(trackIDs[i] < minTrackID)
-            {
-                minTrackID = trackIDs[i];
-                found = true;
-            }
-        }
-    }
-    return found ? minTrackID : -1;
-}
-
-void TrackDataManager::FilterParticleAndTrack(vector<string> &strVec,
-    vector<vector<float>> &fltVecs, vector<vector<Int_t>> &intVecs, Int_t trackID, Int_t particleID)
-{
-    // Assume: intVecs[1] = TrackID, intVecs[2] = ParticleID
-    const auto &vTrackID = intVecs[1];
-    const auto &vPartID = intVecs[2];
-
-    vector<size_t> indicesToKeep;
-    size_t size = vTrackID.size();
-
-    for(size_t i = 0; i < size; ++i)
-    {
-        if(vTrackID[i] == trackID && vPartID[i] == particleID)
-            indicesToKeep.push_back(i);
-    }
-
-    // Apply filter (copy-paste of previous logic)
-    vector<string> newStrVec;
-    newStrVec.reserve(indicesToKeep.size());
-    for(auto idx : indicesToKeep)
-        newStrVec.push_back(strVec[idx]);
-    strVec = move(newStrVec);
-
-    for(auto &vec : fltVecs)
-    {
-        vector<Float_t> newVec;
-        newVec.reserve(indicesToKeep.size());
-        for(auto idx : indicesToKeep)
-            newVec.push_back(vec[idx]);
-        vec = move(newVec);
-    }
-
-    for(auto &vec : intVecs)
-    {
-        vector<Int_t> newVec;
-        newVec.reserve(indicesToKeep.size());
-        for(auto idx : indicesToKeep)
-            newVec.push_back(vec[idx]);
-        vec = move(newVec);
-    }
+    currentEventIndex++;
 }
 
 Bool_t TrackDataManager::SetTrueDecayData(Int_t eventID)
 {
-    // --- PARTE 1: Sincronizzazione ---
-
-    // Cerchiamo l'ID nella mappa (che hai riempito nel costruttore)
-    auto it = decayIndexMap.find(eventID);
-
-    if(it == decayIndexMap.end())
-    {
-        // Evento di verità non trovato per questo ID!
+    if(simChain->GetEntries() == 0 || eventID >= simChain->GetEntries())
         return false;
-    }
 
-    // Trovato: carichiamo i dati grezzi dal Tree
-    Long64_t entryIndex = it->second;
-    decayChain->GetEntry(entryIndex);
-
-    // Ora trueDecay_posX, trueDecay_momX, ecc. contengono i dati giusti.
-    // --- PARTE 2: Calcoli e Conversione (La tua vecchia logica) ---
+    simChain->GetEntry(eventID);
 
     // Set time of decay
-    trueDecayTime = trueDecay_time;
+    trueDecayTime = 0; // Not available in simple sim
 
     // Conversion mm to cm
     const Double_t mm2cm = 0.1;

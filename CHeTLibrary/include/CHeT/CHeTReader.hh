@@ -40,9 +40,9 @@ class Reader
     /**
      * @brief Constructor.
      * @param filename Path to the ROOT file (or glob pattern).
-     * @param treeName Name of the tree (default: "Event").
+     * @param treeName Name of the tree (default: "auto").
      */
-    Reader(const std::string &filename, const std::string &treeName = "Event");
+    Reader(const std::string &filename, const std::string &treeName = "auto");
 
     // Disable copy (RDataFrame has unique pointers)
     Reader(const Reader &) = delete;
@@ -50,7 +50,7 @@ class Reader
 
     /**
      * @brief Set cuts for hit selection.
-     * Must be called before GetEstimators().
+     * Must be called before GetCHeTTree().
      * @param toaMin Minimum Time of Arrival [ns]
      * @param toaMax Maximum Time of Arrival [ns]
      * @param totMin Minimum Time over Threshold [LSB]
@@ -99,6 +99,13 @@ class Reader
     ROOT::RDF::RNode GetRaw();
 
     /**
+     * @brief Saves the processed high-level data to a new ROOT file.
+     * @param filename Output ROOT file name.
+     * @param treeName Output tree name (default: "chet").
+     */
+    void SaveToTree(const std::string &filename, const std::string &treeName = "chet");
+
+    /**
      * @brief Returns the node with calculated high-level variables.
      *
      * Performs:
@@ -107,7 +114,7 @@ class Reader
      * 3. Geometric mapping (Channel ID -> Global Bundle ID -> Layer/Cylinder).
      * 4. Aggregation of all hits into unique vectors (All_Bundle, All_Lay...).
      */
-    ROOT::RDF::RNode GetEstimators();
+    ROOT::RDF::RNode GetCHeTTree();
 
   private:
     std::string fFilename;
