@@ -89,6 +89,9 @@ void FITALG::CosmicFitter()
 {
     cout << ">>> Running CosmicFitter..." << endl;
 
+    TrackDataManager data;
+    data.InitRecoTree(false);
+
     auto &config = Config::get();
     if(config.inputDataFiles.empty())
     {
@@ -108,7 +111,7 @@ void FITALG::CosmicFitter()
 
     CHeT::Data::Reader reader(config.inputDataFiles[0], config.inputTreeName);
     if(!hasSIM)
-        reader.SetCuts(215, 250, 40, 220);
+        reader.SetCuts(config.cutToAMin, config.cutToAMax, config.cutToTMin, config.cutToTMax);
 
     auto df = reader.GetCHeTTree();
 
@@ -174,6 +177,15 @@ void FITALG::CosmicFitter()
             continue;
         FitOutput fitRes = Do3DFit(hit_ids, false);
         RecoTrack trFit = fitRes.track;
+
+        data.rec_x0 = trFit.x0;
+        data.rec_z0 = trFit.z0;
+        data.rec_sx = trFit.sx;
+        data.rec_sz = trFit.sz;
+        data.rec_chi2 = trFit.chi2;
+        data.rec_converged = trFit.converged;
+        if(data.recTree)
+            data.recTree->Fill();
 
         if(trFit.converged)
         {
@@ -292,6 +304,7 @@ void FITALG::CosmicFitter()
     }
 
     // Finally
+    data.SaveRecoTree();
     gSystem->Exit(0);
     exit(0);
 }
@@ -300,6 +313,7 @@ void FITALG::SpacepointFitter()
 {
     // Load events
     TrackDataManager data;
+    data.InitRecoTree(true);
 
     Int_t nEvents = data.GetNEvents();
     Int_t processedEvents = data.GetProcessedEvents();
@@ -817,6 +831,7 @@ void FITALG::SpacepointFitter()
     display->open();
 
     // Finally
+    data.SaveRecoTree();
     gSystem->Exit(0);
     exit(0);
 }
@@ -825,6 +840,7 @@ void FITALG::HelixFitter()
 {
     // Load events
     TrackDataManager data;
+    data.InitRecoTree(true);
 
     Int_t nEvents = data.GetNEvents();
     Int_t processedEvents = data.GetProcessedEvents();
@@ -1664,6 +1680,7 @@ void FITALG::HelixFitter()
     display->open();
 
     // Finally
+    data.SaveRecoTree();
     exit(0);
 }
 

@@ -30,7 +30,7 @@ class Config
     // I/O files
     std::string inputDir = "../../data/input/toy/";
     std::string inputFileName = "cosmictoy0000.root";
-    std::string inputTreeName = "Event";
+    std::string inputTreeName = "auto";
     std::vector<std::string> inputDataFiles = { inputDir + inputFileName };
 
     std::string outputDir = "../../data/output/";
@@ -61,6 +61,11 @@ class Config
     Bool_t pttrecMode = false;
     Bool_t quietMode = false;
     Bool_t processSingle = false;
+
+    double cutToAMin = 215.0;
+    double cutToAMax = 250.0;
+    double cutToTMin = 40.0;
+    double cutToTMax = 220.0;
 
     Config(Config const &) = delete;
     void operator=(Config const &) = delete;

@@ -34,6 +34,12 @@ entryMax = 1000
 ### Analysis
 turns = 2
 
+### Data Cuts (for real data)
+toa-min = 215.0
+toa-max = 250.0
+tot-min = 40.0
+tot-max = 220.0
+
 ### Simulation (for now)
 smearing = false
 pattern-rec = false

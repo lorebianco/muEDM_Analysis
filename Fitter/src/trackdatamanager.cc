@@ -22,7 +22,15 @@ TrackDataManager::TrackDataManager()
     simChain->SetBranchAddress("trk_uy", &trueDecay_momY);
     simChain->SetBranchAddress("trk_uz", &trueDecay_momZ);
 
-    reader = std::make_unique<CHeT::Data::Reader>(Config::get().inputDataFiles[0], "auto");
+    reader = std::make_unique<CHeT::Data::Reader>(
+        Config::get().inputDataFiles[0], Config::get().inputTreeName);
+
+    if(simChain->GetEntries() == 0)
+    {
+        reader->SetCuts(Config::get().cutToAMin, Config::get().cutToAMax, Config::get().cutToTMin,
+            Config::get().cutToTMax);
+    }
+
     auto df = reader->GetCHeTTree();
     auto hits_ptr = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
     allEventsHits = *hits_ptr;
@@ -51,6 +59,22 @@ TrackDataManager::TrackDataManager()
         cout << ">>> " << processedEvents << " events will be processed\n\n";
 
     // >>>>> Output <<<<< //
+
+    // Initialize output file and trees
+    if(!Config::get().outputFile.empty())
+    {
+        outputFile = new TFile(Config::get().outputFile.c_str(), "RECREATE");
+
+        // Try to clone input trees if they exist
+        TTree *simTree = (TTree *)simChain->GetTree();
+        if(simTree)
+        {
+            outputFile->cd();
+            TTree *clonedSim = simTree->CloneTree();
+            clonedSim->Write();
+        }
+    }
+
     // Init histograms
     accPhi = new TEfficiency("accPhi", "Acceptance: Phi vs Momentum; Momentum [MeV/c];#phi [rad]",
         10, 0, 68.9, 10, -TMath::Pi(), TMath::Pi());
@@ -112,8 +136,69 @@ TrackDataManager::TrackDataManager()
     histTime = new TH1F("histTime", "Time of fitted tracks; Time [ns]; Counts", 100, 0, 0);
 }
 
+void TrackDataManager::InitRecoTree(bool isMichel)
+{
+    if(!outputFile)
+        return;
+    outputFile->cd();
+    if(!recTree)
+        recTree = new TTree("rec", "Reconstructed Data");
+
+    recTree->Branch("rec_chi2", &rec_chi2, "rec_chi2/D");
+    recTree->Branch("rec_converged", &rec_converged, "rec_converged/O");
+    recTree->Branch("rec_hits", &rec_hits);
+    recTree->Branch("rec_hough2d_idx", &rec_hough2d_idx);
+    recTree->Branch("rec_houghz_idx", &rec_houghz_idx);
+
+    if(!isMichel)
+    {
+        recTree->Branch("rec_x0", &rec_x0, "rec_x0/D");
+        recTree->Branch("rec_z0", &rec_z0, "rec_z0/D");
+        recTree->Branch("rec_sx", &rec_sx, "rec_sx/D");
+        recTree->Branch("rec_sz", &rec_sz, "rec_sz/D");
+        recTree->Branch("is_cosmic_valid", &is_cosmic_valid, "is_cosmic_valid/O");
+    }
+    else
+    {
+        recTree->Branch("rec_R", &rec_R, "rec_R/D");
+        recTree->Branch("rec_cx", &rec_cx, "rec_cx/D");
+        recTree->Branch("rec_cy", &rec_cy, "rec_cy/D");
+        recTree->Branch("rec_dz_ds", &rec_dz_ds, "rec_dz_ds/D");
+        recTree->Branch("rec_phi0", &rec_phi0, "rec_phi0/D");
+        recTree->Branch("rec_t_min", &rec_t_min, "rec_t_min/D");
+        recTree->Branch("rec_t_max", &rec_t_max, "rec_t_max/D");
+
+        recTree->Branch("rec_extrap_x", &rec_extrap_x, "rec_extrap_x/D");
+        recTree->Branch("rec_extrap_y", &rec_extrap_y, "rec_extrap_y/D");
+        recTree->Branch("rec_extrap_z", &rec_extrap_z, "rec_extrap_z/D");
+        recTree->Branch("rec_extrap_px", &rec_extrap_px, "rec_extrap_px/D");
+        recTree->Branch("rec_extrap_py", &rec_extrap_py, "rec_extrap_py/D");
+        recTree->Branch("rec_extrap_pz", &rec_extrap_pz, "rec_extrap_pz/D");
+
+        recTree->Branch("rec_n_candidates_2d", &rec_n_candidates_2d, "rec_n_candidates_2d/I");
+        recTree->Branch("rec_n_candidates_z", &rec_n_candidates_z, "rec_n_candidates_z/I");
+        recTree->Branch("is_michel_valid", &is_michel_valid, "is_michel_valid/O");
+    }
+}
+
+void TrackDataManager::SaveRecoTree()
+{
+    if(outputFile)
+    {
+        outputFile->cd();
+        if(recTree)
+        {
+            recTree->Write();
+        }
+        outputFile->Close();
+        delete outputFile;
+        outputFile = nullptr;
+    }
+}
+
 TrackDataManager::~TrackDataManager()
 {
+    SaveRecoTree();
     delete simChain;
 }
 
@@ -125,12 +210,17 @@ void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
     // Clean containers
     hitsCoordinates.clear();
     hitsCylinderID.clear();
+    rec_hits.clear();
+    rec_hough2d_idx.clear();
+    rec_houghz_idx.clear();
 
     if(currentEventIndex >= (Long64_t)allEventsHits.size())
         return;
 
     const auto &rvec = allEventsHits[currentEventIndex];
     std::vector<int> hit_ids(rvec.begin(), rvec.end());
+
+    rec_hits = hit_ids;
 
     SetTrueDecayData(currentEventIndex);
 

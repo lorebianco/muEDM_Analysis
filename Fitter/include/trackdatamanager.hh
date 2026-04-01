@@ -10,10 +10,12 @@
 
 #include <TChain.h>
 #include <TEfficiency.h>
+#include <TFile.h>
 #include <TH1.h>
 #include <TH2.h>
 #include <TMath.h>
 #include <TProfile.h>
+#include <TTree.h>
 #include <TVector3.h>
 
 #include "CHeT/CHeTReader.hh"
@@ -40,6 +42,8 @@ class TrackDataManager
         return simChain;
     }
     Bool_t SetTrueDecayData(Int_t eventID);
+    void InitRecoTree(bool isMichel);
+    void SaveRecoTree();
 
     // Data (Linked to input TTree branches)
     Int_t truedecay_EventID;
@@ -58,6 +62,33 @@ class TrackDataManager
     // Fitted Data
     TVector3 fittedDecayPos, fittedDecayMom;
     Double_t fittedDecayThetaEDM;
+
+    // Output Data
+    TFile *outputFile = nullptr;
+    TTree *recTree = nullptr;
+
+    // Cosmic rec parameters
+    Double_t rec_x0, rec_z0, rec_sx, rec_sz;
+
+    // Michel rec parameters
+    Double_t rec_R, rec_cx, rec_cy, rec_dz_ds, rec_phi0, rec_t_min, rec_t_max;
+
+    // Extrapolation parameters
+    Double_t rec_extrap_x, rec_extrap_y, rec_extrap_z;
+    Double_t rec_extrap_px, rec_extrap_py, rec_extrap_pz;
+
+    // Additional parameters
+    Double_t rec_chi2;
+    Bool_t rec_converged;
+    Int_t rec_n_candidates_2d, rec_n_candidates_z;
+
+    // Flags
+    Bool_t is_cosmic_valid;
+    Bool_t is_michel_valid;
+
+    std::vector<Int_t> rec_hits;
+    std::vector<Int_t> rec_hough2d_idx;
+    std::vector<Int_t> rec_houghz_idx;
 
     // Double_t trueMomentum;
     // Double_t polarAngle;

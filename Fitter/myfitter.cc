@@ -45,6 +45,11 @@ void RunInteractiveGUI(Config &config)
     std::string entry_max_str = std::to_string(config.rangeLoop.second);
     std::string turns_str = std::to_string(config.turnID);
 
+    std::string toa_min_str = std::to_string(config.cutToAMin);
+    std::string toa_max_str = std::to_string(config.cutToAMax);
+    std::string tot_min_str = std::to_string(config.cutToTMin);
+    std::string tot_max_str = std::to_string(config.cutToTMax);
+
     // Run Mode
     int selected_runmode = 0;
     if(config.processSingle)
@@ -105,6 +110,11 @@ void RunInteractiveGUI(Config &config)
     Component inp_entrymax = Input(&entry_max_str, "1000");
     Component inp_turns = Input(&turns_str, "0");
 
+    Component inp_toa_min = Input(&toa_min_str, "215.0");
+    Component inp_toa_max = Input(&toa_max_str, "250.0");
+    Component inp_tot_min = Input(&tot_min_str, "40.0");
+    Component inp_tot_max = Input(&tot_max_str, "220.0");
+
     bool should_exit = false;
     Component btn_run = Button(
         "  RUN ANALYSIS  ", [&] { screen.Exit(); }, ButtonOption::Animated());
@@ -118,10 +128,11 @@ void RunInteractiveGUI(Config &config)
         ButtonOption::Animated());
 
     // --- 4. LAYOUT E RENDERER ---
-    auto layout = Container::Vertical({ inp_input_dir, inp_input, inp_output_dir, inp_geom_dir,
-        inp_geom, menu_btype, inp_bdir, inp_bpath, inp_bscale, inp_bconst, menu_fitter,
-        cb_prefitter, cb_quiet, menu_runmode, inp_event, inp_start, inp_entrymax, inp_turns,
-        cb_smearing, cb_pttrec, Container::Horizontal({ btn_run, btn_exit }) });
+    auto layout = Container::Vertical(
+        { inp_input_dir, inp_input, inp_output_dir, inp_geom_dir, inp_geom, menu_btype, inp_bdir,
+            inp_bpath, inp_bscale, inp_bconst, menu_fitter, cb_prefitter, cb_quiet, menu_runmode,
+            inp_event, inp_start, inp_entrymax, inp_turns, inp_toa_min, inp_toa_max, inp_tot_min,
+            inp_tot_max, cb_smearing, cb_pttrec, Container::Horizontal({ btn_run, btn_exit }) });
 
     auto renderer = Renderer(layout,
         [&]
@@ -160,6 +171,10 @@ void RunInteractiveGUI(Config &config)
                                 hbox(text("Start/End Entries: "), inp_start->Render(), text(" / "),
                                     inp_entrymax->Render()),
                                 hbox(text("Turns:   "), inp_turns->Render()),
+                                hbox(text("ToA Min/Max: "), inp_toa_min->Render(), text(" / "),
+                                    inp_toa_max->Render()),
+                                hbox(text("ToT Min/Max: "), inp_tot_min->Render(), text(" / "),
+                                    inp_tot_max->Render()),
                                 cb_smearing->Render(),
                                 cb_pttrec->Render(),
                             })),
@@ -234,6 +249,35 @@ void RunInteractiveGUI(Config &config)
     try
     {
         config.turnID = std::stoi(turns_str);
+    }
+    catch(...)
+    {
+    }
+
+    try
+    {
+        config.cutToAMin = std::stod(toa_min_str);
+    }
+    catch(...)
+    {
+    }
+    try
+    {
+        config.cutToAMax = std::stod(toa_max_str);
+    }
+    catch(...)
+    {
+    }
+    try
+    {
+        config.cutToTMin = std::stod(tot_min_str);
+    }
+    catch(...)
+    {
+    }
+    try
+    {
+        config.cutToTMax = std::stod(tot_max_str);
     }
     catch(...)
     {
@@ -331,6 +375,11 @@ Int_t main(Int_t argc, char **argv)
     app.add_flag("-p,--pattern-rec", config.pttrecMode, "Apply pattern recognition analysis");
     // -q
     app.add_flag("-q,--quiet", config.quietMode, "Quiet mode");
+
+    app.add_option("--toa-min", config.cutToAMin, "Minimum ToA cut");
+    app.add_option("--toa-max", config.cutToAMax, "Maximum ToA cut");
+    app.add_option("--tot-min", config.cutToTMin, "Minimum ToT cut");
+    app.add_option("--tot-max", config.cutToTMax, "Maximum ToT cut");
 
     // --- PARSING / INTERFACE ---
     try
