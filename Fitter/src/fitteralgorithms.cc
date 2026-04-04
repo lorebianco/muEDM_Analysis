@@ -173,21 +173,45 @@ void FITALG::CosmicFitter()
         const auto &rvec = allEventsHits[i];
         std::vector<int> hit_ids(rvec.begin(), rvec.end());
 
-        if(hit_ids.size() < 3)
-            continue;
-        FitOutput fitRes = Do3DFit(hit_ids, false);
-        RecoTrack trFit = fitRes.track;
+        std::sort(hit_ids.begin(), hit_ids.end());
+        hit_ids.erase(std::unique(hit_ids.begin(), hit_ids.end()), hit_ids.end());
 
-        data.rec_x0 = trFit.x0;
-        data.rec_z0 = trFit.z0;
-        data.rec_sx = trFit.sx;
-        data.rec_sz = trFit.sz;
-        data.rec_chi2 = trFit.chi2;
-        data.rec_converged = trFit.converged;
+        data.EventID = i;
+        data.rec_acceptance = false;
+        data.rec_converged = false;
+        data.rec_x0 = 0;
+        data.rec_z0 = 0;
+        data.rec_sx = 0;
+        data.rec_sz = 0;
+        data.rec_chi2 = -1;
+        data.rec_hits = hit_ids;
+        data.rec_hough2d_idx.clear();
+        data.rec_houghz_idx.clear();
+
+        bool is_converged = false;
+        FitOutput fitRes;
+        RecoTrack trFit;
+
+        if(hit_ids.size() >= 4)
+        {
+            data.rec_acceptance = true;
+            fitRes = Do3DFit(hit_ids, false);
+            trFit = fitRes.track;
+
+            data.rec_x0 = trFit.x0;
+            data.rec_z0 = trFit.z0;
+            data.rec_sx = trFit.sx;
+            data.rec_sz = trFit.sz;
+            data.rec_chi2 = trFit.chi2;
+            data.rec_converged = trFit.converged;
+
+            is_converged = trFit.converged;
+        }
+
         if(data.recTree)
             data.recTree->Fill();
 
-        if(trFit.converged)
+        if(is_converged)
         {
             myViewer->AddEvent(i, fitRes);
 
@@ -289,7 +313,7 @@ void FITALG::CosmicFitter()
             if(config.processSingle)
             {
                 CHeT::Vis::Draw2D(hit_ids, visTracks);
-                CHeT::Vis::Draw3D(hit_ids, visTracks);
+                CHeT::Vis::Draw3D(hit_ids, visTracks, fitRes.fittedPoints);
             }
         }
     }

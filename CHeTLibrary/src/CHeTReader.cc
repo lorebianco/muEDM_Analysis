@@ -57,9 +57,14 @@ void Reader::SetCuts(double toaMin, double toaMax, unsigned int totMin, unsigned
     fTotMax = totMax;
 }
 
-void Reader::SetSingleEvent(long eventID)
+void Reader::SetSingleEntry(long entry)
 {
-    fHeadNode = fDF.Range(eventID, eventID + 1);
+    fHeadNode = fDF.Range(entry, entry + 1);
+}
+
+void Reader::SetEventByID(int eventID)
+{
+    fHeadNode = fDF.Filter([eventID](int id) { return id == eventID; }, { "EventID" });
 }
 
 void Reader::SetEnabledBoards(const std::vector<int> &boards)
@@ -431,7 +436,7 @@ ROOT::RDF::RNode Reader::GetCHeTTree()
                   [](const RVecUS &t0, const RVecUS &t1, const RVecUS &t2, const RVecUS &t3)
                   {
                       auto all = Concatenate(t0, Concatenate(t1, Concatenate(t2, t3)));
-                      return (Double_t)Sum(all);
+                      return all.empty() ? 0.0 : Sum(all);
                   },
                   tot_cols);
 

@@ -78,13 +78,11 @@ class TrackDataManager
     Double_t rec_extrap_px, rec_extrap_py, rec_extrap_pz;
 
     // Additional parameters
+    Int_t EventID;
     Double_t rec_chi2;
+    Bool_t rec_acceptance;
     Bool_t rec_converged;
     Int_t rec_n_candidates_2d, rec_n_candidates_z;
-
-    // Flags
-    Bool_t is_cosmic_valid;
-    Bool_t is_michel_valid;
 
     std::vector<Int_t> rec_hits;
     std::vector<Int_t> rec_hough2d_idx;

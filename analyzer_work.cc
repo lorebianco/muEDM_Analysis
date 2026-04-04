@@ -3506,7 +3506,7 @@ void DrawEvent(
         eventID = gRandom->Integer(nEntries);
     }
 
-    reader.SetSingleEvent(eventID);
+    reader.SetSingleEntry(eventID);
     auto df = reader.GetCHeTTree();
 
     // The reader provides "All_Bundle", which contains the global IDs of
@@ -3862,7 +3862,7 @@ void FitCosmicEvent(
         eventID = gRandom->Integer(reader.GetRaw().Count().GetValue());
     }
 
-    reader.SetSingleEvent(eventID);
+    reader.SetSingleEntry(eventID);
     auto df = reader.GetCHeTTree();
 
     // Take dei dati

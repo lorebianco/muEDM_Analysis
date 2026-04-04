@@ -59,11 +59,18 @@ class Reader
     void SetCuts(double toaMin, double toaMax, unsigned int totMin, unsigned int totMax);
 
     /**
-     * @brief Restricts the analysis to a single event ID.
-     * Replaces any previous range or filter on the event entry.
-     * @param eventID The event entry index to process.
+     * @brief Restricts the analysis to a single entry index.
+     * Replaces any previous range or filter on the entry index.
+     * @param entry The row index in the TTree.
      */
-    void SetSingleEvent(long eventID);
+    void SetSingleEntry(long entry);
+
+    /**
+     * @brief Restricts the analysis to a specific EventID.
+     * Filters the dataset where the EventID branch matches the given ID.
+     * @param eventID The EventID to process.
+     */
+    void SetEventByID(int eventID);
 
     /**
      * @brief Restricts the analysis to specific boards.

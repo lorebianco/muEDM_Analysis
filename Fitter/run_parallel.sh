@@ -4,7 +4,7 @@
 # CONFIGURAZIONE
 ##############################################
 
-EXEC=./myfitter
+EXEC=./CHeTFitter
 CONFIG=macros/edm_tracker.mac
 
 TOTAL_EVENTS=100     # totale degli eventi da processare

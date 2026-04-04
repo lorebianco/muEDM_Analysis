@@ -144,7 +144,9 @@ void TrackDataManager::InitRecoTree(bool isMichel)
     if(!recTree)
         recTree = new TTree("rec", "Reconstructed Data");
 
+    recTree->Branch("EventID", &EventID, "EventID/I");
     recTree->Branch("rec_chi2", &rec_chi2, "rec_chi2/D");
+    recTree->Branch("rec_acceptance", &rec_acceptance, "rec_acceptance/O");
     recTree->Branch("rec_converged", &rec_converged, "rec_converged/O");
     recTree->Branch("rec_hits", &rec_hits);
     recTree->Branch("rec_hough2d_idx", &rec_hough2d_idx);
@@ -156,7 +158,6 @@ void TrackDataManager::InitRecoTree(bool isMichel)
         recTree->Branch("rec_z0", &rec_z0, "rec_z0/D");
         recTree->Branch("rec_sx", &rec_sx, "rec_sx/D");
         recTree->Branch("rec_sz", &rec_sz, "rec_sz/D");
-        recTree->Branch("is_cosmic_valid", &is_cosmic_valid, "is_cosmic_valid/O");
     }
     else
     {
@@ -177,7 +178,6 @@ void TrackDataManager::InitRecoTree(bool isMichel)
 
         recTree->Branch("rec_n_candidates_2d", &rec_n_candidates_2d, "rec_n_candidates_2d/I");
         recTree->Branch("rec_n_candidates_z", &rec_n_candidates_z, "rec_n_candidates_z/I");
-        recTree->Branch("is_michel_valid", &is_michel_valid, "is_michel_valid/O");
     }
 }
 
@@ -206,6 +206,8 @@ void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
 {
     if(eventID >= 0)
         currentEventIndex = eventID;
+
+    this->EventID = currentEventIndex;
 
     // Clean containers
     hitsCoordinates.clear();

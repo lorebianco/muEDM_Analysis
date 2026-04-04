@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14) # Versione minima per FetchContent moderno
 
-project(myfitter)
+project(CHeTFitter)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -60,10 +60,10 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 # --- 7. EXECUTABLE ---
-add_executable(myfitter myfitter.cc ${sources} ${headers})
+add_executable(CHeTFitter CHeTFitter.cc ${sources} ${headers})
 
 # --- 8. LINKING ---
-target_link_libraries(myfitter
+target_link_libraries(CHeTFitter
     PRIVATE
     CHeTLib
     genfit2

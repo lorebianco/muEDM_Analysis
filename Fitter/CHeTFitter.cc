@@ -137,8 +137,8 @@ void RunInteractiveGUI(Config &config)
     auto renderer = Renderer(layout,
         [&]
         {
-            return vbox({ text(" muEDM Fitter - Control Panel ") | bold | center
-                    | color(Color::Cyan) | border,
+            return vbox({ text(" CHeTFitter - Control Panel ") | bold | center | color(Color::Cyan)
+                    | border,
                 hbox({
                     vbox({
                         window(text(" I/O & Geometry "),
@@ -313,7 +313,7 @@ Int_t main(Int_t argc, char **argv)
     {
         int rootArgc = 0;
         char **rootArgv = nullptr;
-        new TApplication("muEDMFitterApp", &rootArgc, rootArgv);
+        new TApplication("CHeTFitter", &rootArgc, rootArgv);
 
         // Load rootlogon if present
         if(!gSystem->AccessPathName(".rootlogon.C"))
@@ -323,7 +323,7 @@ Int_t main(Int_t argc, char **argv)
     }
 
     auto &config = Config::get();
-    CLI::App app { "muEDMFitter Analysis Tool" };
+    CLI::App app { "CHeTFitter Analysis Tool" };
     app.set_config("--config", "macros/edm_tracker.mac", "Read a configuration file", true);
 
     // --- MAPS FOR ENUM ---
