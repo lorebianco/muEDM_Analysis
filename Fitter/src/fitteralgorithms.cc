@@ -95,12 +95,15 @@ void FITALG::CosmicFitter()
     auto &config = Config::get();
 
     // 1. Istanzia il viewer personalizzato
-    FITALG::AnalyticViewer *myViewer = new FITALG::AnalyticViewer();
+    FITALG::AnalyticViewer *myViewer = nullptr;
+    if(!config.quietMode) {
+        myViewer = new FITALG::AnalyticViewer();
+    }
 
     // Carica la geometria globale (GDML o ROOT file) tramite il viewer
     if(!config.geometryFile.empty())
     {
-        myViewer->LoadGeometry(config.geometryFile.c_str());
+        if(myViewer) myViewer->LoadGeometry(config.geometryFile.c_str());
     }
 
     Int_t nEvents = data.GetNEvents();
@@ -182,7 +185,7 @@ void FITALG::CosmicFitter()
 
         if(is_converged)
         {
-            myViewer->AddEvent(i, fitRes);
+            if(myViewer) myViewer->AddEvent(i, fitRes);
 
             if(hasSIM)
             {
@@ -289,7 +292,7 @@ void FITALG::CosmicFitter()
 
     if(!config.quietMode && gApplication)
     {
-        myViewer->Show();
+        if(myViewer) myViewer->Show();
 
         // Necessario per tenere aperta l'interfaccia se lanciato come applicazione
         if(gApplication)
@@ -362,9 +365,6 @@ void FITALG::SpacepointFitter()
         Config::get().event = gRandom->Integer(nEvents);
 
     // Event loop
-    Int_t inAcceptance = 0;
-    Int_t inEfficiency = 0;
-    Int_t nTurns, nCylinders;
     for(Long_t ev = Config::get().rangeLoop.first; ev < Config::get().rangeLoop.second; ev++)
     {
         if(ev >= nEvents)
@@ -380,6 +380,16 @@ void FITALG::SpacepointFitter()
 
         // Get event and filter
         data.ProcessAndFilterEvent(ev);
+
+        data.rec_acceptance = false;
+        data.rec_converged = false;
+        data.rec_chi2 = -1;
+        data.rec_R = 0; data.rec_cx = 0; data.rec_cy = 0; data.rec_z0 = 0; data.rec_dz_ds = 0; data.rec_phi0 = 0;
+
+        data.rec_acceptance = false;
+        data.rec_converged = false;
+        data.rec_chi2 = -1;
+        data.rec_R = 0; data.rec_cx = 0; data.rec_cy = 0; data.rec_z0 = 0; data.rec_dz_ds = 0; data.rec_phi0 = 0;
 
         Int_t nHits = data.hitsCoordinates.size();
 
@@ -416,9 +426,6 @@ void FITALG::SpacepointFitter()
             if(Config::get().processSingle)
                 cout << ">>> Track is not in acceptance!" << endl;
 
-            data.accTheta->Fill(false, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-            data.accPhi->Fill(false, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
-
             continue;
         }
 
@@ -427,18 +434,10 @@ void FITALG::SpacepointFitter()
         auto sortedHits = PTTALG::SortVectorZ(data.hitsCoordinates, data.hitsCylinderID);
         data.hitsCoordinates = sortedHits.first;
         data.hitsCylinderID = sortedHits.second;
-        nTurns = PTTALG::CountTurns(data.hitsCoordinates);
-        nCylinders = PTTALG::CountCylinders(data.hitsCylinderID);
 
         // Apply turn analysis
         if(Config::get().turnMode)
         {
-            if(Config::get().processSingle)
-            {
-                cout << ">>> nTurns = " << nTurns << endl;
-                cout << ">>> nCylinders = " << nCylinders << endl;
-            }
-
             auto turnHits = PTTALG::SelectTurn(
                 Config::get().turnID, data.hitsCoordinates, data.hitsCylinderID);
             data.hitsCoordinates = turnHits.first;
@@ -459,17 +458,10 @@ void FITALG::SpacepointFitter()
                 if(Config::get().processSingle)
                     cout << ">>> Track is not in acceptance anymore!" << endl;
 
-                data.accTheta->Fill(false, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-                data.accPhi->Fill(false, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
-
+                if(data.recTree) data.recTree->Fill();
                 continue;
             }
         }
-
-        // Track is in acceptance!
-        inAcceptance++;
-        data.accTheta->Fill(true, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-        data.accPhi->Fill(true, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
 
         // Fast detector simulation
         if(Config::get().useSmearing)
@@ -554,28 +546,6 @@ void FITALG::SpacepointFitter()
             }
         }
 
-        // Plotting
-        if(Config::get().processSingle)
-        {
-            vector<vector<Double_t>> plottedCoordsVec;
-            for(const auto &vec : measuredCoordinates)
-                plottedCoordsVec.push_back({ vec.X(), vec.Y(), vec.Z() });
-
-            vector<vector<Double_t>> virtualCoordsVec;
-            for(const auto &vec : virtualCoordinates)
-                virtualCoordsVec.push_back({ vec.X(), vec.Y(), vec.Z() });
-
-            TCanvas *canvHitsXY = new TCanvas("canvHitsXY", "canvHitsXY", 700, 700);
-            TCanvas *canvHitsYZ = new TCanvas("canvHitsYZ", "canvHitsYZ", 900, 500);
-            TCanvas *canvHitsXYZ = new TCanvas("canvHitsXYZ");
-
-            AUXALG::DrawXYView_hits(
-                &data.trueDecayPos, plottedCoordsVec, canvHitsXY, virtualCoordsVec);
-            AUXALG::DrawYZView_hits(
-                &data.trueDecayPos, plottedCoordsVec, canvHitsYZ, virtualCoordsVec);
-            AUXALG::DrawXYZView_hits(plottedCoordsVec, canvHitsXYZ, virtualCoordsVec);
-        }
-
         // Start values for fit (would come from pattern recognition -> from helix prefitter)
         // Initial guess for cov
         const Double_t seedResolution = 0.1; // ?
@@ -623,47 +593,30 @@ void FITALG::SpacepointFitter()
         {
             cerr << e.what();
             cerr << "Exception, next track" << endl;
+            if(data.recTree) data.recTree->Fill();
             continue;
         }
 
         // Fit result
         // fitTrack->Print();
         Bool_t isFitConverged = fitTrack->getFitStatus(rep)->isFitConverged();
-
+        data.rec_converged = isFitConverged;
         if(isFitConverged)
         {
-            inEfficiency++;
-
-            auto [fRes, fSigma, fPulls]
-                = AUXALG::GetResults(fitTrack, rep, data.trueDecayPos, data.trueDecayMom.Mag(),
-                    data.trueDecayThetaEDM, data.trueDecayMom.Phi(), NORMALIZED_PULLS);
-            if(fRes.size() == 0)
-                continue;
-            data.histDiffX->Fill(fPulls[0]);
-            data.histDiffY->Fill(fPulls[1]);
-            data.histDiffZ->Fill(fPulls[2]);
-            data.histDiffMom->Fill(fPulls[3]);
-            data.histDiffTheta->Fill(fPulls[4]);
-            data.histDiffPhi->Fill(fPulls[5]);
-
-            data.graphMom->Fill(data.trueDecayMom.Mag(), fRes[3]);
-            data.graphTheta->Fill(data.trueDecayThetaEDM, fRes[4]);
-            data.graphPhi->Fill(data.trueDecayMom.Phi(), fRes[5]);
-
-            data.hist2MomRes->Fill(data.trueDecayMom.Mag(), fSigma[3]);
-            data.hist2ThetaRes->Fill(data.trueDecayThetaEDM, fSigma[4]);
-            data.hist2PhiRes->Fill(data.trueDecayMom.Phi(), fSigma[5]);
-
-            data.profMomRes->Fill(data.trueDecayMom.Mag(), fSigma[3]);
-            data.profThetaRes->Fill(data.trueDecayThetaEDM, fSigma[4]);
-            data.profPhiRes->Fill(data.trueDecayMom.Phi(), fSigma[5]);
-
-            data.histTime->Fill(data.trueDecayTime);
-
-            if(Config::get().processSingle)
-                cout << Form(">>> Fitted (p, thetaEDM, phi) = (%f MeV/c, %f pi rad, %f pi rad)",
-                    fRes[3], fRes[4] / TMath::Pi(), fRes[5] / TMath::Pi())
-                     << endl;
+            data.rec_chi2 = fitTrack->getFitStatus(rep)->getChi2();
+            
+            // Extract state at vertex or origin
+            try {
+                auto state = fitTrack->getFittedState();
+                TVector3 pos = state.getPos();
+                TVector3 mom = state.getMom();
+                data.rec_extrap_x = pos.X();
+                data.rec_extrap_y = pos.Y();
+                data.rec_extrap_z = pos.Z();
+                data.rec_extrap_px = mom.X();
+                data.rec_extrap_py = mom.Y();
+                data.rec_extrap_pz = mom.Z();
+            } catch(...) {}
         }
 
         if(Config::get().processSingle)
@@ -673,19 +626,10 @@ void FITALG::SpacepointFitter()
         }
 
         // Track is in efficiency?
-        data.effTheta->Fill(isFitConverged, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-        data.effPhi->Fill(isFitConverged, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
 
         // Store turns and cylinders data
-        data.histTurns->Fill(nTurns);
-        data.effTurns->Fill(isFitConverged, nTurns);
-        data.histCylinders->Fill(nCylinders);
-        data.effCylinders->Fill(isFitConverged, nCylinders);
-        data.histTurnsVMom->Fill(data.trueDecayMom.Mag(), nTurns);
-        data.histCylVMom->Fill(data.trueDecayMom.Mag(), nCylinders);
 
         // Store pre-fit data
-        data.histFakeHits->Fill(nAddedHits);
 
         // Check
         fitTrack->checkConsistency();
@@ -693,125 +637,11 @@ void FITALG::SpacepointFitter()
         // Last steps
         display->addEvent(fitTrack);
 
+        if(data.recTree) data.recTree->Fill();
+
         cout << "\r>>> Processed event number " << (ev - Config::get().rangeLoop.first) << flush;
     }
     cout << endl;
-
-    // Print results and draw graphs
-    if(!Config::get().processSingle)
-    {
-        // Recap
-        cout << "\n---------------------------------------------------------" << endl;
-        cout << ">>> Acceptance = " << (Float_t)(inAcceptance * 100) / processedEvents << endl;
-        cout << ">>> Efficiency = " << (Float_t)(inEfficiency * 100) / inAcceptance << endl;
-        cout << "---------------------------------------------------------\n" << endl;
-
-        // Graphs
-        if(Config::get().quietMode)
-            gROOT->SetBatch(true);
-
-        TCanvas *canvEfficiency = new TCanvas("canvEfficiency");
-        canvEfficiency->Divide(2, 2);
-        canvEfficiency->cd(1);
-        data.accTheta->Draw("COLZ TEXT");
-        canvEfficiency->cd(2);
-        data.accPhi->Draw("COLZ TEXT");
-        canvEfficiency->cd(3);
-        data.effTheta->Draw("COLZ TEXT");
-        canvEfficiency->cd(4);
-        data.effPhi->Draw("COLZ TEXT");
-
-        TCanvas *canvTurns = new TCanvas("canvTurns");
-        canvTurns->Divide(2);
-        canvTurns->cd(1);
-        data.histTurns->Draw();
-        canvTurns->cd(2);
-        data.effTurns->Draw("AP");
-
-        TCanvas *canvCylinders = new TCanvas("canvCylinders");
-        canvCylinders->Divide(2, 2);
-        canvCylinders->cd(1);
-        data.histCylinders->Draw();
-        canvCylinders->cd(2);
-        data.effCylinders->Draw("AP");
-        canvCylinders->cd(3);
-        data.histTurnsVMom->Draw();
-        canvCylinders->cd(4);
-        data.histCylVMom->Draw();
-
-        TCanvas *canvLinearity = new TCanvas("canvLinearity");
-        canvLinearity->Divide(3);
-        canvLinearity->cd(1);
-        data.graphMom->SetMarkerStyle(20);
-        data.graphMom->Draw("SCAT");
-        canvLinearity->cd(2);
-        data.graphTheta->SetMarkerStyle(20);
-        data.graphTheta->Draw("SCAT");
-        canvLinearity->cd(3);
-        data.graphPhi->SetMarkerStyle(20);
-        data.graphPhi->Draw("SCAT");
-
-        TCanvas *canvfPullsPos = new TCanvas("Pulls Position");
-        canvfPullsPos->Divide(3);
-
-        canvfPullsPos->cd(1);
-        data.histDiffX->Draw();
-
-        canvfPullsPos->cd(2);
-        data.histDiffY->Draw();
-
-        canvfPullsPos->cd(3);
-        data.histDiffZ->Draw();
-
-        TCanvas *canvfPullsMom = new TCanvas("Pulls Momentum");
-        canvfPullsMom->Divide(3);
-
-        canvfPullsMom->cd(1);
-        data.histDiffMom->Draw();
-
-        canvfPullsMom->cd(2);
-        data.histDiffTheta->Draw();
-
-        canvfPullsMom->cd(3);
-        data.histDiffPhi->Draw();
-
-        TCanvas *canvProfRes = new TCanvas("ProfResolutions");
-        canvProfRes->Divide(3);
-        canvProfRes->cd(1);
-        data.profMomRes->Draw();
-        canvProfRes->cd(2);
-        data.profThetaRes->Draw();
-        canvProfRes->cd(3);
-        data.profPhiRes->Draw();
-
-        TCanvas *canvResMom = new TCanvas("canvResMom");
-        canvResMom->cd();
-        data.hist2MomRes->Draw();
-
-        TCanvas *canvResTheta = new TCanvas("canvResTheta");
-        canvResTheta->cd();
-        data.hist2ThetaRes->Draw();
-
-        TCanvas *canvResPhi = new TCanvas("canvResPhi");
-        canvResPhi->cd();
-        data.hist2PhiRes->Draw();
-
-        TCanvas *canvPrefit = new TCanvas("canvPrefit");
-        canvPrefit->cd();
-        data.histFakeHits->Draw();
-
-        TCanvas *canvTime = new TCanvas("canvTime");
-        canvTime->cd();
-        data.histTime->Draw();
-
-        if(Config::get().quietMode)
-        {
-            canvEfficiency->SaveAs("canvEfficiency.pdf");
-            canvResMom->SaveAs("canvResMom.pdf");
-            canvResTheta->SaveAs("canvResTheta.pdf");
-            canvResPhi->SaveAs("canvResPhi.pdf");
-        }
-    }
 
     // Delete fitter
     delete fitter;
@@ -846,9 +676,6 @@ void FITALG::HelixFitter()
         Config::get().event = gRandom->Integer(nEvents);
 
     // Event loop
-    Int_t inAcceptance = 0;
-    Int_t inEfficiency = 0;
-    Int_t nTurns, nCylinders;
     for(Long_t ev = Config::get().rangeLoop.first; ev < Config::get().rangeLoop.second; ev++)
     {
         if(ev >= nEvents)
@@ -888,30 +715,18 @@ void FITALG::HelixFitter()
             if(Config::get().processSingle)
                 cout << ">>> Track is not in acceptance!" << endl;
 
-            data.accTheta->Fill(false, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-            data.accPhi->Fill(false, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
-
             continue;
         }
-        inAcceptance++;
 
         // Sort and if in single event mode draw hits
         // will need a revision when origin point is not in Z = 0 anymore
         auto sortedHits = PTTALG::SortVectorZ(data.hitsCoordinates, data.hitsCylinderID);
         data.hitsCoordinates = sortedHits.first;
         data.hitsCylinderID = sortedHits.second;
-        nTurns = PTTALG::CountTurns(data.hitsCoordinates);
-        nCylinders = PTTALG::CountCylinders(data.hitsCylinderID);
 
         // Apply turn analysis
         if(Config::get().turnMode)
         {
-            if(Config::get().processSingle)
-            {
-                cout << ">>> nTurns = " << nTurns << endl;
-                cout << ">>> nCylinders = " << nCylinders << endl;
-            }
-
             auto turnHits = PTTALG::SelectTurn(
                 Config::get().turnID, data.hitsCoordinates, data.hitsCylinderID);
             data.hitsCoordinates = turnHits.first;
@@ -925,18 +740,12 @@ void FITALG::HelixFitter()
                 if(Config::get().processSingle)
                     cout << ">>> Track is not in acceptance anymore!" << endl;
 
-                inAcceptance--;
-
-                data.accTheta->Fill(false, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-                data.accPhi->Fill(false, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
 
                 continue;
             }
         }
 
         // Track is in acceptance!
-        data.accTheta->Fill(true, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-        data.accPhi->Fill(true, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
 
         // Resolution of detectors
         const CHeT::Resolutions hitCov;
@@ -1396,10 +1205,17 @@ void FITALG::HelixFitter()
 
         // Helix Fit result
         Bool_t isFitConverged = fitlinePtr->IsValid();
+        data.rec_converged = isFitConverged;
         if(isFitConverged)
         {
-            inEfficiency++;
-
+            data.rec_chi2 = fitlinePtr->Chi2();
+            data.rec_cx = xC;
+            data.rec_cy = yC;
+            data.rec_R  = R;
+            data.rec_z0 = z0;
+            data.rec_dz_ds = tanLambda;
+            data.rec_phi0 = phi0;
+            // -------------------------------------------------------------------------------- //
             // Construct the full params vector
             TVectorD parHelix(5);
             parHelix(0) = xC;
@@ -1418,37 +1234,6 @@ void FITALG::HelixFitter()
                     covHelix(i + 3, j + 3) = covLine(i, j);
 
             // Fit info and plots
-            if(Config::get().processSingle)
-            {
-                // --- Output parameters ---
-                cout << "\n\nHelix parameters:";
-                parHelix.Print();
-                cout << "Phi0 = " << phi0 << endl;
-
-                // --- Covariance matrix ---
-                covHelix.Print();
-
-                // Convert hits
-                vector<vector<Double_t>> plottedCoordsVec;
-                for(const auto &vec : measuredCoordinates)
-                    plottedCoordsVec.push_back({ vec.X(), vec.Y(), vec.Z() });
-
-                // Canvas
-                TCanvas *canvHitsXY = new TCanvas("canvHitsXY", "XY View", 700, 700);
-                TCanvas *canvHitsYZ = new TCanvas("canvHitsYZ", "YZ View", 900, 500);
-                TCanvas *canvHitsXYZ = new TCanvas("canvHitsXYZ", "3D Helix Fit", 800, 600);
-                TCanvas *canvZvsS = new TCanvas("canvZvsS", "z vs s", 700, 500);
-
-                AUXALG::DrawXYView_hits(&data.trueDecayPos, plottedCoordsVec, canvHitsXY);
-                AUXALG::DrawYZView_hits(&data.trueDecayPos, plottedCoordsVec, canvHitsYZ);
-                AUXALG::DrawXYZView_hits(plottedCoordsVec, canvHitsXYZ);
-
-                AUXALG::DrawXYView_arc(
-                    xC, yC, R, plottedCoordsVec, canvHitsXY, nTurns, Config::get().turnID);
-                AUXALG::DrawZvsSFit(graphZvsS, fitZvsS, canvZvsS);
-                AUXALG::DrawXYZView_helixFromHits(
-                    xC, yC, R, z0, phi0, tanLambda, plottedCoordsVec, canvHitsXYZ);
-            }
 
             // Extrapolate status at decay vertex
             // z_vertex = z0 + s * tanLambda
@@ -1510,32 +1295,6 @@ void FITALG::HelixFitter()
 
                 covFittedState.Print();
             }
-
-            // Fill histos
-            auto [fRes, fSigma, fPulls] = AUXALG::GetResults(fittedState, covFittedState,
-                data.trueDecayPos, data.trueDecayMom.Mag(), data.trueDecayThetaEDM,
-                data.trueDecayMom.Phi(), NORMALIZED_PULLS);
-            if(fRes.size() == 0)
-                continue;
-
-            data.histDiffX->Fill(fPulls[0]);
-            data.histDiffY->Fill(fPulls[1]);
-            data.histDiffZ->Fill(fPulls[2]);
-            data.histDiffMom->Fill(fPulls[3]);
-            data.histDiffTheta->Fill(fPulls[4]);
-            data.histDiffPhi->Fill(fPulls[5]);
-
-            data.graphMom->Fill(data.trueDecayMom.Mag(), fRes[3]);
-            data.graphTheta->Fill(data.trueDecayThetaEDM, fRes[4]);
-            data.graphPhi->Fill(data.trueDecayMom.Phi(), fRes[5]);
-
-            data.hist2MomRes->Fill(data.trueDecayMom.Mag(), fSigma[3]);
-            data.hist2ThetaRes->Fill(data.trueDecayThetaEDM, fSigma[4]);
-            data.hist2PhiRes->Fill(data.trueDecayMom.Phi(), fSigma[5]);
-
-            data.profMomRes->Fill(data.trueDecayMom.Mag(), fSigma[3]);
-            data.profThetaRes->Fill(data.trueDecayThetaEDM, fSigma[4]);
-            data.profPhiRes->Fill(data.trueDecayMom.Phi(), fSigma[5]);
         }
 
         if(Config::get().processSingle)
@@ -1545,129 +1304,13 @@ void FITALG::HelixFitter()
         }
 
         // Track is in efficiency?
-        data.effTheta->Fill(isFitConverged, data.trueDecayMom.Mag(), data.trueDecayThetaEDM);
-        data.effPhi->Fill(isFitConverged, data.trueDecayMom.Mag(), data.trueDecayMom.Phi());
 
         // Store turns and cylinders data
-        data.histTurns->Fill(nTurns);
-        data.effTurns->Fill(isFitConverged, nTurns);
-        data.histCylinders->Fill(nCylinders);
-        data.effCylinders->Fill(isFitConverged, nCylinders);
-        data.histTurnsVMom->Fill(data.trueDecayMom.Mag(), nTurns);
-        data.histCylVMom->Fill(data.trueDecayMom.Mag(), nCylinders);
 
         cout << "\r>>> Processed event number " << (ev - Config::get().rangeLoop.first) << flush;
     }
 
     cout << endl;
-
-    // Print results and draw graphs
-    if(!Config::get().processSingle)
-    {
-        // Recap
-        cout << "\n---------------------------------------------------------" << endl;
-        cout << ">>> Acceptance = " << (Float_t)(inAcceptance * 100) / processedEvents << endl;
-        cout << ">>> Efficiency = " << (Float_t)(inEfficiency * 100) / inAcceptance << endl;
-        cout << "---------------------------------------------------------\n" << endl;
-
-        // Graphs
-        if(Config::get().quietMode)
-            gROOT->SetBatch(true);
-
-        TCanvas *canvEfficiency = new TCanvas("canvEfficiency");
-        canvEfficiency->Divide(2, 2);
-        canvEfficiency->cd(1);
-        data.accTheta->Draw("COLZ TEXT");
-        canvEfficiency->cd(2);
-        data.accPhi->Draw("COLZ TEXT");
-        canvEfficiency->cd(3);
-        data.effTheta->Draw("COLZ TEXT");
-        canvEfficiency->cd(4);
-        data.effPhi->Draw("COLZ TEXT");
-
-        TCanvas *canvTurns = new TCanvas("canvTurns");
-        canvTurns->Divide(2);
-        canvTurns->cd(1);
-        data.histTurns->Draw();
-        canvTurns->cd(2);
-        data.effTurns->Draw("AP");
-
-        TCanvas *canvCylinders = new TCanvas("canvCylinders");
-        canvCylinders->Divide(2, 2);
-        canvCylinders->cd(1);
-        data.histCylinders->Draw();
-        canvCylinders->cd(2);
-        data.effCylinders->Draw("AP");
-        canvCylinders->cd(3);
-        data.histTurnsVMom->Draw();
-        canvCylinders->cd(4);
-        data.histCylVMom->Draw();
-
-        TCanvas *canvLinearity = new TCanvas("canvLinearity");
-        canvLinearity->Divide(3);
-        canvLinearity->cd(1);
-        data.graphMom->SetMarkerStyle(20);
-        data.graphMom->Draw("SCAT");
-        canvLinearity->cd(2);
-        data.graphTheta->SetMarkerStyle(20);
-        data.graphTheta->Draw("SCAT");
-        canvLinearity->cd(3);
-        data.graphPhi->SetMarkerStyle(20);
-        data.graphPhi->Draw("SCAT");
-
-        TCanvas *canvfPullsPos = new TCanvas("Pulls Position");
-        canvfPullsPos->Divide(3);
-
-        canvfPullsPos->cd(1);
-        data.histDiffX->Draw();
-
-        canvfPullsPos->cd(2);
-        data.histDiffY->Draw();
-
-        canvfPullsPos->cd(3);
-        data.histDiffZ->Draw();
-
-        TCanvas *canvfPullsMom = new TCanvas("Pulls Momentum");
-        canvfPullsMom->Divide(3);
-
-        canvfPullsMom->cd(1);
-        data.histDiffMom->Draw();
-
-        canvfPullsMom->cd(2);
-        data.histDiffTheta->Draw();
-
-        canvfPullsMom->cd(3);
-        data.histDiffPhi->Draw();
-
-        TCanvas *canvProfRes = new TCanvas("ProfResolutions");
-        canvProfRes->Divide(3);
-        canvProfRes->cd(1);
-        data.profMomRes->Draw();
-        canvProfRes->cd(2);
-        data.profThetaRes->Draw();
-        canvProfRes->cd(3);
-        data.profPhiRes->Draw();
-
-        TCanvas *canvResMom = new TCanvas("canvResMom");
-        canvResMom->cd();
-        data.hist2MomRes->Draw();
-
-        TCanvas *canvResTheta = new TCanvas("canvResTheta");
-        canvResTheta->cd();
-        data.hist2ThetaRes->Draw();
-
-        TCanvas *canvResPhi = new TCanvas("canvResPhi");
-        canvResPhi->cd();
-        data.hist2PhiRes->Draw();
-
-        if(Config::get().quietMode)
-        {
-            canvEfficiency->SaveAs("canvEfficiency.pdf");
-            canvResMom->SaveAs("canvResMom.pdf");
-            canvResTheta->SaveAs("canvResTheta.pdf");
-            canvResPhi->SaveAs("canvResPhi.pdf");
-        }
-    }
 
     // Trick
     display->open();

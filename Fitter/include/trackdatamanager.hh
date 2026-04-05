@@ -9,12 +9,8 @@
 #include <vector>
 
 #include <TChain.h>
-#include <TEfficiency.h>
 #include <TFile.h>
-#include <TH1.h>
-#include <TH2.h>
 #include <TMath.h>
-#include <TProfile.h>
 #include <TTree.h>
 #include <TVector3.h>
 
@@ -98,18 +94,6 @@ class TrackDataManager
     // std::vector<std::vector<Double_t>>* hitsCoordinates;
     // std::vector<std::vector<Double_t>>* trackCoordinates;
     // std::vector<Int_t>* cylinderID;
-
-    // Histos
-    TEfficiency *accPhi, *accTheta, *effPhi, *effTheta;
-    TH1I *histTurns, *histCylinders, *histFakeHits;
-    TEfficiency *effTurns, *effCylinders;
-    TProfile *histCylVMom, *histTurnsVMom;
-    TH2D *graphMom, *graphTheta, *graphPhi;
-    TH1D *histDiffX, *histDiffY, *histDiffZ;
-    TH1D *histDiffMom, *histDiffTheta, *histDiffPhi;
-    TH2D *hist2MomRes, *hist2ThetaRes, *hist2PhiRes;
-    TProfile *profMomRes, *profThetaRes, *profPhiRes;
-    TH1F *histTime;
 
   private:
     TChain *simChain;
