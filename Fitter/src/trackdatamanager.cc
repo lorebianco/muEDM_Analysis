@@ -222,6 +222,9 @@ void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
     const auto &rvec = allEventsHits[currentEventIndex];
     std::vector<int> hit_ids(rvec.begin(), rvec.end());
 
+    std::sort(hit_ids.begin(), hit_ids.end());
+    hit_ids.erase(std::unique(hit_ids.begin(), hit_ids.end()), hit_ids.end());
+
     rec_hits = hit_ids;
 
     SetTrueDecayData(currentEventIndex);

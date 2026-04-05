@@ -93,30 +93,6 @@ void FITALG::CosmicFitter()
     data.InitRecoTree(false);
 
     auto &config = Config::get();
-    if(config.inputDataFiles.empty())
-    {
-        cerr << ">>> No input files provided!" << endl;
-        return;
-    }
-
-    TFile *f = TFile::Open(config.inputDataFiles[0].c_str());
-    if(!f || f->IsZombie())
-    {
-        cerr << ">>> Could not open file: " << config.inputDataFiles[0] << endl;
-        return;
-    }
-
-    TTree *treeSIM = (TTree *)f->Get("sim");
-    bool hasSIM = (treeSIM != nullptr);
-
-    CHeT::Data::Reader reader(config.inputDataFiles[0], config.inputTreeName);
-    if(!hasSIM)
-        reader.SetCuts(config.cutToAMin, config.cutToAMax, config.cutToTMin, config.cutToTMax);
-
-    auto df = reader.GetCHeTTree();
-
-    auto hits_col = df.Take<ROOT::VecOps::RVec<int>>("All_Bundle");
-    auto allEventsHits = *hits_col;
 
     // 1. Istanzia il viewer personalizzato
     FITALG::AnalyticViewer *myViewer = new FITALG::AnalyticViewer();
@@ -127,19 +103,9 @@ void FITALG::CosmicFitter()
         myViewer->LoadGeometry(config.geometryFile.c_str());
     }
 
-    double mc_x0 = 0, mc_y0 = 0, mc_z0 = 0, mc_ux = 0, mc_uy = 0, mc_uz = 0;
+    Int_t nEvents = data.GetNEvents();
+    bool hasSIM = (data.GetChain()->GetEntries() > 0);
 
-    if(hasSIM)
-    {
-        treeSIM->SetBranchAddress("mc_x0", &mc_x0);
-        treeSIM->SetBranchAddress("mc_y0", &mc_y0);
-        treeSIM->SetBranchAddress("mc_z0", &mc_z0);
-        treeSIM->SetBranchAddress("mc_ux", &mc_ux);
-        treeSIM->SetBranchAddress("mc_uy", &mc_uy);
-        treeSIM->SetBranchAddress("mc_uz", &mc_uz);
-    }
-
-    Long64_t nEvents = hasSIM ? treeSIM->GetEntries() : allEventsHits.size();
     Long64_t maxEvents = (config.rangeLoop.second < nEvents) ? config.rangeLoop.second : nEvents;
     Long64_t startEvent = config.rangeLoop.first;
 
@@ -164,19 +130,11 @@ void FITALG::CosmicFitter()
             cout << ">>> Processed " << i << " events..." << endl;
         }
 
-        if(hasSIM)
-            treeSIM->GetEntry(i);
+        // Delego I/O a TrackDataManager
+        data.ProcessAndFilterEvent(i);
 
-        if(i >= allEventsHits.size())
-            continue;
+        const auto &hit_ids = data.rec_hits;
 
-        const auto &rvec = allEventsHits[i];
-        std::vector<int> hit_ids(rvec.begin(), rvec.end());
-
-        std::sort(hit_ids.begin(), hit_ids.end());
-        hit_ids.erase(std::unique(hit_ids.begin(), hit_ids.end()), hit_ids.end());
-
-        data.EventID = i;
         data.rec_acceptance = false;
         data.rec_converged = false;
         data.rec_x0 = 0;
@@ -184,7 +142,6 @@ void FITALG::CosmicFitter()
         data.rec_sx = 0;
         data.rec_sz = 0;
         data.rec_chi2 = -1;
-        data.rec_hits = hit_ids;
         data.rec_hough2d_idx.clear();
         data.rec_houghz_idx.clear();
 
@@ -210,6 +167,18 @@ void FITALG::CosmicFitter()
 
         if(data.recTree)
             data.recTree->Fill();
+
+        double mc_x0 = 0, mc_y0 = 0, mc_z0 = 0, mc_ux = 0, mc_uy = 0, mc_uz = 0;
+        if(hasSIM)
+        {
+            // Convert da cm a mm se necessario (TrackDataManager memorizza in cm per default)
+            mc_x0 = data.trueDecay_posX / 0.1;
+            mc_y0 = data.trueDecay_posY / 0.1;
+            mc_z0 = data.trueDecay_posZ / 0.1;
+            mc_ux = data.trueDecay_momX;
+            mc_uy = data.trueDecay_momY;
+            mc_uz = data.trueDecay_momZ;
+        }
 
         if(is_converged)
         {
@@ -304,7 +273,7 @@ void FITALG::CosmicFitter()
             if(hasSIM)
                 visTracks.emplace_back(mc_x0, mc_y0, mc_z0, mc_ux, mc_uy, mc_uz, kYellow, 3);
 
-            if(trFit.converged)
+            if(is_converged)
             {
                 visTracks.emplace_back(
                     trFit.x0, 0.0, trFit.z0, trFit.sx, 1.0, trFit.sz, kBlack, 2, 7, true);
