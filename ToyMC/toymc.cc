@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -87,25 +88,28 @@ int main(int argc, char **argv)
     // Track Variables (Mathematical parametrization for fit comparison)
     double trk_x0 = 0, trk_y0 = 0, trk_z0 = 0;
     double trk_ux = 0, trk_uy = 0, trk_uz = 0;
+    double trk_sx = 0, trk_sz = 0;
     double trk_R = 0, trk_cx = 0, trk_cy = 0, trk_tmin = 0, trk_tmax = 0;
 
     // MC Truth Variables (Physical generation points and sanity checks)
     double mc_x = 0, mc_y = 0, mc_z = 0;
+    double mc_px = 0, mc_py = 0, mc_pz = 0;
     double mc_E = 0;
 
     treeSIM->Branch("mc_x", &mc_x);
     treeSIM->Branch("mc_y", &mc_y);
     treeSIM->Branch("mc_z", &mc_z);
+    treeSIM->Branch("mc_px", &mc_px);
+    treeSIM->Branch("mc_py", &mc_py);
+    treeSIM->Branch("mc_pz", &mc_pz);
 
     if(mode == "cosmic")
     {
         particleID = 0; // Cosmic muon placeholder
         treeSIM->Branch("trk_x0", &trk_x0);
-        treeSIM->Branch("trk_y0", &trk_y0);
         treeSIM->Branch("trk_z0", &trk_z0);
-        treeSIM->Branch("trk_ux", &trk_ux);
-        treeSIM->Branch("trk_uy", &trk_uy);
-        treeSIM->Branch("trk_uz", &trk_uz);
+        treeSIM->Branch("trk_sx", &trk_sx);
+        treeSIM->Branch("trk_sz", &trk_sz);
     }
     else if(mode == "michel")
     {
@@ -135,13 +139,16 @@ int main(int argc, char **argv)
             mc_x = tr.x0;
             mc_y = tr.y0;
             mc_z = tr.z0;
+            mc_px = tr.ux;
+            mc_py = tr.uy;
+            mc_pz = tr.uz;
 
-            trk_x0 = tr.x0;
-            trk_y0 = tr.y0;
-            trk_z0 = tr.z0;
-            trk_ux = tr.ux;
-            trk_uy = tr.uy;
-            trk_uz = tr.uz;
+            double t_to_y0 = -tr.y0 / tr.uy;
+            trk_x0 = tr.x0 + tr.ux * t_to_y0;
+            trk_z0 = tr.z0 + tr.uz * t_to_y0;
+            trk_sx = tr.ux / tr.uy;
+            trk_sz = tr.uz / tr.uy;
+
             ToyMC::HitResult res = ToyMC::FindCosmicHits(tr, efficiency);
             all_bundle = res.bundles;
             true_hit_x = res.x;
@@ -155,6 +162,12 @@ int main(int argc, char **argv)
             mc_y = tr.y0;
             mc_z = 0.0;
             mc_E = tr.E_kin;
+
+            double p = std::sqrt(tr.E_kin * tr.E_kin + 2.0 * 0.511 * tr.E_kin);
+            double pt = p * std::sin(tr.theta_rad);
+            mc_px = pt * std::cos(tr.phi_dir);
+            mc_py = pt * std::sin(tr.phi_dir);
+            mc_pz = p * std::cos(tr.theta_rad);
 
             trk_R = tr.radius;
             trk_cx = tr.cx;
