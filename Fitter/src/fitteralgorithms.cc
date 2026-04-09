@@ -5,7 +5,6 @@ using namespace std;
 using namespace ROOT;
 
 constexpr Int_t DEBUG_LVL = 0;
-constexpr Bool_t NORMALIZED_PULLS = false;
 constexpr Double_t FAKEHIT_ANGLE_LIM = TMath::Pi() / 20;
 constexpr Int_t pdg = -11; // PID for positron
 
@@ -96,14 +95,16 @@ void FITALG::CosmicFitter()
 
     // 1. Istanzia il viewer personalizzato
     FITALG::AnalyticViewer *myViewer = nullptr;
-    if(!config.quietMode) {
+    if(!config.quietMode)
+    {
         myViewer = new FITALG::AnalyticViewer();
     }
 
     // Carica la geometria globale (GDML o ROOT file) tramite il viewer
     if(!config.geometryFile.empty())
     {
-        if(myViewer) myViewer->LoadGeometry(config.geometryFile.c_str());
+        if(myViewer)
+            myViewer->LoadGeometry(config.geometryFile.c_str());
     }
 
     Int_t nEvents = data.GetNEvents();
@@ -174,18 +175,19 @@ void FITALG::CosmicFitter()
         double mc_x0 = 0, mc_y0 = 0, mc_z0 = 0, mc_ux = 0, mc_uy = 0, mc_uz = 0;
         if(hasSIM)
         {
-            // Convert da cm a mm se necessario (TrackDataManager memorizza in cm per default)
-            mc_x0 = data.trueDecay_posX / 0.1;
-            mc_y0 = data.trueDecay_posY / 0.1;
-            mc_z0 = data.trueDecay_posZ / 0.1;
-            mc_ux = data.trueDecay_momX;
-            mc_uy = data.trueDecay_momY;
-            mc_uz = data.trueDecay_momZ;
+            // TrackDataManager memorizza in cm per default
+            mc_x0 = data.trueDecayPos.X() * 10.0; // cm to mm
+            mc_y0 = data.trueDecayPos.Y() * 10.0; // cm to mm
+            mc_z0 = data.trueDecayPos.Z() * 10.0; // cm to mm
+            mc_ux = data.trueDecayMom.X();
+            mc_uy = data.trueDecayMom.Y();
+            mc_uz = data.trueDecayMom.Z();
         }
 
         if(is_converged)
         {
-            if(myViewer) myViewer->AddEvent(i, fitRes);
+            if(myViewer)
+                myViewer->AddEvent(i, fitRes);
 
             if(hasSIM)
             {
@@ -292,7 +294,8 @@ void FITALG::CosmicFitter()
 
     if(!config.quietMode && gApplication)
     {
-        if(myViewer) myViewer->Show();
+        if(myViewer)
+            myViewer->Show();
 
         // Necessario per tenere aperta l'interfaccia se lanciato come applicazione
         if(gApplication)
@@ -312,7 +315,6 @@ void FITALG::SpacepointFitter()
     data.InitRecoTree(true);
 
     Int_t nEvents = data.GetNEvents();
-    Int_t processedEvents = data.GetProcessedEvents();
 
     // Init geometry and magnetic field
     new TGeoManager("DetectorGeometry", "CHET geometry");
@@ -384,12 +386,12 @@ void FITALG::SpacepointFitter()
         data.rec_acceptance = false;
         data.rec_converged = false;
         data.rec_chi2 = -1;
-        data.rec_R = 0; data.rec_cx = 0; data.rec_cy = 0; data.rec_z0 = 0; data.rec_dz_ds = 0; data.rec_phi0 = 0;
-
-        data.rec_acceptance = false;
-        data.rec_converged = false;
-        data.rec_chi2 = -1;
-        data.rec_R = 0; data.rec_cx = 0; data.rec_cy = 0; data.rec_z0 = 0; data.rec_dz_ds = 0; data.rec_phi0 = 0;
+        data.rec_R = 0;
+        data.rec_cx = 0;
+        data.rec_cy = 0;
+        data.rec_z0 = 0;
+        data.rec_dz_ds = 0;
+        data.rec_phi0 = 0;
 
         Int_t nHits = data.hitsCoordinates.size();
 
@@ -406,26 +408,75 @@ void FITALG::SpacepointFitter()
         //    continue;
         //}
 
-        if(Config::get().processSingle)
-        {
-            cout << Form(">>> Vertex position = (%f, %f, %f) cm", data.trueDecayPos.X(),
-                data.trueDecayPos.Y(), data.trueDecayPos.Z())
-                 << endl;
-            cout << Form(">>> Vertex momentum = (%f, %f, %f) MeV/c", data.trueDecayMom.X(),
-                data.trueDecayMom.Y(), data.trueDecayMom.Z())
-                 << endl;
-            cout << Form(">>> (p, thetaEDM, phi) = (%f MeV/c, %f pi rad, %f pi rad)",
-                data.trueDecayMom.Mag(), data.trueDecayThetaEDM / TMath::Pi(),
-                data.trueDecayMom.Phi() / TMath::Pi())
-                 << endl;
-        }
-
         // Check acceptance
         if(nHits < 3)
         {
             if(Config::get().processSingle)
                 cout << ">>> Track is not in acceptance!" << endl;
 
+            if(data.recTree)
+                data.recTree->Fill();
+            continue;
+        }
+
+        // --- HOUGH TRANSFORM SEEDING & FILTERING ---
+        bool houghSuccess = false;
+        double hough_xc = 0, hough_yc = 0, hough_R = 0, hough_z0 = 0, hough_dz_ds = 0;
+        double hough_t_min = 0, hough_t_max = 0;
+
+        auto circ_cands = PTTALG::DoCircularHoughTransform(
+            data.rec_hits, 1, 1000, 10000, Config::get().processSingle);
+        if(!circ_cands.empty())
+        {
+            auto best_circ = circ_cands[0];
+            data.rec_hough2d_idx = best_circ.track_hits_idx;
+            hough_xc = best_circ.xc * 0.1; // mm to cm
+            hough_yc = best_circ.yc * 0.1;
+            hough_R = best_circ.R * 0.1;
+
+            auto z_cands = PTTALG::DoZHoughTransform(data.rec_hits, best_circ.xc, best_circ.yc,
+                best_circ.R, 1, Config::get().processSingle, 15.0);
+            if(!z_cands.empty())
+            {
+                auto best_z = z_cands[0];
+                data.rec_houghz_idx = best_z.track_hits_idx;
+                hough_z0 = best_z.z0 * 0.1; // mm to cm
+                hough_dz_ds = best_z.dz_ds; // dz/ds is dimensionless
+                hough_t_min = best_z.t_min;
+                hough_t_max = best_z.t_max;
+
+                // Filter hits based on Hough Z results
+                std::vector<std::vector<Double_t>> filteredCoords;
+                std::vector<Int_t> filteredCyls;
+
+                // The track_hits_idx corresponds to original hit indices
+                std::set<int> valid_idx(best_z.track_hits_idx.begin(), best_z.track_hits_idx.end());
+                for(int idx : valid_idx)
+                {
+                    if(idx >= 0 && idx < (int)data.hitsCoordinates.size())
+                    {
+                        filteredCoords.push_back(data.hitsCoordinates[idx]);
+                        filteredCyls.push_back(data.hitsCylinderID[idx]);
+                    }
+                }
+
+                if(filteredCoords.size() >= 3)
+                {
+                    data.hitsCoordinates = filteredCoords;
+                    data.hitsCylinderID = filteredCyls;
+                    nHits = data.hitsCoordinates.size();
+                    houghSuccess = true;
+                    data.rec_acceptance = true;
+                }
+            }
+        }
+
+        if(!houghSuccess)
+        {
+            if(Config::get().processSingle)
+                cout << ">>> Hough transform failed to find a valid track!" << endl;
+            if(data.recTree)
+                data.recTree->Fill();
             continue;
         }
 
@@ -443,12 +494,6 @@ void FITALG::SpacepointFitter()
             data.hitsCoordinates = turnHits.first;
             data.hitsCylinderID = turnHits.second;
 
-            //! Cylinders Filter... Will be removed
-            auto selCylHits
-                = PTTALG::SelectCylinders({ 0, 1 }, data.hitsCoordinates, data.hitsCylinderID);
-            data.hitsCoordinates = selCylHits.first;
-            data.hitsCylinderID = selCylHits.second;
-
             // Update nHits
             nHits = data.hitsCoordinates.size();
 
@@ -458,7 +503,8 @@ void FITALG::SpacepointFitter()
                 if(Config::get().processSingle)
                     cout << ">>> Track is not in acceptance anymore!" << endl;
 
-                if(data.recTree) data.recTree->Fill();
+                if(data.recTree)
+                    data.recTree->Fill();
                 continue;
             }
         }
@@ -556,10 +602,54 @@ void FITALG::SpacepointFitter()
             covSeed(i, i) = pow(seedResolution / nHits / sqrt(3), 2);
 
         // Set start values
-        TVector3 posSeed(data.trueDecayPos); // cm
-        TVector3 momSeed(data.trueDecayMom * 1E-3); // GeV
+        TVector3 posSeed(0, 0, 0); // cm
+        TVector3 momSeed(0, 0, 0); // GeV
+
         if(Config::get().pttrecMode)
+        {
+            // Use MC truth (smeared or exact) ONLY in pttrecMode
             tie(posSeed, momSeed) = PTTALG::SmearSeed(data.trueDecayPos, data.trueDecayMom);
+        }
+        else if(houghSuccess && nHits > 0)
+        {
+            // Data-driven seed from Hough transform
+            // Start position at the first hit
+            posSeed.SetXYZ(
+                data.hitsCoordinates[0][0], data.hitsCoordinates[0][1], data.hitsCoordinates[0][2]);
+
+            // Transverse momentum from radius: pT [MeV/c] = k * B [T] * R [cm]
+            double B_mag = std::abs(muEDM::Fields::constBz) > 0
+                ? 0.1 * std::abs(muEDM::Fields::constBz)
+                : 1.0;
+            double pt = 2.99792458 * B_mag * hough_R * 1e-3; // in GeV/c
+
+            double pz = pt * hough_dz_ds; // dz/ds = pz / pt
+
+            // Direction in XY plane relative to circle center
+            double dx = posSeed.X() - hough_xc;
+            double dy = posSeed.Y() - hough_yc;
+            double phi = std::atan2(dy, dx);
+
+            double px = -pt * std::sin(phi);
+            double py = pt * std::cos(phi);
+
+            if(data.hitsCoordinates.size() > 1)
+            {
+                double dX = data.hitsCoordinates[1][0] - data.hitsCoordinates[0][0];
+                double dY = data.hitsCoordinates[1][1] - data.hitsCoordinates[0][1];
+
+                double norm = std::sqrt(dX * dX + dY * dY);
+                if(norm > 0)
+                {
+                    double p_sign = (px * dX + py * dY) > 0 ? 1.0 : -1.0;
+                    px *= p_sign;
+                    py *= p_sign;
+                    pz *= p_sign;
+                }
+            }
+
+            momSeed.SetXYZ(px, py, pz);
+        }
 
         if(Config::get().processSingle)
         {
@@ -593,7 +683,8 @@ void FITALG::SpacepointFitter()
         {
             cerr << e.what();
             cerr << "Exception, next track" << endl;
-            if(data.recTree) data.recTree->Fill();
+            if(data.recTree)
+                data.recTree->Fill();
             continue;
         }
 
@@ -604,10 +695,15 @@ void FITALG::SpacepointFitter()
         if(isFitConverged)
         {
             data.rec_chi2 = fitTrack->getFitStatus(rep)->getChi2();
-            
-            // Extract state at vertex or origin
-            try {
-                auto state = fitTrack->getFittedState();
+
+            // Extract state at vertex
+            try
+            {
+                genfit::MeasuredStateOnPlane state = fitTrack->getFittedState();
+                rep->extrapolateToPlane(state,
+                    genfit::SharedPlanePtr(new genfit::DetPlane(
+                        TVector3(0., 0., 0.), TVector3(1., 0., 0.), TVector3(0., 1., 0.))));
+
                 TVector3 pos = state.getPos();
                 TVector3 mom = state.getMom();
                 data.rec_extrap_x = pos.X();
@@ -616,30 +712,79 @@ void FITALG::SpacepointFitter()
                 data.rec_extrap_px = mom.X();
                 data.rec_extrap_py = mom.Y();
                 data.rec_extrap_pz = mom.Z();
-            } catch(...) {}
+            }
+            catch(...)
+            {
+            }
         }
 
         if(Config::get().processSingle)
         {
             cout << "\n\n>>> Did FIT converge? " << (isFitConverged ? "Yes" : "No") << "\n\n"
                  << endl;
+
+            if(isFitConverged)
+            {
+                printf("===============================================================\n");
+                printf("                   FIT RESULTS vs MC TRUTH                     \n");
+                printf("===============================================================\n");
+                printf(" %-11s | %12s | %12s | %12s \n", "Param", "True", "Fitted", "Residual");
+                printf("---------------------------------------------------------------\n");
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "x0 [cm]", data.trueDecayPos.X(),
+                    data.rec_extrap_x, data.rec_extrap_x - data.trueDecayPos.X());
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "y0 [cm]", data.trueDecayPos.Y(),
+                    data.rec_extrap_y, data.rec_extrap_y - data.trueDecayPos.Y());
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "z0 [cm]", data.trueDecayPos.Z(),
+                    data.rec_extrap_z, data.rec_extrap_z - data.trueDecayPos.Z());
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "px [MeV/c]", data.trueDecayMom.X(),
+                    data.rec_extrap_px * 1000.0,
+                    data.rec_extrap_px * 1000.0 - data.trueDecayMom.X());
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "py [MeV/c]", data.trueDecayMom.Y(),
+                    data.rec_extrap_py * 1000.0,
+                    data.rec_extrap_py * 1000.0 - data.trueDecayMom.Y());
+                printf(" %-11s | %12.4f | %12.4f | %12.4f \n", "pz [MeV/c]", data.trueDecayMom.Z(),
+                    data.rec_extrap_pz * 1000.0,
+                    data.rec_extrap_pz * 1000.0 - data.trueDecayMom.Z());
+                printf("---------------------------------------------------------------\n");
+                printf(" Chi2      : %.4f\n", data.rec_chi2);
+                printf("===============================================================\n");
+            }
         }
-
-        // Track is in efficiency?
-
-        // Store turns and cylinders data
-
-        // Store pre-fit data
 
         // Check
         fitTrack->checkConsistency();
 
+        if(Config::get().processSingle)
+        {
+            std::vector<CHeT::Vis::VisHelixTrack> visTracks;
+
+            if(data.trk_R > 0)
+            {
+                visTracks.emplace_back(data.trk_cx, data.trk_cy, data.trk_R, data.trk_z0,
+                    data.trk_uz, data.trk_tmin, data.trk_tmax, kYellow, 4, 1);
+            }
+
+            if(houghSuccess)
+            {
+                double vis_xc = hough_xc * 10.0;
+                double vis_yc = hough_yc * 10.0;
+                double vis_R = hough_R * 10.0;
+                double vis_z0 = hough_z0 * 10.0;
+                double vis_dz_dt = hough_dz_ds * vis_R;
+                visTracks.emplace_back(
+                    vis_xc, vis_yc, vis_R, vis_z0, vis_dz_dt, hough_t_min, hough_t_max, kRed, 4, 2);
+            }
+            CHeT::Vis::Draw2D(data.rec_hits, visTracks);
+            CHeT::Vis::Draw3D(data.rec_hits, visTracks);
+        }
+
         // Last steps
         display->addEvent(fitTrack);
 
-        if(data.recTree) data.recTree->Fill();
+        if(data.recTree)
+            data.recTree->Fill();
 
-        cout << "\r>>> Processed event number " << (ev - Config::get().rangeLoop.first) << flush;
+        cout << "\r>>> Processed event number " << ev << flush;
     }
     cout << endl;
 
@@ -650,7 +795,7 @@ void FITALG::SpacepointFitter()
     if(Config::get().quietMode)
         display->setOptions("X");
     else
-        display->setOptions("ABDEFGHMPT");
+        display->setOptions("ABDEFGHMPST");
     display->open();
 
     // Finally
@@ -666,7 +811,6 @@ void FITALG::HelixFitter()
     data.InitRecoTree(true);
 
     Int_t nEvents = data.GetNEvents();
-    Int_t processedEvents = data.GetProcessedEvents();
 
     genfit::EventDisplay *display = genfit::EventDisplay::getInstance();
 
@@ -739,7 +883,6 @@ void FITALG::HelixFitter()
             {
                 if(Config::get().processSingle)
                     cout << ">>> Track is not in acceptance anymore!" << endl;
-
 
                 continue;
             }
@@ -1211,7 +1354,7 @@ void FITALG::HelixFitter()
             data.rec_chi2 = fitlinePtr->Chi2();
             data.rec_cx = xC;
             data.rec_cy = yC;
-            data.rec_R  = R;
+            data.rec_R = R;
             data.rec_z0 = z0;
             data.rec_dz_ds = tanLambda;
             data.rec_phi0 = phi0;
@@ -1810,14 +1953,3 @@ void FITALG::AddFakeHitFromHelix(genfit::TrackCand &trackCand, Int_t hitIndex,
     new(chetHitArray[hitIndex]) genfit::mySpacepointDetectorHit(fakeHit, bigCov);
     trackCand.addHit(0, hitIndex, -1, sortingParameter);
 }
-
-// fitTrack->addTrackRep(repHelix);
-
-// for(auto i = 0; i < nHits; ++i)
-//{
-//     auto tP = fitTrack->getPoint(i);
-//     auto kFI = new genfit::KalmanFitterInfo(tP, rep);
-//     //kFI->setRefenceState();
-//     tP->setFitterInfo(kFI);
-//     cout << tP->getKalmanFitterInfo() << endl;
-// }

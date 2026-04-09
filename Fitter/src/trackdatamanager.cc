@@ -14,13 +14,26 @@ TrackDataManager::TrackDataManager()
     }
 
     // Set branch addresses
-    simChain->SetBranchAddress("EventID", &truedecay_EventID);
-    simChain->SetBranchAddress("trk_x0", &trueDecay_posX);
-    simChain->SetBranchAddress("trk_y0", &trueDecay_posY);
-    simChain->SetBranchAddress("trk_z0", &trueDecay_posZ);
-    simChain->SetBranchAddress("trk_ux", &trueDecay_momX);
-    simChain->SetBranchAddress("trk_uy", &trueDecay_momY);
-    simChain->SetBranchAddress("trk_uz", &trueDecay_momZ);
+    simChain->SetBranchAddress("EventID", &EventID);
+
+    simChain->SetBranchAddress("mc_x", &trueDecay_posX);
+    simChain->SetBranchAddress("mc_y", &trueDecay_posY);
+    simChain->SetBranchAddress("mc_z", &trueDecay_posZ);
+    simChain->SetBranchAddress("mc_px", &trueDecay_momX);
+    simChain->SetBranchAddress("mc_py", &trueDecay_momY);
+    simChain->SetBranchAddress("mc_pz", &trueDecay_momZ);
+
+    if(simChain->GetBranch("mc_E"))
+    {
+        simChain->SetBranchAddress("mc_E", &mc_E);
+        simChain->SetBranchAddress("trk_R", &trk_R);
+        simChain->SetBranchAddress("trk_cx", &trk_cx);
+        simChain->SetBranchAddress("trk_cy", &trk_cy);
+        simChain->SetBranchAddress("trk_z0", &trk_z0);
+        simChain->SetBranchAddress("trk_uz", &trk_uz);
+        simChain->SetBranchAddress("trk_tmin", &trk_tmin);
+        simChain->SetBranchAddress("trk_tmax", &trk_tmax);
+    }
 
     reader = std::make_unique<CHeT::Data::Reader>(
         Config::get().inputDataFiles[0], Config::get().inputTreeName);

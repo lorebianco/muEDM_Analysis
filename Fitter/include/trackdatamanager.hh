@@ -46,6 +46,9 @@ class TrackDataManager
     Double_t trueDecay_posX, trueDecay_posY, trueDecay_posZ, trueDecay_momX, trueDecay_momY,
         trueDecay_momZ, trueDecay_time;
 
+    Double_t mc_E = 0, trk_R = 0, trk_cx = 0, trk_cy = 0, trk_z0 = 0, trk_uz = 0, trk_tmin = 0,
+             trk_tmax = 0;
+
     std::vector<Int_t> *all_hits;
 
     // Data (for analysis)
