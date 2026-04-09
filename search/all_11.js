@@ -9,10 +9,11 @@ var searchData=
   ['setenabledcylinders_6',['SetEnabledCylinders',['../classCHeT_1_1Data_1_1Reader.html#a03f72c2389472b342a92c88a87090d12',1,'CHeT::Data::Reader']]],
   ['setenabledgeometries_7',['SetEnabledGeometries',['../classCHeT_1_1Data_1_1Reader.html#ac68039b496cf0f331ec74a64906bd8c4',1,'CHeT::Data::Reader']]],
   ['setenabledlayers_8',['SetEnabledLayers',['../classCHeT_1_1Data_1_1Reader.html#a23764da54d0c4fe9dd4c6accd45cd410',1,'CHeT::Data::Reader']]],
-  ['setoffsetexp_9',['SetOffsetExp',['../namespaceCHeT_1_1Config.html#a8fb9d954407ebe6f76199b2f2db0d003',1,'CHeT::Config']]],
-  ['setrotation_10',['SetRotation',['../namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd',1,'CHeT::Config']]],
-  ['setsingleevent_11',['SetSingleEvent',['../classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2',1,'CHeT::Data::Reader']]],
-  ['settranslation_12',['SetTranslation',['../namespaceCHeT_1_1Config.html#aad1a61c30c5444ff3b07b73111a8474e',1,'CHeT::Config']]],
-  ['size_13',['size',['../structCHeT_1_1Vis_1_1VisPoint3D.html#a2864c96fa56bc3cde73c0456afc1c871',1,'CHeT::Vis::VisPoint3D::size'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#a974865e9c0bb6b99c9288d14a7b6d7ea',1,'CHeT::Vis::VisPoint2D::size']]],
-  ['style_14',['style',['../structCHeT_1_1Vis_1_1VisHelixTrack.html#abe38c4fb808a63a1030f17016bb3dd80',1,'CHeT::Vis::VisHelixTrack::style'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#a8d6dfa6b9915227a2c34aa60f7335e49',1,'CHeT::Vis::VisLineTrack::style'],['../structCHeT_1_1Vis_1_1VisGenericTrack.html#a2da8cc0b8992ae2119e44a854aae9513',1,'CHeT::Vis::VisGenericTrack::style']]]
+  ['seteventbyid_9',['SetEventByID',['../classCHeT_1_1Data_1_1Reader.html#a5f4874a7bba755928e3cacd1fe087a0d',1,'CHeT::Data::Reader']]],
+  ['setoffsetexp_10',['SetOffsetExp',['../namespaceCHeT_1_1Config.html#a8fb9d954407ebe6f76199b2f2db0d003',1,'CHeT::Config']]],
+  ['setrotation_11',['SetRotation',['../namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd',1,'CHeT::Config']]],
+  ['setsingleentry_12',['SetSingleEntry',['../classCHeT_1_1Data_1_1Reader.html#a49d494a06bca8462293349bbc329fd88',1,'CHeT::Data::Reader']]],
+  ['settranslation_13',['SetTranslation',['../namespaceCHeT_1_1Config.html#aad1a61c30c5444ff3b07b73111a8474e',1,'CHeT::Config']]],
+  ['size_14',['size',['../structCHeT_1_1Vis_1_1VisPoint3D.html#a2864c96fa56bc3cde73c0456afc1c871',1,'CHeT::Vis::VisPoint3D::size'],['../structCHeT_1_1Vis_1_1VisPoint2D.html#a974865e9c0bb6b99c9288d14a7b6d7ea',1,'CHeT::Vis::VisPoint2D::size']]],
+  ['style_15',['style',['../structCHeT_1_1Vis_1_1VisHelixTrack.html#abe38c4fb808a63a1030f17016bb3dd80',1,'CHeT::Vis::VisHelixTrack::style'],['../structCHeT_1_1Vis_1_1VisLineTrack.html#a8d6dfa6b9915227a2c34aa60f7335e49',1,'CHeT::Vis::VisLineTrack::style'],['../structCHeT_1_1Vis_1_1VisGenericTrack.html#a2da8cc0b8992ae2119e44a854aae9513',1,'CHeT::Vis::VisGenericTrack::style']]]
 ];

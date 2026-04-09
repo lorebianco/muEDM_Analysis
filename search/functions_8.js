@@ -9,8 +9,9 @@ var searchData=
   ['setenabledcylinders_6',['SetEnabledCylinders',['../classCHeT_1_1Data_1_1Reader.html#a03f72c2389472b342a92c88a87090d12',1,'CHeT::Data::Reader']]],
   ['setenabledgeometries_7',['SetEnabledGeometries',['../classCHeT_1_1Data_1_1Reader.html#ac68039b496cf0f331ec74a64906bd8c4',1,'CHeT::Data::Reader']]],
   ['setenabledlayers_8',['SetEnabledLayers',['../classCHeT_1_1Data_1_1Reader.html#a23764da54d0c4fe9dd4c6accd45cd410',1,'CHeT::Data::Reader']]],
-  ['setoffsetexp_9',['SetOffsetExp',['../namespaceCHeT_1_1Config.html#a8fb9d954407ebe6f76199b2f2db0d003',1,'CHeT::Config']]],
-  ['setrotation_10',['SetRotation',['../namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd',1,'CHeT::Config']]],
-  ['setsingleevent_11',['SetSingleEvent',['../classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2',1,'CHeT::Data::Reader']]],
-  ['settranslation_12',['SetTranslation',['../namespaceCHeT_1_1Config.html#aad1a61c30c5444ff3b07b73111a8474e',1,'CHeT::Config']]]
+  ['seteventbyid_9',['SetEventByID',['../classCHeT_1_1Data_1_1Reader.html#a5f4874a7bba755928e3cacd1fe087a0d',1,'CHeT::Data::Reader']]],
+  ['setoffsetexp_10',['SetOffsetExp',['../namespaceCHeT_1_1Config.html#a8fb9d954407ebe6f76199b2f2db0d003',1,'CHeT::Config']]],
+  ['setrotation_11',['SetRotation',['../namespaceCHeT_1_1Config.html#ae0d17c6e8eb64bfc9ab9baf1054d5dbd',1,'CHeT::Config']]],
+  ['setsingleentry_12',['SetSingleEntry',['../classCHeT_1_1Data_1_1Reader.html#a49d494a06bca8462293349bbc329fd88',1,'CHeT::Data::Reader']]],
+  ['settranslation_13',['SetTranslation',['../namespaceCHeT_1_1Config.html#aad1a61c30c5444ff3b07b73111a8474e',1,'CHeT::Config']]]
 ];

@@ -107,9 +107,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae481cb0121a10c46fee38835fb161ff2" id="r_ae481cb0121a10c46fee38835fb161ff2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#ae481cb0121a10c46fee38835fb161ff2">SetCuts</a> (double toaMin, double toaMax, unsigned int totMin, unsigned int totMax)</td></tr>
 <tr class="memdesc:ae481cb0121a10c46fee38835fb161ff2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set cuts for hit selection. Must be called before <a class="el" href="classCHeT_1_1Data_1_1Reader.html#a7d7246b81a112dc5709363c703d9e4c6" title="Returns the node with calculated high-level variables.">GetCHeTTree()</a>.  <br /></td></tr>
 <tr class="separator:ae481cb0121a10c46fee38835fb161ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d4a0fcee9a8ff5c640763263d5f76c2" id="r_a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a1d4a0fcee9a8ff5c640763263d5f76c2">SetSingleEvent</a> (long eventID)</td></tr>
-<tr class="memdesc:a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to a single event ID. Replaces any previous range or filter on the event entry.  <br /></td></tr>
-<tr class="separator:a1d4a0fcee9a8ff5c640763263d5f76c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49d494a06bca8462293349bbc329fd88" id="r_a49d494a06bca8462293349bbc329fd88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a49d494a06bca8462293349bbc329fd88">SetSingleEntry</a> (long entry)</td></tr>
+<tr class="memdesc:a49d494a06bca8462293349bbc329fd88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to a single entry index. Replaces any previous range or filter on the entry index.  <br /></td></tr>
+<tr class="separator:a49d494a06bca8462293349bbc329fd88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f4874a7bba755928e3cacd1fe087a0d" id="r_a5f4874a7bba755928e3cacd1fe087a0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#a5f4874a7bba755928e3cacd1fe087a0d">SetEventByID</a> (int eventID)</td></tr>
+<tr class="memdesc:a5f4874a7bba755928e3cacd1fe087a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to a specific EventID. Filters the dataset where the EventID branch matches the given ID.  <br /></td></tr>
+<tr class="separator:a5f4874a7bba755928e3cacd1fe087a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0a1fe28e0d3fc9db2738d224a701f4d" id="r_ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCHeT_1_1Data_1_1Reader.html#ad0a1fe28e0d3fc9db2738d224a701f4d">SetEnabledBoards</a> (const std::vector&lt; int &gt; &amp;boards)</td></tr>
 <tr class="memdesc:ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restricts the analysis to specific boards. Only hits from these boards will be processed.  <br /></td></tr>
 <tr class="separator:ad0a1fe28e0d3fc9db2738d224a701f4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -259,7 +262,7 @@ Private Attributes</h2></td></tr>
 <li>Aggregation of all hits into unique vectors (All_Bundle, All_Lay...). </li>
 </ol>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00090">90</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00095">95</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -280,7 +283,7 @@ Private Attributes</h2></td></tr>
 
 <p>Returns the Raw node (the original tree). </p>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00085">85</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00090">90</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -345,7 +348,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00441">441</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00446">446</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -426,7 +429,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00065">65</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00070">70</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -454,7 +457,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00070">70</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00075">75</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -482,7 +485,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00080">80</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00085">85</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
@@ -510,30 +513,58 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00075">75</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00080">80</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
 
 </div>
 </div>
-<a id="a1d4a0fcee9a8ff5c640763263d5f76c2" name="a1d4a0fcee9a8ff5c640763263d5f76c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d4a0fcee9a8ff5c640763263d5f76c2">&#9670;&#160;</a></span>SetSingleEvent()</h2>
+<a id="a5f4874a7bba755928e3cacd1fe087a0d" name="a5f4874a7bba755928e3cacd1fe087a0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f4874a7bba755928e3cacd1fe087a0d">&#9670;&#160;</a></span>SetEventByID()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CHeT::Data::Reader::SetSingleEvent </td>
+          <td class="memname">void CHeT::Data::Reader::SetEventByID </td>
           <td>(</td>
-          <td class="paramtype">long&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>eventID</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Restricts the analysis to a single event ID. Replaces any previous range or filter on the event entry. </p>
+<p>Restricts the analysis to a specific EventID. Filters the dataset where the EventID branch matches the given ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">eventID</td><td>The event entry index to process. </td></tr>
+    <tr><td class="paramname">eventID</td><td>The EventID to process. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8cc_source.html#l00065">65</a> of file <a class="el" href="CHeTReader_8cc_source.html">CHeTReader.cc</a>.</p>
+
+</div>
+</div>
+<a id="a49d494a06bca8462293349bbc329fd88" name="a49d494a06bca8462293349bbc329fd88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49d494a06bca8462293349bbc329fd88">&#9670;&#160;</a></span>SetSingleEntry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CHeT::Data::Reader::SetSingleEntry </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>entry</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restricts the analysis to a single entry index. Replaces any previous range or filter on the entry index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">entry</td><td>The row index in the TTree. </td></tr>
   </table>
   </dd>
 </dl>
@@ -563,7 +594,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00122">122</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00129">129</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -587,7 +618,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00132">132</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00139">139</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -611,7 +642,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00133">133</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00140">140</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -635,7 +666,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00135">135</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00142">142</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -659,7 +690,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00134">134</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00141">141</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -683,7 +714,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00120">120</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00127">127</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -707,7 +738,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00123">123</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00130">130</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -731,7 +762,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00127">127</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00134">134</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -755,7 +786,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00126">126</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00133">133</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -779,7 +810,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00129">129</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00136">136</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -803,7 +834,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00128">128</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00135">135</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
@@ -827,7 +858,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00121">121</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CHeTReader_8hh_source.html#l00128">128</a> of file <a class="el" href="CHeTReader_8hh_source.html">CHeTReader.hh</a>.</p>
 
 </div>
 </div>
