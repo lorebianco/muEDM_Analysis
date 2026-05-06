@@ -15,13 +15,31 @@ set(CHeTLibrary_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../CHeTLibrary/install)
 include_directories(${CHeTLibrary_DIR}/include)
 link_directories(${CHeTLibrary_DIR}/lib)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # --- 3. EXECUTABLE ---
 add_executable(Distiller distiller.cc)
 
-# --- 4. LINKING ---
+# --- 4. COMPILE COMMANDS JSON ---
+add_custom_command(TARGET Distiller POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/../compile_commands.json
+    COMMENT "Copying compile_commands.json to the project root"
+)
+
+# --- 5. LINKING ---
 target_link_libraries(Distiller
     PRIVATE
     CHeTLib
     ${ROOT_LIBRARIES}
     ROOT::Spectrum
+)
+
+# --- 5. EXPORT COMPILE COMMANDS ---
+# Copy compile_commands.json to the project root for clangd/LSP support
+add_custom_command(TARGET Distiller POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_BINARY_DIR}/compile_commands.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/../compile_commands.json
 )

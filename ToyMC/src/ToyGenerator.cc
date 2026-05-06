@@ -15,17 +15,47 @@ using namespace CHeT;
 namespace ToyMC
 {
 
-CosmicTrack GenerateCosmic()
+CosmicTrack GenerateCosmic(const CosmicDetConfig &conf)
 {
     static TRandom3 rnd(0);
     CosmicTrack track;
-    Double_t halfX_up = 90.;
-    Double_t halfZ_up = 90.;
-    Double_t yUp = 386.0;
-    Double_t halfX_down = 90.;
-    Double_t halfZ_down = 90.;
-    Double_t yDown = -476.0;
+    Double_t xUp = conf.xUp;
+    Double_t yUp = conf.yUp;
+    Double_t zUp = conf.zUp;
+    Double_t halfX_up = conf.halfX_up;
+    Double_t halfZ_up = conf.halfZ_up;
+
+    Double_t xDown = conf.xDown;
+    Double_t yDown = conf.yDown;
+    Double_t zDown = conf.zDown;
+    Double_t halfX_down = conf.halfX_down;
+    Double_t halfZ_down = conf.halfZ_down;
     Bool_t accepted = false;
+
+    // Cosmic ray energy generation
+    auto PDF_E_CosmicRay = [](double energy) -> double
+    {
+        const double GeV = 1000.0;
+        if(energy < 3.4 * GeV)
+            return std::pow(3.4 * GeV, -2.7);
+        else
+            return std::pow(energy, -2.7);
+    };
+
+    const double GeV = 1000.0;
+    const double TeV = 1000.0 * GeV;
+    double energy = 999.0;
+    double energyy = 1.0;
+    double emin = 0.0;
+    double emax = 1.0 * TeV;
+    double max_prob = PDF_E_CosmicRay(emin);
+
+    while(energyy > PDF_E_CosmicRay(energy))
+    {
+        energy = emin + emax * gRandom->Uniform();
+        energyy = max_prob * gRandom->Uniform();
+    }
+    track.E_kin = energy;
 
     while(!accepted)
     {
@@ -41,15 +71,15 @@ CosmicTrack GenerateCosmic()
         track.uy = cosTheta;
         track.uz = sinTheta * sin(phi);
 
-        track.x0 = rnd.Uniform(-halfX_up, halfX_up);
+        track.x0 = rnd.Uniform(xUp - halfX_up, xUp + halfX_up);
         track.y0 = yUp;
-        track.z0 = rnd.Uniform(-halfZ_up, halfZ_up);
+        track.z0 = rnd.Uniform(zUp - halfZ_up, zUp + halfZ_up);
 
         Double_t t = (yDown - track.y0) / track.uy;
         Double_t x_proj = track.x0 + track.ux * t;
         Double_t z_proj = track.z0 + track.uz * t;
 
-        if(abs(x_proj) <= halfX_down && abs(z_proj) <= halfZ_down)
+        if(abs(x_proj - xDown) <= halfX_down && abs(z_proj - zDown) <= halfZ_down)
         {
             accepted = true;
         }

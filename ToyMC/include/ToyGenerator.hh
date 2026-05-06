@@ -17,6 +17,7 @@ struct CosmicTrack
     double ux; ///< X direction cosine
     double uy; ///< Y direction cosine
     double uz; ///< Z direction cosine
+    double E_kin; ///< Kinetic energy [MeV]
     bool active; ///< Flag if track is active/accepted
 };
 
@@ -44,11 +45,27 @@ struct HitResult
     std::vector<double> z;
 };
 
+struct CosmicDetConfig
+{
+    double xUp = 0.0;
+    double yUp = 386.0;
+    double zUp = 0.0;
+    double halfX_up = 90.0;
+    double halfZ_up = 90.0;
+
+    double xDown = 0.0;
+    double yDown = -476.0;
+    double zDown = 0.0;
+    double halfX_down = 90.0;
+    double halfZ_down = 90.0;
+};
+
 /**
  * @brief Generates a random cosmic muon track traversing the detector.
+ * @param conf Geometric configuration of the cosmic trigger detectors.
  * @return A CosmicTrack object with truth parameters.
  */
-CosmicTrack GenerateCosmic();
+CosmicTrack GenerateCosmic(const CosmicDetConfig &conf = CosmicDetConfig());
 
 /**
  * @brief Finds the global bundle IDs intersected by a cosmic track.

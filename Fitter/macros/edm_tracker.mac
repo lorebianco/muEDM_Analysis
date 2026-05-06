@@ -1,6 +1,6 @@
 ### I/O files
-inDir = ../../data/input/
-input = run00291.root
+inDir = ../../data/input/toy/
+input = micheltoy0000.root
 outDir = ../../data/output/
 
 ### Geometry
@@ -15,14 +15,14 @@ b-type = constant
 b-dir = ../fieldmaps/
 b-path = Field22MeV
 
-## Scale factor (default -1.0)
-b-scale = -1.0
+## Scale factor
+b-scale = 1.0
 
 ## If b-type = constant, set |Bz| in kGauss
 b-const = 28.9
 
 ### Fitter configuration
-fitter = cosmic
+fitter = spacepoint
 prefitter = true
 quiet = false
 

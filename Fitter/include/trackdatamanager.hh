@@ -68,6 +68,7 @@ class TrackDataManager
 
     // Cosmic rec parameters
     Double_t rec_x0, rec_z0, rec_sx, rec_sz;
+    std::vector<Double_t> rec_zi;
 
     // Michel rec parameters
     Double_t rec_R, rec_cx, rec_cy, rec_dz_ds, rec_phi0, rec_t_min, rec_t_max;

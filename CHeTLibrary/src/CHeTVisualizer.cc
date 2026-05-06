@@ -445,11 +445,6 @@ void Draw2DCore(const std::vector<int> &bundle_ids, const std::vector<VisPoint2D
         l_zy->SetLineWidth(2);
         mg_zy->Add(l_zy, "L");
 
-        TGraph *l_xy = new TGraph(500, &vx[0], &vy[0]);
-        l_xy->SetLineColor(p.color);
-        l_xy->SetLineWidth(1);
-        mg_xy->Add(l_xy, "L");
-
         // Phi-Z Graphs (Handle 2pi wrapping)
         std::vector<double> sz, sf;
         for(size_t i = 0; i < 500; ++i)
@@ -609,7 +604,7 @@ void Draw2DCore(const std::vector<int> &bundle_ids, const std::vector<VisPoint2D
     for(auto &c : cyls)
     {
         TBox *b = new TBox(
-            -c.inner.radius, -CHeT::Config::L_HALF, c.inner.radius, CHeT::Config::L_HALF);
+            -c.nominalRadius, -CHeT::Config::L_HALF, c.nominalRadius, CHeT::Config::L_HALF);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -624,7 +619,7 @@ void Draw2DCore(const std::vector<int> &bundle_ids, const std::vector<VisPoint2D
     for(auto &c : cyls)
     {
         TBox *b = new TBox(
-            -CHeT::Config::L_HALF, -c.inner.radius, CHeT::Config::L_HALF, c.inner.radius);
+            -CHeT::Config::L_HALF, -c.nominalRadius, CHeT::Config::L_HALF, c.nominalRadius);
         b->SetFillStyle(0);
         b->SetLineColor(kGray + 1);
         b->Draw("same");
@@ -638,7 +633,7 @@ void Draw2DCore(const std::vector<int> &bundle_ids, const std::vector<VisPoint2D
     mg_xy->GetYaxis()->SetRangeUser(-limit, limit);
     for(auto &c : cyls)
     {
-        TEllipse *e = new TEllipse(0, 0, c.inner.radius);
+        TEllipse *e = new TEllipse(0, 0, c.nominalRadius);
         e->SetFillStyle(0);
         e->Draw();
     }

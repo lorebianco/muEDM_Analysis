@@ -10,6 +10,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(ROOT REQUIRED COMPONENTS Core RIO Hist MathCore Tree ROOTDataFrame)
 include_directories(${ROOT_INCLUDE_DIRS})
 
+# --- 1.1 FETCHCONTENT: FTXUI ---
+include(FetchContent)
+FetchContent_Declare(ftxui
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI
+  GIT_TAG v5.0.0
+)
+FetchContent_MakeAvailable(ftxui)
+
 # --- 2. CHET LIBRARY SETUP ---
 set(CHeTLibrary_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../CHeTLibrary/install)
 include_directories(${CHeTLibrary_DIR}/include)
@@ -31,4 +39,7 @@ target_link_libraries(toymc
     PRIVATE
     CHeTLib
     ${ROOT_LIBRARIES}
+    ftxui::screen
+    ftxui::dom
+    ftxui::component
 )
