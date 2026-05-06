@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include "CHeT/CHeTGlobalSettings.hh"
 #include "globalsettings.hh"
 
 enum class FitterType
@@ -66,6 +67,18 @@ class Config
     double cutToAMax = 250.0;
     double cutToTMin = 40.0;
     double cutToTMax = 220.0;
+
+    // Geometry Overrides
+    bool overrideGeom = false;
+    double geom_tx = 0.0, geom_ty = 0.0, geom_tz = 0.0;
+    double geom_rx = 0.0, geom_ry = 0.0, geom_rz = 0.0;
+    double geom_offset = CHeT::Config::GetOffsetExp();
+    std::vector<double> geom_deltas = CHeT::Config::GetDeltas();
+
+    // MC Options
+    bool useTrueMCGeom = false;
+    bool useTrueMCHits = false;
+    bool active_cyls[6] = { true, true, true, true, true, true };
 
     Config(Config const &) = delete;
     void operator=(Config const &) = delete;

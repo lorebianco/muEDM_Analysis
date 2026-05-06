@@ -1,3 +1,7 @@
+#include <TNamed.h>
+#include <TParameter.h>
+
+#include "config.hh"
 #include "trackdatamanager.hh"
 
 using namespace std;
@@ -22,10 +26,10 @@ TrackDataManager::TrackDataManager()
     simChain->SetBranchAddress("mc_px", &trueDecay_momX);
     simChain->SetBranchAddress("mc_py", &trueDecay_momY);
     simChain->SetBranchAddress("mc_pz", &trueDecay_momZ);
+    simChain->SetBranchAddress("mc_E", &mc_E);
 
-    if(simChain->GetBranch("mc_E"))
+    if(simChain->GetBranch("trk_R"))
     {
-        simChain->SetBranchAddress("mc_E", &mc_E);
         simChain->SetBranchAddress("trk_R", &trk_R);
         simChain->SetBranchAddress("trk_cx", &trk_cx);
         simChain->SetBranchAddress("trk_cy", &trk_cy);
@@ -50,6 +54,83 @@ TrackDataManager::TrackDataManager()
 
     // Set nEvents and processedEvents
     nEvents = simChain->GetEntries();
+
+    // --- EXTRACT GEOMETRY MISALIGNMENTS FROM USERINFO ---
+    CHeT::Config::GetTranslation(
+        Config::get().geom_tx, Config::get().geom_ty, Config::get().geom_tz);
+    CHeT::Config::GetRotation(Config::get().geom_rx, Config::get().geom_ry, Config::get().geom_rz);
+
+    simChain->LoadTree(0);
+    if(TTree *firstTree = simChain->GetTree())
+    {
+        if(TList *userInfo = firstTree->GetUserInfo())
+        {
+            auto getParam = [&](const char *name, double defVal) -> double
+            {
+                auto *p = dynamic_cast<TParameter<double> *>(userInfo->FindObject(name));
+                return p ? p->GetVal() : defVal;
+            };
+
+            double tx = getParam("Geom_Tx", 0.0);
+            double ty = getParam("Geom_Ty", 0.0);
+            double tz = getParam("Geom_Tz", 0.0);
+            double rx = getParam("Geom_Rx", 0.0);
+            double ry = getParam("Geom_Ry", 0.0);
+            double rz = getParam("Geom_Rz", 0.0);
+            double offset = getParam("Geom_OffsetExp", 0.0);
+            std::vector<double> deltas(6, 0.0);
+            for(int i = 0; i < 6; ++i)
+            {
+                deltas[i] = getParam(Form("Geom_Delta_%d", i), 0.0);
+            }
+
+            int cylCount = (int)getParam("ActiveCyl_Count", 0.0);
+            if(cylCount > 0)
+            {
+                std::vector<int> active_cyls;
+                for(int i = 0; i < cylCount; ++i)
+                {
+                    active_cyls.push_back((int)getParam(Form("ActiveCyl_%d", i), 0.0));
+                }
+                CHeT::Config::SetActiveCylinders(active_cyls);
+                cout << ">>> Inherited Active Cylinders from input file!" << endl;
+            }
+
+            if(Config::get().useTrueMCGeom)
+            {
+                CHeT::Config::SetTranslation(tx, ty, tz);
+                CHeT::Config::SetRotation(rx, ry, rz);
+                CHeT::Config::SetOffsetExp(offset);
+                CHeT::Config::SetDeltas(deltas);
+                cout << ">>> Inherited TRUE MC Geometry Misalignments from input file!" << endl;
+            }
+            else if(Config::get().overrideGeom)
+            {
+                std::vector<int> act_cyls;
+                for(int i = 0; i < 6; ++i)
+                {
+                    if(Config::get().active_cyls[i])
+                        act_cyls.push_back(i);
+                }
+                CHeT::Config::SetActiveCylinders(act_cyls);
+
+                CHeT::Config::SetTranslation(
+                    Config::get().geom_tx, Config::get().geom_ty, Config::get().geom_tz);
+                CHeT::Config::SetRotation(
+                    Config::get().geom_rx, Config::get().geom_ry, Config::get().geom_rz);
+                CHeT::Config::SetOffsetExp(Config::get().geom_offset);
+                CHeT::Config::SetDeltas(Config::get().geom_deltas);
+                cout << ">>> GUI Override Geometry applied!" << endl;
+            }
+            else
+            {
+                // Nominal
+                // as implemented in the CHeTLibrary
+                cout << ">>> Nominal Geometry applied for Reconstruction!" << endl;
+            }
+        }
+    }
+
     if(nEvents == 0)
         nEvents = allEventsHits.size();
 
@@ -84,6 +165,9 @@ TrackDataManager::TrackDataManager()
         {
             outputFile->cd();
             TTree *clonedSim = simTree->CloneTree();
+
+            // Clone tree actually keeps UserInfo.
+
             clonedSim->Write();
         }
     }
@@ -105,12 +189,29 @@ void TrackDataManager::InitRecoTree(bool isMichel)
     recTree->Branch("rec_hough2d_idx", &rec_hough2d_idx);
     recTree->Branch("rec_houghz_idx", &rec_houghz_idx);
 
+    // Copia i metadati dal simTree (la geometria e le configurazioni)
+    if(simChain)
+    {
+        if(TTree *st = simChain->GetTree())
+        {
+            if(TList *userInfo = st->GetUserInfo())
+            {
+                TList *recUserInfo = recTree->GetUserInfo();
+                for(int i = 0; i < userInfo->GetSize(); ++i)
+                {
+                    recUserInfo->Add(userInfo->At(i)->Clone());
+                }
+            }
+        }
+    }
+
     if(!isMichel)
     {
         recTree->Branch("rec_x0", &rec_x0, "rec_x0/D");
         recTree->Branch("rec_z0", &rec_z0, "rec_z0/D");
         recTree->Branch("rec_sx", &rec_sx, "rec_sx/D");
         recTree->Branch("rec_sz", &rec_sz, "rec_sz/D");
+        recTree->Branch("rec_zi", &rec_zi);
     }
     else
     {
@@ -167,6 +268,7 @@ void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
     hitsCoordinates.clear();
     hitsCylinderID.clear();
     rec_hits.clear();
+    rec_zi.clear();
     rec_hough2d_idx.clear();
     rec_houghz_idx.clear();
 

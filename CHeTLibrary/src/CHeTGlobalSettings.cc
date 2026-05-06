@@ -14,8 +14,7 @@ namespace Config
 
 // Backing variables for geometry settings
 static double g_OFFSET_EXP = 40.0 * (M_PI / 180.0);
-static double g_DELTA1 = 1.267;
-static double g_DELTA2 = 1.420 + (18.0 * M_PI / 180.0);
+static std::vector<double> g_DELTAS = { 1.267, 1.420 + (18.0 * M_PI / 180.0), 0.0, 0.0, 0.0, 0.0 };
 static bool g_GeometryDirty = true;
 static std::vector<CylinderConfig> g_Cylinders;
 
@@ -95,24 +94,34 @@ void SetOffsetExp(double val)
     g_GeometryDirty = true;
 }
 
-double GetDelta1()
+double GetDeltaI(int cylIdx)
 {
-    return g_DELTA1;
+    if(cylIdx >= 0 && cylIdx < g_DELTAS.size())
+        return g_DELTAS[cylIdx];
+    return 0.0;
 }
-void SetDelta1(double val)
+
+void SetDeltaI(int cylIdx, double val)
 {
-    g_DELTA1 = val;
+    if(cylIdx >= 0 && cylIdx < g_DELTAS.size())
+    {
+        g_DELTAS[cylIdx] = val;
+        g_GeometryDirty = true;
+    }
+}
+
+void SetDeltas(const std::vector<double> &deltas)
+{
+    g_DELTAS = deltas;
+    // ensure it has at least 6 elements
+    if(g_DELTAS.size() < 6)
+        g_DELTAS.resize(6, 0.0);
     g_GeometryDirty = true;
 }
 
-double GetDelta2()
+std::vector<double> GetDeltas()
 {
-    return g_DELTA2;
-}
-void SetDelta2(double val)
-{
-    g_DELTA2 = val;
-    g_GeometryDirty = true;
+    return g_DELTAS;
 }
 
 void SetRotation(double rx, double ry, double rz)
@@ -286,40 +295,49 @@ const std::vector<CylinderConfig> &GetCylinders()
         };
 
         // Full definition
-        std::vector<CylinderConfig> all = { {
-                                                0, // Cylinder 1
-                                                { 45, 17.0, 4.294 + g_DELTA1 + g_OFFSET_EXP, -1,
-                                                    GetStereoAngle(17.0), 632 }, // Inner (Red)
-                                                { 49, 17.0, 3.829 + g_DELTA1 + g_OFFSET_EXP, 1,
-                                                    GetStereoAngle(17.0), 807 } // Outer (Orange)
-                                            },
-            {
-                1, // Cylinder 2
-                { 59, 21.0, 2.609 + g_DELTA2 + g_OFFSET_EXP, -1, GetStereoAngle(21.0),
-                    600 }, // Inner (Blue)
-                { 60, 21.0, 3.351 + g_DELTA2 + g_OFFSET_EXP, 1, GetStereoAngle(21.0),
-                    432 } // Outer (Cyan)
-            },
-            {
-                2, // Cylinder 3
-                { 96, 37.0, g_OFFSET_EXP, -1, GetStereoAngle(37.0), 418 }, // Inner (Dark Green)
-                { 96, 37.0, g_OFFSET_EXP, 1, GetStereoAngle(37.0), 817 } // Outer (Light Green)
-            },
-            {
-                3, // Cylinder 4
-                { 151, 65.0, g_OFFSET_EXP, -1, GetStereoAngle(65.0), 882 }, // Inner (Dark Violet)
-                { 152, 65.0, g_OFFSET_EXP, 1, GetStereoAngle(65.0), 609 } // Outer (Pink)
-            },
-            {
-                4, // Cylinder 5
-                { 160, 69.0, g_OFFSET_EXP, -1, GetStereoAngle(69.0), 803 }, // Inner (Brown)
-                { 162, 69.0, g_OFFSET_EXP, 1, GetStereoAngle(69.0), 805 } // Outer (Light Brown)
-            },
-            {
-                5, // Cylinder 6
-                { 170, 73.0, g_OFFSET_EXP, -1, GetStereoAngle(73.0), 923 }, // Inner (Dark Gray)
-                { 171, 73.0, g_OFFSET_EXP, 1, GetStereoAngle(73.0), 921 } // Outer (Silver)
-            } };
+        std::vector<CylinderConfig> all
+            = { {
+                    0, 17.0, // Cylinder 1 (id, nominalRadius)
+                    { 45, 16.8, 0.5, 4.294 + g_DELTAS[0] + g_OFFSET_EXP, -1, GetStereoAngle(16.8),
+                        632 }, // Inner (Red)
+                    { 49, 17.45, 0.5, 3.829 + g_DELTAS[0] + g_OFFSET_EXP, 1, GetStereoAngle(17.45),
+                        807 } // Outer (Orange)
+                },
+                  {
+                      1, 21.0, // Cylinder 2
+                      { 59, 20.8, 0.5, 2.609 + g_DELTAS[1] + g_OFFSET_EXP, -1, GetStereoAngle(20.8),
+                          600 }, // Inner (Blue)
+                      { 60, 21.45, 0.5, 3.351 + g_DELTAS[1] + g_OFFSET_EXP, 1,
+                          GetStereoAngle(21.45), 432 } // Outer (Cyan)
+                  },
+                  {
+                      2, 37.0, // Cylinder 3
+                      { 96, 36.8, 0.5, g_DELTAS[2] + g_OFFSET_EXP, -1, GetStereoAngle(36.8),
+                          418 }, // Inner (Dark Green)
+                      { 96, 37.45, 0.5, g_DELTAS[2] + g_OFFSET_EXP, 1, GetStereoAngle(37.45),
+                          817 } // Outer (Light Green)
+                  },
+                  {
+                      3, 65.0, // Cylinder 4
+                      { 151, 64.8, 0.5, g_DELTAS[3] + g_OFFSET_EXP, -1, GetStereoAngle(64.8),
+                          882 }, // Inner (Dark Violet)
+                      { 152, 65.45, 0.5, g_DELTAS[3] + g_OFFSET_EXP, 1, GetStereoAngle(65.45),
+                          609 } // Outer (Pink)
+                  },
+                  {
+                      4, 69.0, // Cylinder 5
+                      { 160, 68.8, 0.5, g_DELTAS[4] + g_OFFSET_EXP, -1, GetStereoAngle(68.8),
+                          803 }, // Inner (Brown)
+                      { 162, 69.45, 0.5, g_DELTAS[4] + g_OFFSET_EXP, 1, GetStereoAngle(69.45),
+                          805 } // Outer (Light Brown)
+                  },
+                  {
+                      5, 73.0, // Cylinder 6
+                      { 170, 72.8, 0.5, g_DELTAS[5] + g_OFFSET_EXP, -1, GetStereoAngle(72.8),
+                          923 }, // Inner (Dark Gray)
+                      { 171, 73.45, 0.5, g_DELTAS[5] + g_OFFSET_EXP, 1, GetStereoAngle(73.45),
+                          921 } // Outer (Silver)
+                  } };
 
         // Filter active cylinders
         for(const auto &c : all)

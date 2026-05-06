@@ -8,6 +8,12 @@ constexpr Int_t DEBUG_LVL = 0;
 constexpr Double_t FAKEHIT_ANGLE_LIM = TMath::Pi() / 20;
 constexpr Int_t pdg = -11; // PID for positron
 
+void SetCHeTOptimalSelfAligment()
+{
+    // Config::SetOffsetExp(29. * TMath::DegToRad()); // 29 optimal
+    CHeT::Config::SetDeltaI(1, CHeT::Config::GetDeltaI(1) + 4.5 * TMath::DegToRad()); // 4.5 optimal
+}
+
 double FITALG::Track3DNeg2LogL(const double *par, const FITALG::FitData &data, bool usePrior)
 {
     const double x0 = par[0], sx = par[1], z0 = par[2], sz = par[3];
@@ -86,6 +92,15 @@ FITALG::FitOutput FITALG::Do3DFit(const std::vector<int> &hit_ids, bool usePrior
 
 void FITALG::CosmicFitter()
 {
+    /*
+    Bool_t real = true;
+    if(real)
+    {
+        CHeT::Config::SetActiveCylinders({ 0, 1 });
+        SetCHeTOptimalSelfAligment();
+    }
+     */
+
     cout << ">>> Running CosmicFitter..." << endl;
 
     TrackDataManager data;
@@ -165,6 +180,8 @@ void FITALG::CosmicFitter()
             data.rec_sz = trFit.sz;
             data.rec_chi2 = trFit.chi2;
             data.rec_converged = trFit.converged;
+            for(const auto &pt : fitRes.fittedPoints)
+                data.rec_zi.push_back(pt.z);
 
             is_converged = trFit.converged;
         }

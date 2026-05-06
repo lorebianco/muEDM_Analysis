@@ -32,6 +32,7 @@ struct LayerConfig
 {
     int nBundles; ///< Number of bundles in the layer
     double radius; ///< Radius in [mm]
+    double thickness; ///< Thickness in [mm]
     double phiOffset; ///< Angular offset in [rad]
     int direction; ///< Winding direction: +1 (CCW) or -1 (CW)
     double nominalStereoAngle; ///< Nominal stereo angle in [rad]
@@ -44,6 +45,7 @@ struct LayerConfig
 struct CylinderConfig
 {
     int id; ///< Cylinder ID
+    double nominalRadius; ///< Nominal radius in [mm]
     LayerConfig inner; ///< Configuration for the inner layer
     LayerConfig outer; ///< Configuration for the outer layer
 };
@@ -113,34 +115,34 @@ double GetOffsetExp();
 void SetOffsetExp(double val);
 
 /**
- * @brief Retrieves the current experimental parameter DELTA1.
- * Used in the configuration of Cylinder 1.
- * @return The value of DELTA1.
+ * @brief Retrieves the current experimental parameter DELTA for a specific cylinder.
+ * @param cylIdx The index of the cylinder (0 to 5).
+ * @return The value of DELTA for the cylinder.
  */
-double GetDelta1();
+double GetDeltaI(int cylIdx);
 
 /**
- * @brief Sets the experimental parameter DELTA1.
+ * @brief Sets the experimental parameter DELTA for a specific cylinder.
  * @note Setting this value invalidates the geometry cache, causing a lazy
  * recalculation.
- * @param val The new value for DELTA1.
+ * @param cylIdx The index of the cylinder (0 to 5).
+ * @param val The new value for DELTA.
  */
-void SetDelta1(double val);
+void SetDeltaI(int cylIdx, double val);
 
 /**
- * @brief Retrieves the current experimental parameter DELTA2.
- * Used in the configuration of Cylinder 2.
- * @return The value of DELTA2.
- */
-double GetDelta2();
-
-/**
- * @brief Sets the experimental parameter DELTA2.
+ * @brief Sets the experimental parameter DELTA for all cylinders.
  * @note Setting this value invalidates the geometry cache, causing a lazy
  * recalculation.
- * @param val The new value for DELTA2.
+ * @param deltas A vector containing the DELTA values for all cylinders.
  */
-void SetDelta2(double val);
+void SetDeltas(const std::vector<double> &deltas);
+
+/**
+ * @brief Gets the experimental parameter DELTA for all cylinders.
+ * @return A vector containing the DELTA values for all cylinders.
+ */
+std::vector<double> GetDeltas();
 
 // --- Rotation Settings ---
 

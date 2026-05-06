@@ -16,10 +16,10 @@
 #pragma link C++ class CHeT::Config::BundlesIntersection + ;
 #pragma link C++ function CHeT::Config::GetOffsetExp;
 #pragma link C++ function CHeT::Config::SetOffsetExp;
-#pragma link C++ function CHeT::Config::GetDelta1;
-#pragma link C++ function CHeT::Config::SetDelta1;
-#pragma link C++ function CHeT::Config::GetDelta2;
-#pragma link C++ function CHeT::Config::SetDelta2;
+#pragma link C++ function CHeT::Config::GetDeltaI;
+#pragma link C++ function CHeT::Config::SetDeltaI;
+#pragma link C++ function CHeT::Config::GetDeltas;
+#pragma link C++ function CHeT::Config::SetDeltas;
 #pragma link C++ function CHeT::Config::SetRotation;
 #pragma link C++ function CHeT::Config::GetRotation;
 #pragma link C++ function CHeT::Config::SetTranslation;
