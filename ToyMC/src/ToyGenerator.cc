@@ -15,24 +15,10 @@ using namespace CHeT;
 namespace ToyMC
 {
 
-CosmicTrack GenerateCosmic(const CosmicDetConfig &conf)
+static TRandom3 gToyRnd(0);
+
+double GenerateCosmicEnergy()
 {
-    static TRandom3 rnd(0);
-    CosmicTrack track;
-    Double_t xUp = conf.xUp;
-    Double_t yUp = conf.yUp;
-    Double_t zUp = conf.zUp;
-    Double_t halfX_up = conf.halfX_up;
-    Double_t halfZ_up = conf.halfZ_up;
-
-    Double_t xDown = conf.xDown;
-    Double_t yDown = conf.yDown;
-    Double_t zDown = conf.zDown;
-    Double_t halfX_down = conf.halfX_down;
-    Double_t halfZ_down = conf.halfZ_down;
-    Bool_t accepted = false;
-
-    // Cosmic ray energy generation
     auto PDF_E_CosmicRay = [](double energy) -> double
     {
         const double GeV = 1000.0;
@@ -52,28 +38,47 @@ CosmicTrack GenerateCosmic(const CosmicDetConfig &conf)
 
     while(energyy > PDF_E_CosmicRay(energy))
     {
-        energy = emin + emax * gRandom->Uniform();
-        energyy = max_prob * gRandom->Uniform();
+        energy = emin + emax * gToyRnd.Uniform();
+        energyy = max_prob * gToyRnd.Uniform();
     }
-    track.E_kin = energy;
+    return energy;
+}
+
+CosmicTrack GenerateCosmic(const CosmicDetConfig &conf)
+{
+    CosmicTrack track;
+    Double_t xUp = conf.xUp;
+    Double_t yUp = conf.yUp;
+    Double_t zUp = conf.zUp;
+    Double_t halfX_up = conf.halfX_up;
+    Double_t halfZ_up = conf.halfZ_up;
+
+    Double_t xDown = conf.xDown;
+    Double_t yDown = conf.yDown;
+    Double_t zDown = conf.zDown;
+    Double_t halfX_down = conf.halfX_down;
+    Double_t halfZ_down = conf.halfZ_down;
+    Bool_t accepted = false;
+
+    track.E_kin = GenerateCosmicEnergy();
 
     while(!accepted)
     {
-        Double_t cosTheta = rnd.Uniform(-1.0, 0.0);
-        Double_t cosThetaSq_test = rnd.Uniform(0.0, 1.0);
+        Double_t cosTheta = gToyRnd.Uniform(-1.0, 0.0);
+        Double_t cosThetaSq_test = gToyRnd.Uniform(0.0, 1.0);
         if(cosThetaSq_test > cosTheta * cosTheta)
             continue;
 
-        Double_t phi = rnd.Uniform(0.0, 2.0 * M_PI);
+        Double_t phi = gToyRnd.Uniform(0.0, 2.0 * M_PI);
         Double_t sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
         track.ux = sinTheta * cos(phi);
         track.uy = cosTheta;
         track.uz = sinTheta * sin(phi);
 
-        track.x0 = rnd.Uniform(xUp - halfX_up, xUp + halfX_up);
+        track.x0 = gToyRnd.Uniform(xUp - halfX_up, xUp + halfX_up);
         track.y0 = yUp;
-        track.z0 = rnd.Uniform(zUp - halfZ_up, zUp + halfZ_up);
+        track.z0 = gToyRnd.Uniform(zUp - halfZ_up, zUp + halfZ_up);
 
         Double_t t = (yDown - track.y0) / track.uy;
         Double_t x_proj = track.x0 + track.ux * t;
@@ -131,7 +136,7 @@ HitResult FindCosmicHits(const CosmicTrack &track, double efficiency)
                             if(dphi > M_PI)
                                 dphi = 2.0 * M_PI - dphi;
 
-                            if(dphi < (M_PI / lay.nBundles) && gRandom->Rndm() <= efficiency)
+                            if(dphi < (M_PI / lay.nBundles) && gToyRnd.Rndm() <= efficiency)
                             {
                                 hit_map[b_id] = { xi, yi, zi };
                             }
@@ -159,8 +164,8 @@ double GenerateMichelEnergy()
 
     while(true)
     {
-        double x = gRandom->Uniform(0.0, E_max);
-        double y = gRandom->Uniform(0.0, 1.0);
+        double x = gToyRnd.Uniform(0.0, E_max);
+        double y = gToyRnd.Uniform(0.0, 1.0);
         double w = x / E_max;
         double f = 2.0 * w * w * (3.0 - 2.0 * w); // Standard Michel spectrum for unpolarized muons
         if(y <= f)
@@ -181,10 +186,10 @@ MichelTrack GenerateMichelTrack(bool requireHitsBoundary)
     while(!accepted)
     {
         tr.E_kin = GenerateMichelEnergy();
-        double gamma = gRandom->Uniform(0.0, 2.0 * M_PI);
-        double cosTheta = gRandom->Uniform(-0.99, 0.99);
+        double gamma = gToyRnd.Uniform(0.0, 2.0 * M_PI);
+        double cosTheta = gToyRnd.Uniform(-0.99, 0.99);
         tr.theta_rad = std::acos(cosTheta);
-        tr.phi_dir = gRandom->Uniform(0.0, 2.0 * M_PI);
+        tr.phi_dir = gToyRnd.Uniform(0.0, 2.0 * M_PI);
 
         tr.x0 = R_start * std::cos(gamma);
         tr.y0 = R_start * std::sin(gamma);
@@ -312,8 +317,7 @@ HitResult FindMichelHits(const MichelTrack &tr, double efficiency)
                                     if(dphi > M_PI)
                                         dphi = 2.0 * M_PI - dphi;
 
-                                    if(dphi < (M_PI / lay.nBundles)
-                                        && gRandom->Rndm() <= efficiency)
+                                    if(dphi < (M_PI / lay.nBundles) && gToyRnd.Rndm() <= efficiency)
                                     {
                                         hit_map[b_id] = { x, y, z };
                                     }

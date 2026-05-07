@@ -61,6 +61,12 @@ struct CosmicDetConfig
 };
 
 /**
+ * @brief Generates a random energy for a cosmic muon according to the atmospheric spectrum.
+ * @return Kinetic energy [MeV].
+ */
+double GenerateCosmicEnergy();
+
+/**
  * @brief Generates a random cosmic muon track traversing the detector.
  * @param conf Geometric configuration of the cosmic trigger detectors.
  * @return A CosmicTrack object with truth parameters.

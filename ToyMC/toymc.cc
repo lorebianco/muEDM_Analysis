@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 
+#include "TROOT.h"
 #include <TFile.h>
 #include <TNamed.h>
 #include <TParameter.h>
 #include <TRandom.h>
-#include <TRandom3.h>
 #include <TString.h>
 #include <TTree.h>
 
@@ -409,7 +409,7 @@ int main(int argc, char **argv)
     treeSIM->Branch("mc_hits_z", &true_hit_z);
 
     int trackID = 0;
-    int particleID = 0; // e.g., 11 for electron, 0 for cosmic
+    int particleID = 0;
     treeSIM->Branch("TrackID", &trackID);
     treeSIM->Branch("ParticleID", &particleID);
 
@@ -434,9 +434,7 @@ int main(int argc, char **argv)
 
     if(config.mode == "cosmic")
     {
-        // 50% positive (13 is muon-) and 50% negative (13 is muon-) -> wait, PDG for mu- is 13, mu+
-        // is -13
-        particleID = (gRandom->Rndm() > 0.5) ? 13 : -13;
+        gRandom->SetSeed(0);
         treeSIM->Branch("mc_E", &mc_E);
         treeSIM->Branch("trk_x0", &trk_x0);
         treeSIM->Branch("trk_z0", &trk_z0);
@@ -457,14 +455,9 @@ int main(int argc, char **argv)
     }
 
     std::cout << "Generating events...\n";
-    static TRandom3 rnd(0);
     for(eventID = 0; eventID < config.nEvents; ++eventID)
     {
         trackID = eventID;
-        if(config.mode == "cosmic")
-        {
-            particleID = (rnd.Rndm() > 0.5) ? 13 : -13;
-        }
 
         all_bundle.clear();
         true_hit_x.clear();
@@ -474,6 +467,8 @@ int main(int argc, char **argv)
         if(config.mode == "cosmic")
         {
             ToyMC::CosmicTrack tr = ToyMC::GenerateCosmic(config.cosmicDet);
+            particleID = (gRandom->Rndm() > 0.5) ? 13 : -13; // Muon positive or negative
+
             mc_x = tr.x0;
             mc_y = tr.y0;
             mc_z = tr.z0;
