@@ -44,8 +44,9 @@
 #include <THStack.h>
 #include <TLatex.h>
 #include <TLegend.h>
-#include <TLine.h>
 #include <TMath.h>
+#include <TMinuit.h>
+#include <TParameter.h>
 #include <TProfile.h>
 #include <TProfile2D.h>
 #include <TStyle.h>
@@ -1136,7 +1137,31 @@ int main(int argc, char **argv)
         TFile *f = TFile::Open(filename.c_str(), "READ");
         bool hasSim = f && f->Get("sim") != nullptr;
         if(f)
+        {
+            TTree *metaTree = hasSim ? (TTree *)f->Get("sim") : (TTree *)f->Get("rec");
+            if(metaTree && metaTree->GetUserInfo())
+            {
+                std::vector<int> active_cyls;
+                bool found_active_meta = false;
+                for(int i = 0; i < 6; ++i)
+                {
+                    auto param = (TParameter<int> *)metaTree->GetUserInfo()->FindObject(
+                        Form("ActiveCyl_%d", i));
+                    if(param)
+                    {
+                        found_active_meta = true;
+                        if(param->GetVal() > 0)
+                            active_cyls.push_back(i);
+                    }
+                }
+                if(found_active_meta)
+                {
+                    CHeT::Config::SetActiveCylinders(active_cyls);
+                    std::cout << ">>> Inherited Active Cylinders from metadata!" << std::endl;
+                }
+            }
             f->Close();
+        }
 
         TChain chain_rec("rec");
         chain_rec.Add(filename.c_str());

@@ -557,10 +557,11 @@ int main(int argc, char **argv)
         }
 
         auto active_cyls = CHeT::Config::GetActiveCylinders();
-        t->GetUserInfo()->Add(new TParameter<int>("ActiveCyl_Count", active_cyls.size()));
-        for(size_t i = 0; i < active_cyls.size(); ++i)
+        for(int i = 0; i < 6; ++i)
         {
-            t->GetUserInfo()->Add(new TParameter<int>(Form("ActiveCyl_%zu", i), active_cyls[i]));
+            int is_active
+                = std::find(active_cyls.begin(), active_cyls.end(), i) != active_cyls.end() ? 1 : 0;
+            t->GetUserInfo()->Add(new TParameter<int>(Form("ActiveCyl_%d", i), is_active));
         }
     };
 

@@ -84,14 +84,21 @@ TrackDataManager::TrackDataManager()
                 deltas[i] = getParam(Form("Geom_Delta_%d", i), 0.0);
             }
 
-            int cylCount = (int)getParam("ActiveCyl_Count", 0.0);
-            if(cylCount > 0)
+            std::vector<int> active_cyls;
+            bool found_active_meta = false;
+            for(int i = 0; i < 6; ++i)
             {
-                std::vector<int> active_cyls;
-                for(int i = 0; i < cylCount; ++i)
+                double val = getParam(Form("ActiveCyl_%d", i), -1.0);
+                if(val >= 0.0)
                 {
-                    active_cyls.push_back((int)getParam(Form("ActiveCyl_%d", i), 0.0));
+                    found_active_meta = true;
+                    if(val > 0.5)
+                        active_cyls.push_back(i);
                 }
+            }
+
+            if(found_active_meta)
+            {
                 CHeT::Config::SetActiveCylinders(active_cyls);
                 cout << ">>> Inherited Active Cylinders from input file!" << endl;
             }
