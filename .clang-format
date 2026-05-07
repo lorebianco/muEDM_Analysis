@@ -1,0 +1,53 @@
+---
+Language: Cpp
+Standard: c++17
+
+# --- GESTIONE INCLUDE ---
+SortIncludes: true
+IncludeBlocks: Regroup
+
+IncludeCategories:
+  # GRUPPO 2: ROOT e Geant4
+  # Cattura solo se inizia con G4, Math, T+Maiuscola, R+Maiuscola
+  - Regex: '^("|<)(G4|Math|T[A-Z]|R[A-Z]).*'
+    Priority: 2
+    CaseSensitive: true
+
+  # GRUPPO 1 (Catch-all): Altri Standard C++
+  # Per sicurezza, cattura tutto ciò che è tra <> e non è stato preso prima
+  - Regex: "^<.*>"
+    Priority: 1
+
+  # GRUPPO 3: Locali ("myheader.hh")
+  - Regex: '^".*"'
+    Priority: 3
+
+# --- STILE E PARENTESI ---
+BasedOnStyle: WebKit
+BreakBeforeBraces: Allman
+
+# --- INDENTAZIONE ---
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -2
+IndentCaseLabels: true
+NamespaceIndentation: None
+
+# --- SPAZIATURA ---
+SpaceBeforeParens: Never
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+
+# --- PUNTATORI ---
+PointerAlignment: Right
+ReferenceAlignment: Right
+
+# --- LIMITI ---
+ColumnLimit: 100
+
+# --- PULIZIA ---
+AllowShortFunctionsOnASingleLine: Empty
+KeepEmptyLinesAtTheStartOfBlocks: true
+ReflowComments: true
+...
