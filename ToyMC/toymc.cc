@@ -10,6 +10,7 @@
 #include <TFile.h>
 #include <TNamed.h>
 #include <TParameter.h>
+#include <TRandom.h>
 #include <TString.h>
 #include <TTree.h>
 
@@ -432,7 +433,9 @@ int main(int argc, char **argv)
 
     if(config.mode == "cosmic")
     {
-        particleID = 0; // Cosmic muon placeholder
+        // 50% positive (13 is muon-) and 50% negative (13 is muon-) -> wait, PDG for mu- is 13, mu+
+        // is -13
+        particleID = (gRandom->Rndm() > 0.5) ? 13 : -13;
         treeSIM->Branch("mc_E", &mc_E);
         treeSIM->Branch("trk_x0", &trk_x0);
         treeSIM->Branch("trk_z0", &trk_z0);
@@ -441,7 +444,7 @@ int main(int argc, char **argv)
     }
     else if(config.mode == "michel")
     {
-        particleID = 11; // Michel Electron
+        particleID = -11; // Michel Positron
         treeSIM->Branch("mc_E", &mc_E);
         treeSIM->Branch("trk_R", &trk_R);
         treeSIM->Branch("trk_cx", &trk_cx);
@@ -455,11 +458,16 @@ int main(int argc, char **argv)
     std::cout << "Generating events...\n";
     for(eventID = 0; eventID < config.nEvents; ++eventID)
     {
+        trackID = eventID;
+        if(config.mode == "cosmic")
+        {
+            particleID = (gRandom->Rndm() > 0.5) ? 13 : -13; // 50% mu-, 50% mu+
+        }
+
         all_bundle.clear();
         true_hit_x.clear();
         true_hit_y.clear();
         true_hit_z.clear();
-        trackID = eventID; // Assuming 1 track per event for now
 
         if(config.mode == "cosmic")
         {
