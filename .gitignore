@@ -27,14 +27,17 @@ Thumbs.db
 *~
 *.swp
 *.tmp
+__pycache__/
 
 # --- Documentation directory ---
 # docs/
 
-# --- Optional: Data and Output ---
-# Often you don't want to push heavy data files or plots to Git
+# --- Images ---
+images/
+
+# --- Data and Output ---
+data/
 # *.root
 # *.pdf
 # *.png
-# data/
 # output/
