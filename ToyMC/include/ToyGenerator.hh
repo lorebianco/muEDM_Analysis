@@ -71,7 +71,7 @@ double GenerateCosmicEnergy();
  * @param conf Geometric configuration of the cosmic trigger detectors.
  * @return A CosmicTrack object with truth parameters.
  */
-CosmicTrack GenerateCosmic(const CosmicDetConfig &conf = CosmicDetConfig());
+CosmicTrack GenerateCosmicTrack(const CosmicDetConfig &conf = CosmicDetConfig());
 
 /**
  * @brief Finds the global bundle IDs intersected by a cosmic track.

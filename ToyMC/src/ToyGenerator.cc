@@ -44,7 +44,7 @@ double GenerateCosmicEnergy()
     return energy;
 }
 
-CosmicTrack GenerateCosmic(const CosmicDetConfig &conf)
+CosmicTrack GenerateCosmicTrack(const CosmicDetConfig &conf)
 {
     CosmicTrack track;
     Double_t xUp = conf.xUp;

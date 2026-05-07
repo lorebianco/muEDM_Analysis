@@ -466,7 +466,7 @@ int main(int argc, char **argv)
 
         if(config.mode == "cosmic")
         {
-            ToyMC::CosmicTrack tr = ToyMC::GenerateCosmic(config.cosmicDet);
+            ToyMC::CosmicTrack tr = ToyMC::GenerateCosmicTrack(config.cosmicDet);
             particleID = (gRandom->Rndm() > 0.5) ? 13 : -13; // Muon positive or negative
 
             mc_x = tr.x0;
