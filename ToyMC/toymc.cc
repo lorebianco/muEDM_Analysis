@@ -11,6 +11,7 @@
 #include <TNamed.h>
 #include <TParameter.h>
 #include <TRandom.h>
+#include <TRandom3.h>
 #include <TString.h>
 #include <TTree.h>
 
@@ -456,12 +457,13 @@ int main(int argc, char **argv)
     }
 
     std::cout << "Generating events...\n";
+    static TRandom3 rnd(0);
     for(eventID = 0; eventID < config.nEvents; ++eventID)
     {
         trackID = eventID;
         if(config.mode == "cosmic")
         {
-            particleID = (gRandom->Rndm() > 0.5) ? 13 : -13; // 50% mu-, 50% mu+
+            particleID = (rnd.Rndm() > 0.5) ? 13 : -13;
         }
 
         all_bundle.clear();
