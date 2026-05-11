@@ -73,12 +73,13 @@ std::pair<std::vector<std::vector<Double_t>>, std::vector<Int_t>> SelectCylinder
 
 std::pair<TVector3, TVector3> SmearSeed(TVector3 pos, TVector3 mom);
 
-std::vector<CircularHoughResult> DoCircularHoughTransform(const std::vector<Int_t> &hit_ids,
-    int nCandidates = 2, int combinatorial_threshold = 1000, int n_random_triplets = 10000,
-    bool drawGraphs = true);
+std::vector<CircularHoughResult> DoCircularHoughTransform(
+    const std::vector<std::vector<Double_t>> &hitsCoords, int nCandidates = 2,
+    int combinatorial_threshold = 1000, int n_random_triplets = 10000, bool drawGraphs = true);
 
-std::vector<ZHoughResult> DoZHoughTransform(const std::vector<Int_t> &hit_ids, double xc, double yc,
-    double R_reco, int nCandidates = 1, bool drawGraphs = true, double tol_Z_fit = 15.0);
+std::vector<ZHoughResult> DoZHoughTransform(const std::vector<std::vector<Double_t>> &hitsCoords,
+    double xc, double yc, double R_reco, int nCandidates = 1, bool drawGraphs = true,
+    double tol_Z_fit = 15.0);
 };
 
 #endif // PATTERNALGORITHMS_HH

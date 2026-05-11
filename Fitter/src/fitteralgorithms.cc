@@ -70,10 +70,20 @@ FITALG::FitOutput FITALG::Do3DFit(const std::vector<int> &hit_ids, bool usePrior
 
     bool conv = min->Minimize();
     const double *res = min->X();
+    const double *err = min->Errors();
     double chi2 = (n_hits * 2 > 4) ? min->MinValue() / (double)(n_hits * 2 - 4) : 0.0;
 
     FITALG::FitOutput output;
-    output.track = { res[0], res[2], res[1], res[3], chi2, conv };
+    if(conv && err)
+    {
+        output.track = { res[0], res[2], res[1], res[3], err[0], err[2], err[1], err[3],
+            min->CovMatrix(0, 1), min->CovMatrix(2, 3), min->CovMatrix(0, 2), min->CovMatrix(1, 3),
+            min->CovMatrix(0, 3), min->CovMatrix(2, 1), chi2, conv };
+    }
+    else
+    {
+        output.track = { res[0], res[2], res[1], res[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, chi2, conv };
+    }
 
     if(conv)
     {
@@ -160,6 +170,13 @@ void FITALG::CosmicFitter()
         data.rec_z0 = 0;
         data.rec_sx = 0;
         data.rec_sz = 0;
+        if(data.rec_cov_cosmic)
+        {
+            data.rec_cov_cosmic->ResizeTo(4, 4);
+            for(int j = 0; j < 4; j++)
+                for(int k = 0; k < 4; k++)
+                    (*data.rec_cov_cosmic)(j, k) = 0;
+        }
         data.rec_chi2 = -1;
         data.rec_hough2d_idx.clear();
         data.rec_houghz_idx.clear();
@@ -178,6 +195,28 @@ void FITALG::CosmicFitter()
             data.rec_z0 = trFit.z0;
             data.rec_sx = trFit.sx;
             data.rec_sz = trFit.sz;
+
+            if(data.rec_cov_cosmic)
+            {
+                data.rec_cov_cosmic->ResizeTo(4, 4);
+                (*data.rec_cov_cosmic)(0, 0) = trFit.err_x0 * trFit.err_x0;
+                (*data.rec_cov_cosmic)(1, 1) = trFit.err_z0 * trFit.err_z0;
+                (*data.rec_cov_cosmic)(2, 2) = trFit.err_sx * trFit.err_sx;
+                (*data.rec_cov_cosmic)(3, 3) = trFit.err_sz * trFit.err_sz;
+                (*data.rec_cov_cosmic)(0, 2) = trFit.cov_x0_sx;
+                (*data.rec_cov_cosmic)(2, 0) = trFit.cov_x0_sx;
+                (*data.rec_cov_cosmic)(1, 3) = trFit.cov_z0_sz;
+                (*data.rec_cov_cosmic)(3, 1) = trFit.cov_z0_sz;
+                (*data.rec_cov_cosmic)(0, 1) = trFit.cov_x0_z0;
+                (*data.rec_cov_cosmic)(1, 0) = trFit.cov_x0_z0;
+                (*data.rec_cov_cosmic)(2, 3) = trFit.cov_sx_sz;
+                (*data.rec_cov_cosmic)(3, 2) = trFit.cov_sx_sz;
+                (*data.rec_cov_cosmic)(0, 3) = trFit.cov_x0_sz;
+                (*data.rec_cov_cosmic)(3, 0) = trFit.cov_x0_sz;
+                (*data.rec_cov_cosmic)(1, 2) = trFit.cov_z0_sx;
+                (*data.rec_cov_cosmic)(2, 1) = trFit.cov_z0_sx;
+            }
+
             data.rec_chi2 = trFit.chi2;
             data.rec_converged = trFit.converged;
             for(const auto &pt : fitRes.fittedPoints)
@@ -442,7 +481,7 @@ void FITALG::SpacepointFitter()
         double hough_t_min = 0, hough_t_max = 0;
 
         auto circ_cands = PTTALG::DoCircularHoughTransform(
-            data.rec_hits, 1, 1000, 10000, Config::get().processSingle);
+            data.hitsCoordinates, 1, 1000, 10000, Config::get().processSingle);
         if(!circ_cands.empty())
         {
             auto best_circ = circ_cands[0];
@@ -451,8 +490,8 @@ void FITALG::SpacepointFitter()
             hough_yc = best_circ.yc * 0.1;
             hough_R = best_circ.R * 0.1;
 
-            auto z_cands = PTTALG::DoZHoughTransform(data.rec_hits, best_circ.xc, best_circ.yc,
-                best_circ.R, 1, Config::get().processSingle, 15.0);
+            auto z_cands = PTTALG::DoZHoughTransform(data.hitsCoordinates, best_circ.xc,
+                best_circ.yc, best_circ.R, 1, Config::get().processSingle, 15.0);
             if(!z_cands.empty())
             {
                 auto best_z = z_cands[0];
@@ -721,14 +760,22 @@ void FITALG::SpacepointFitter()
                     genfit::SharedPlanePtr(new genfit::DetPlane(
                         TVector3(0., 0., 0.), TVector3(1., 0., 0.), TVector3(0., 1., 0.))));
 
-                TVector3 pos = state.getPos();
-                TVector3 mom = state.getMom();
+                TVector3 pos;
+                TVector3 mom;
+                TMatrixDSym cov;
+                state.getPosMomCov(pos, mom, cov);
                 data.rec_extrap_x = pos.X();
                 data.rec_extrap_y = pos.Y();
                 data.rec_extrap_z = pos.Z();
                 data.rec_extrap_px = mom.X();
                 data.rec_extrap_py = mom.Y();
                 data.rec_extrap_pz = mom.Z();
+
+                if(data.rec_cov_extrap)
+                {
+                    data.rec_cov_extrap->ResizeTo(6, 6);
+                    *data.rec_cov_extrap = cov;
+                }
             }
             catch(...)
             {
@@ -791,8 +838,25 @@ void FITALG::SpacepointFitter()
                 visTracks.emplace_back(
                     vis_xc, vis_yc, vis_R, vis_z0, vis_dz_dt, hough_t_min, hough_t_max, kRed, 4, 2);
             }
-            CHeT::Vis::Draw2D(data.rec_hits, visTracks);
-            CHeT::Vis::Draw3D(data.rec_hits, visTracks);
+
+            if(Config::get().useTrueMCHits)
+            {
+                std::vector<CHeT::Vis::VisPoint2D> mcPoints2D;
+                std::vector<CHeT::Vis::VisPoint3D> mcPoints3D;
+                for(const auto &hit : data.hitsCoordinates)
+                {
+                    mcPoints2D.emplace_back(hit[0] * 10.0, hit[1] * 10.0, kBlack, 20, 1.2);
+                    mcPoints3D.emplace_back(hit[0] * 10.0, hit[1] * 10.0, hit[2] * 10.0);
+                }
+
+                CHeT::Vis::Draw2D({}, visTracks, mcPoints2D);
+                CHeT::Vis::Draw3D({}, visTracks, mcPoints3D);
+            }
+            else
+            {
+                CHeT::Vis::Draw2D(data.rec_hits, visTracks);
+                CHeT::Vis::Draw3D(data.rec_hits, visTracks);
+            }
         }
 
         // Last steps
@@ -1419,8 +1483,9 @@ void FITALG::HelixFitter()
             // Uncertainties
             TMatrixD Jac = ANS::ComputeHelixJacobian(
                 pivot, xC, yC, R, z0, tanLambda, 0.1 * muEDM::Fields::constBz);
-            TMatrixDSym covFittedState = covHelix.Similarity(Jac);
-            covFittedState = ANS::CovFromCardinalToCylindricalMom(covFittedState, pFitted);
+            TMatrixDSym covFittedStateCartesian = covHelix.Similarity(Jac);
+            TMatrixDSym covFittedState
+                = ANS::CovFromCardinalToCylindricalMom(covFittedStateCartesian, pFitted);
 
             // Compute angles with muEDM convention
             Double_t pFittedPhi = pFitted.Phi();
@@ -1439,6 +1504,25 @@ void FITALG::HelixFitter()
             fittedState(3) = pFitted.Mag();
             fittedState(4) = pFittedTheTheta;
             fittedState(5) = pFittedPhi;
+
+            data.rec_extrap_x = x_at_vertex;
+            data.rec_extrap_y = y_at_vertex;
+            data.rec_extrap_z = 0.0;
+            data.rec_extrap_px = pFitted.X();
+            data.rec_extrap_py = pFitted.Y();
+            data.rec_extrap_pz = pFitted.Z();
+
+            if(data.rec_cov_extrap)
+            {
+                data.rec_cov_extrap->ResizeTo(6, 6);
+                for(int i = 0; i < 6; i++)
+                {
+                    for(int j = 0; j < 6; j++)
+                    {
+                        (*data.rec_cov_extrap)(i, j) = covFittedStateCartesian(i, j);
+                    }
+                }
+            }
 
             // Print results
             if(Config::get().processSingle)

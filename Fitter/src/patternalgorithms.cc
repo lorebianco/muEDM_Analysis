@@ -251,10 +251,20 @@ pair<TVector3, TVector3> PTTALG::SmearSeed(TVector3 pos, TVector3 mom)
     return { smearPos, smearMom };
 }
 
-vector<CircularHoughResult> PTTALG::DoCircularHoughTransform(const vector<Int_t> &hit_ids,
-    int nCandidates, int combinatorial_threshold, int n_random_triplets, bool drawGraphs)
+vector<CircularHoughResult> PTTALG::DoCircularHoughTransform(
+    const std::vector<std::vector<Double_t>> &hitsCoords, int nCandidates,
+    int combinatorial_threshold, int n_random_triplets, bool drawGraphs)
 {
-    auto inters = CHeT::Config::FindIntersections(hit_ids);
+    struct LocalPoint
+    {
+        double x_loc, y_loc, z_loc;
+    };
+    vector<LocalPoint> inters;
+    for(const auto &pt : hitsCoords)
+    {
+        inters.push_back({ pt[0] * 10.0, pt[1] * 10.0, pt[2] * 10.0 });
+    }
+
     if(inters.size() < 3)
         return {};
 
@@ -472,8 +482,8 @@ vector<CircularHoughResult> PTTALG::DoCircularHoughTransform(const vector<Int_t>
     return candidates;
 }
 
-vector<ZHoughResult> PTTALG::DoZHoughTransform(const vector<Int_t> &hit_ids, double xc, double yc,
-    double R_reco, int nCandidates, bool drawGraphs, double tol_Z_fit)
+vector<ZHoughResult> PTTALG::DoZHoughTransform(const std::vector<std::vector<Double_t>> &hitsCoords,
+    double xc, double yc, double R_reco, int nCandidates, bool drawGraphs, double tol_Z_fit)
 {
     struct Point3DLocal
     {
@@ -482,15 +492,18 @@ vector<ZHoughResult> PTTALG::DoZHoughTransform(const vector<Int_t> &hit_ids, dou
     };
     vector<Point3DLocal> valid_points;
     double tolR = 5.;
-    auto inters = CHeT::Config::FindIntersections(hit_ids);
-    for(size_t i = 0; i < inters.size(); ++i)
+
+    for(size_t i = 0; i < hitsCoords.size(); ++i)
     {
-        auto &p = inters[i];
-        double r_point = sqrt(pow(p.x_loc - xc, 2) + pow(p.y_loc - yc, 2));
+        double x_loc = hitsCoords[i][0] * 10.0; // cm to mm
+        double y_loc = hitsCoords[i][1] * 10.0;
+        double z_loc = hitsCoords[i][2] * 10.0;
+
+        double r_point = sqrt(pow(x_loc - xc, 2) + pow(y_loc - yc, 2));
         if(abs(r_point - R_reco) <= tolR)
-            valid_points.push_back(
-                { p.x_loc, p.y_loc, p.z_loc, atan2(p.y_loc - yc, p.x_loc - xc), (int)i });
+            valid_points.push_back({ x_loc, y_loc, z_loc, atan2(y_loc - yc, x_loc - xc), (int)i });
     }
+
     if(valid_points.empty())
         return {};
 

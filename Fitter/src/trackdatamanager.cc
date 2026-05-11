@@ -1,6 +1,7 @@
 #include <TNamed.h>
 #include <TParameter.h>
 
+#include "auxiliaryalgorithms.hh"
 #include "config.hh"
 #include "trackdatamanager.hh"
 
@@ -20,6 +21,9 @@ TrackDataManager::TrackDataManager()
     // Set branch addresses
     simChain->SetBranchAddress("EventID", &EventID);
 
+    simChain->SetBranchAddress("mc_hits_x", &mc_hits_x);
+    simChain->SetBranchAddress("mc_hits_y", &mc_hits_y);
+    simChain->SetBranchAddress("mc_hits_z", &mc_hits_z);
     simChain->SetBranchAddress("mc_x", &trueDecay_posX);
     simChain->SetBranchAddress("mc_y", &trueDecay_posY);
     simChain->SetBranchAddress("mc_z", &trueDecay_posZ);
@@ -218,6 +222,7 @@ void TrackDataManager::InitRecoTree(bool isMichel)
         recTree->Branch("rec_z0", &rec_z0, "rec_z0/D");
         recTree->Branch("rec_sx", &rec_sx, "rec_sx/D");
         recTree->Branch("rec_sz", &rec_sz, "rec_sz/D");
+        recTree->Branch("rec_cov_cosmic", "TMatrixDSym", &rec_cov_cosmic);
         recTree->Branch("rec_zi", &rec_zi);
     }
     else
@@ -237,6 +242,7 @@ void TrackDataManager::InitRecoTree(bool isMichel)
         recTree->Branch("rec_extrap_px", &rec_extrap_px, "rec_extrap_px/D");
         recTree->Branch("rec_extrap_py", &rec_extrap_py, "rec_extrap_py/D");
         recTree->Branch("rec_extrap_pz", &rec_extrap_pz, "rec_extrap_pz/D");
+        recTree->Branch("rec_cov_extrap", "TMatrixDSym", &rec_cov_extrap);
 
         recTree->Branch("rec_n_candidates_2d", &rec_n_candidates_2d, "rec_n_candidates_2d/I");
         recTree->Branch("rec_n_candidates_z", &rec_n_candidates_z, "rec_n_candidates_z/I");
@@ -296,13 +302,86 @@ void TrackDataManager::ProcessAndFilterEvent(Long64_t eventID)
     // Calculate all possible 3D intersections from the fired bundles.
     // Spacepoint and Helix fitters will use these true 3D points.
     const Double_t mm2cm = 0.1;
-    auto intersections = CHeT::Config::FindIntersections(hit_ids);
 
-    for(const auto &inter : intersections)
+    if(Config::get().useTrueMCHits && mc_hits_x && mc_hits_y && mc_hits_z)
     {
-        std::vector<Double_t> point = { inter.x * mm2cm, inter.y * mm2cm, inter.z * mm2cm };
-        hitsCoordinates.push_back(point);
-        hitsCylinderID.push_back(inter.cylinderId);
+        size_t nHitsMC = mc_hits_x->size();
+        size_t nBundleIDs = allEventsHits[currentEventIndex].size();
+
+        struct TempHit
+        {
+            double x, y, z;
+            int cyl;
+            bool processed;
+        };
+
+        std::vector<TempHit> tempHits;
+        for(size_t i = 0; i < nHitsMC; ++i)
+        {
+            int b_id = (i < nBundleIDs) ? allEventsHits[currentEventIndex][i] : -1;
+            tempHits.push_back({ mc_hits_x->at(i) * mm2cm, mc_hits_y->at(i) * mm2cm,
+                mc_hits_z->at(i) * mm2cm, CHeT::Config::GetFiberProp(b_id).cylinderId, false });
+        }
+
+        hitsCoordinates.clear();
+        hitsCylinderID.clear();
+
+        for(size_t i = 0; i < tempHits.size(); ++i)
+        {
+            if(tempHits[i].processed)
+                continue;
+
+            double sumX = tempHits[i].x;
+            double sumY = tempHits[i].y;
+            double sumZ = tempHits[i].z;
+            int count = 1;
+            tempHits[i].processed = true;
+
+            // Cerca altre hit nello stesso cilindro e nella stessa posizione
+            for(size_t j = i + 1; j < tempHits.size(); ++j)
+            {
+                if(tempHits[j].processed)
+                    continue;
+
+                if(tempHits[i].cyl == tempHits[j].cyl)
+                {
+                    double dist = std::sqrt(std::pow(tempHits[i].x - tempHits[j].x, 2)
+                        + std::pow(tempHits[i].y - tempHits[j].y, 2)
+                        + std::pow(tempHits[i].z - tempHits[j].z, 2));
+
+                    // Se la distanza è minore di 1 mm (0.1 cm), le consideriamo la stessa "misura"
+                    if(dist < 0.1)
+                    {
+                        sumX += tempHits[j].x;
+                        sumY += tempHits[j].y;
+                        sumZ += tempHits[j].z;
+                        count++;
+                        tempHits[j].processed = true;
+                    }
+                }
+            }
+
+            // Calcola la media
+            std::vector<Double_t> finalPoint = { sumX / count, sumY / count, sumZ / count };
+            int finalCyl = tempHits[i].cyl;
+
+            if(Config::get().useSmearing)
+                finalPoint = AUXALG::SmearMeasurement(finalCyl, finalPoint);
+
+            hitsCoordinates.push_back(finalPoint);
+            hitsCylinderID.push_back(finalCyl);
+        }
+    }
+    else
+    {
+        auto intersections = CHeT::Config::FindIntersections(hit_ids);
+
+        for(const auto &inter : intersections)
+        {
+            std::vector<Double_t> point = { inter.x * mm2cm, inter.y * mm2cm, inter.z * mm2cm };
+            hitsCoordinates.push_back(point);
+            hitsCylinderID.push_back(inter.cylinderId);
+        }
     }
 
     currentEventIndex++;

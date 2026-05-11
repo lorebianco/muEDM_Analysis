@@ -81,6 +81,8 @@ struct RecoTrack
     double z0;
     double sx;
     double sz;
+    double err_x0, err_z0, err_sx, err_sz;
+    double cov_x0_sx, cov_z0_sz, cov_x0_z0, cov_sx_sz, cov_x0_sz, cov_z0_sx;
     double chi2;
     bool converged;
 };

@@ -11,6 +11,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TMath.h>
+#include <TMatrixDSym.h>
 #include <TTree.h>
 #include <TVector3.h>
 
@@ -50,6 +51,9 @@ class TrackDataManager
              trk_tmax = 0;
 
     std::vector<Int_t> *all_hits;
+    std::vector<Double_t> *mc_hits_x = nullptr;
+    std::vector<Double_t> *mc_hits_y = nullptr;
+    std::vector<Double_t> *mc_hits_z = nullptr;
 
     // Data (for analysis)
     Float_t trueDecayTime;
@@ -68,6 +72,7 @@ class TrackDataManager
 
     // Cosmic rec parameters
     Double_t rec_x0, rec_z0, rec_sx, rec_sz;
+    TMatrixDSym *rec_cov_cosmic = nullptr;
     std::vector<Double_t> rec_zi;
 
     // Michel rec parameters
@@ -76,6 +81,7 @@ class TrackDataManager
     // Extrapolation parameters
     Double_t rec_extrap_x, rec_extrap_y, rec_extrap_z;
     Double_t rec_extrap_px, rec_extrap_py, rec_extrap_pz;
+    TMatrixDSym *rec_cov_extrap = nullptr;
 
     // Additional parameters
     Int_t EventID;
