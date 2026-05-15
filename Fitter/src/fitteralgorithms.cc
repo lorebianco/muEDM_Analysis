@@ -1,3 +1,6 @@
+#include <cmath>
+
+#include "CHeT/CHeTVisualizer.hh"
 #include "analyticviewer.hh"
 #include "fitteralgorithms.hh"
 
@@ -1545,6 +1548,40 @@ void FITALG::HelixFitter()
         {
             cout << "\n\n>>> Did FIT converge? " << (isFitConverged ? "Yes" : "No") << "\n\n"
                  << endl;
+
+            std::vector<CHeT::Vis::VisHelixTrack> visTracks;
+
+            if(data.trk_R > 0)
+            {
+                visTracks.emplace_back(data.trk_cx, data.trk_cy, data.trk_R, data.trk_z0,
+                    data.trk_uz, data.trk_tmin, data.trk_tmax, kYellow, 4, 1);
+            }
+
+            double vis_xc = xC * 10;
+            double vis_yc = yC * 10;
+            double vis_R = R * 10;
+            double vis_z0 = z0 * 10;
+            double vis_dz_dt = tanLambda * vis_R;
+            visTracks.emplace_back(vis_xc, vis_yc, vis_R, vis_z0, vis_dz_dt, 0, 100, kRed, 4, 2);
+
+            if(Config::get().useTrueMCHits)
+            {
+                std::vector<CHeT::Vis::VisPoint2D> mcPoints2D;
+                std::vector<CHeT::Vis::VisPoint3D> mcPoints3D;
+                for(const auto &hit : data.hitsCoordinates)
+                {
+                    mcPoints2D.emplace_back(hit[0] * 10.0, hit[1] * 10.0, kBlack, 20, 1.2);
+                    mcPoints3D.emplace_back(hit[0] * 10.0, hit[1] * 10.0, hit[2] * 10.0);
+                }
+
+                CHeT::Vis::Draw2D({}, visTracks, mcPoints2D);
+                CHeT::Vis::Draw3D({}, visTracks, mcPoints3D);
+            }
+            else
+            {
+                CHeT::Vis::Draw2D(data.rec_hits, visTracks);
+                CHeT::Vis::Draw3D(data.rec_hits, visTracks);
+            }
         }
 
         // Track is in efficiency?

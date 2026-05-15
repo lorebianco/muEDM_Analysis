@@ -417,6 +417,8 @@ Int_t main(Int_t argc, char **argv)
     auto optTurn = app.add_option("-t,--turns", config.turnID, "Apply turn analysis (set Turn ID)");
     // -s
     app.add_flag("-s,--smearing", config.useSmearing, "Apply smearing analysis");
+    // -u
+    app.add_flag("-u,--use-true-hits", config.useTrueMCHits, "Use true MC hits");
     // -p
     app.add_flag("-p,--pattern-rec", config.pttrecMode, "Apply pattern recognition analysis");
     // -q
